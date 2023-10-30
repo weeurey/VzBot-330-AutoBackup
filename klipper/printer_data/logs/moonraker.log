@@ -1506,3 +1506,38 @@ Properties:
 2023-10-30 17:06:50,459 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.27ms
 2023-10-30 17:06:50,459 [websockets.py:open()] - Websocket Opened: ID: 140735047686352, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36, Host Name: 192.168.1.244
 2023-10-30 17:06:50,463 [websockets.py:_handle_identify()] - Websocket 140735047686352 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-10-30 17:26:07,852 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+2023-10-30 17:26:07,857 [app.py:post()] - Processing Uploaded File: printer.cfg
+2023-10-30 17:26:07,860 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 8.73ms
+2023-10-30 17:26:08,887 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-10-30 17:26:10,141 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-10-30 17:26:10,157 [server.py:add_log_rollover_item()] - 
+Systemd unit klipper.service:
+unit_name: klipper.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['system.slice', '-.mount', 'sysinit.target']
+**After=['-.mount', 'network-online.target', 'sysinit.target', 'systemd-journald.socket', 'basic.target', 'system.slice']
+**SupplementaryGroups=[]
+**EnvironmentFiles=/home/pi/printer_data/systemd/klipper.env
+**ExecStart=/home/pi/klippy-env/bin/python $KLIPPER_ARGS
+**WorkingDirectory=/home/pi/klipper
+**FragmentPath=/etc/systemd/system/klipper.service
+**Description=Klipper 3D Printer Firmware SV1
+**User=pi
+2023-10-30 17:26:16,678 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-10-30 17:26:16,679 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-10-30 17:26:16,929 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-10-30 17:26:17,194 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-10-30 17:26:17,687 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-10-30 17:29:43,207 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+2023-10-30 17:29:43,211 [app.py:post()] - Processing Uploaded File: shell.cfg
+2023-10-30 17:29:43,213 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.04ms
+2023-10-30 17:29:44,241 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-10-30 17:29:45,495 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-10-30 17:29:52,033 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-10-30 17:29:52,034 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-10-30 17:29:52,284 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-10-30 17:29:52,547 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-10-30 17:29:53,041 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
