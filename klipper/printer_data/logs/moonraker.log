@@ -1,4 +1,4 @@
--------------------- Log Start | Fri Nov  3 10:25:28 2023 --------------------
+-------------------- Log Start | Thu Nov  9 09:29:48 2023 --------------------
 data_path: /home/pi/printer_data
 is_default_data_path: False
 config_file: /home/pi/printer_data/config/moonraker.conf
@@ -81,7 +81,7 @@ primary_branch = main
 All Configuration Files:
 /home/pi/printer_data/config/moonraker.conf
 #################################################################
-Unsafe Shutdown Count: 13
+Unsafe Shutdown Count: 14
 
 System Info:
 
@@ -145,8 +145,8 @@ unit_name: moonraker.service
 is_default: True
 manager: systemd
 Properties:
-**Requires=['sysinit.target', 'system.slice', 'network-online.target', '-.mount']
-**After=['systemd-journald.socket', 'sysinit.target', 'system.slice', 'network-online.target', 'basic.target', '-.mount']
+**Requires=['-.mount', 'sysinit.target', 'system.slice', 'network-online.target']
+**After=['system.slice', '-.mount', 'sysinit.target', 'systemd-journald.socket', 'network-online.target', 'basic.target']
 **SupplementaryGroups=['moonraker-admin']
 **EnvironmentFiles=/home/pi/printer_data/systemd/moonraker.env
 **ExecStart=/home/pi/moonraker-env/bin/python $MOONRAKER_ARGS
@@ -160,8 +160,8 @@ unit_name: klipper.service
 is_default: True
 manager: systemd
 Properties:
-**Requires=['sysinit.target', '-.mount', 'system.slice']
-**After=['basic.target', 'systemd-journald.socket', 'system.slice', 'sysinit.target', 'network-online.target', '-.mount']
+**Requires=['system.slice', '-.mount', 'sysinit.target']
+**After=['systemd-journald.socket', 'basic.target', 'system.slice', 'network-online.target', 'sysinit.target', '-.mount']
 **SupplementaryGroups=[]
 **EnvironmentFiles=/home/pi/printer_data/systemd/klipper.env
 **ExecStart=/home/pi/klippy-env/bin/python $KLIPPER_ARGS
@@ -174,38 +174,9 @@ Git Repo klipper: No warnings detected
 Git Repo mainsail-config: No warnings detected
 Git Repo Klipper-Adaptive-Meshing-Purging: No warnings detected
 Klipper Version: v0.11.0-304-gf7567a0d-dirty
-2023-11-03 10:25:28,187 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
-2023-11-03 10:25:28,193 [app.py:prepare()] - Upload Request Received from 192.168.1.97
-2023-11-03 10:25:29,285 [app.py:post()] - Processing Uploaded File: Dickosaurus_rex_PLA_1h3m.gcode
-2023-11-03 10:25:29,372 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
-
-2023-11-03 10:25:29,375 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Dickosaurus_rex_PLA_1h3m.gcode' currently supports cancellation, processing aborted
-
-2023-11-03 10:25:29,415 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "ABS/RossK/Dickosaurus_rex_PLA_1h3m.gcode" --check-objects) successfully finished
-2023-11-03 10:25:29,420 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 1227.54ms
-2023-11-03 10:25:29,436 [job_state.py:_status_update()] - Job Started: ABS/RossK/Dickosaurus_rex_PLA_1h3m.gcode
-2023-11-03 10:25:29,544 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: server.files.metadata, Code: -32601, Message: Metadata not available for <ABS/Dickosaurus_rex_PLA_1h3m.gcode>
-2023-11-03 11:27:14,629 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
-2023-11-03 12:30:54,107 [websockets.py:on_close()] - Websocket Closed: ID: 140733496782416 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.39
-2023-11-03 12:30:54,729 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
-2023-11-03 12:30:54,730 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.04ms
-2023-11-03 12:30:54,730 [websockets.py:open()] - Websocket Opened: ID: 140733497096592, Proxied: True, User Agent: BBL-Slicer/v01.06.00.66 (light) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
-2023-11-03 12:30:54,733 [websockets.py:_handle_identify()] - Websocket 140733497096592 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
-2023-11-03 12:30:55,224 [websockets.py:on_close()] - Websocket Closed: ID: 140733497096592 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 0.49
-2023-11-03 12:30:55,770 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.66ms
-2023-11-03 12:30:55,770 [websockets.py:open()] - Websocket Opened: ID: 140733495803728, Proxied: True, User Agent: BBL-Slicer/v01.06.00.66 (light) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
-2023-11-03 12:30:55,772 [websockets.py:_handle_identify()] - Websocket 140733495803728 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
-2023-11-03 12:31:04,794 [websockets.py:on_close()] - Websocket Closed: ID: 140733495803728 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 9.02
-2023-11-03 12:31:05,109 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.79ms
-2023-11-03 12:31:05,109 [websockets.py:open()] - Websocket Opened: ID: 140733495610832, Proxied: True, User Agent: BBL-Slicer/v01.06.00.66 (light) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
-2023-11-03 12:31:05,111 [websockets.py:_handle_identify()] - Websocket 140733495610832 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
-2023-11-03 12:31:25,743 [app.py:prepare()] - Upload Request Received from 192.168.1.97
-2023-11-03 12:31:25,764 [app.py:post()] - Processing Uploaded File: pressure_advance_test_PLA_2m47s.gcode
-2023-11-03 12:31:25,860 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
-
-2023-11-03 12:31:25,861 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'pressure_advance_test_PLA_2m47s.gcode' currently supports cancellation, processing aborted
-
-2023-11-03 12:31:25,894 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "pressure_advance_test_PLA_2m47s.gcode" --check-objects) successfully finished
-2023-11-03 12:31:25,897 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 155.03ms
-2023-11-03 12:31:26,001 [job_state.py:_status_update()] - Job Started: pressure_advance_test_PLA_2m47s.gcode
-2023-11-03 13:32:14,648 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-11-09 09:29:48,964 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-11-09 09:29:48,964 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.69ms
+2023-11-09 09:29:48,965 [websockets.py:open()] - Websocket Opened: ID: 140735934707344, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-11-09 09:29:48,979 [websockets.py:_handle_identify()] - Websocket 140735934707344 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-11-09 09:31:42,933 [websockets.py:on_close()] - Websocket Closed: ID: 140735934707344 Close Code: None, Close Reason: None, Pong Time Elapsed: 33.95
+2023-11-09 10:31:51,308 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
