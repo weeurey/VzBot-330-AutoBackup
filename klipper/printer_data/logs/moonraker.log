@@ -356,3 +356,13 @@ Content-Type: multipart/form-data; boundary=------------------------c00f6c989a81
 
 2023-12-07 16:08:47,929 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "screenb3x.gcode" --check-objects) successfully finished
 2023-12-07 16:08:47,931 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 2803.63ms
+2023-12-07 16:31:19,130 [job_state.py:_status_update()] - Job Started: array-back_PLA_30m9s.gcode
+2023-12-07 16:33:05,338 [websockets.py:on_close()] - Websocket Closed: ID: 140732355609616 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.54
+2023-12-07 16:40:17,369 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.83ms
+2023-12-07 16:40:17,369 [websockets.py:open()] - Websocket Opened: ID: 140732356364368, Proxied: True, User Agent: BBL-Slicer/v01.06.00.66 (light) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2023-12-07 16:40:17,374 [websockets.py:_handle_identify()] - Websocket 140732356364368 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-07 16:41:09,687 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-07 16:41:09,688 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.07ms
+2023-12-07 16:41:09,688 [websockets.py:open()] - Websocket Opened: ID: 140732354928848, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-07 16:41:09,695 [websockets.py:_handle_identify()] - Websocket 140732354928848 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-07 16:43:18,397 [websockets.py:on_close()] - Websocket Closed: ID: 140732354928848 Close Code: None, Close Reason: None, Pong Time Elapsed: 8.70
