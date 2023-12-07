@@ -302,3 +302,57 @@ Content-Type: multipart/form-data; boundary=------------------------7518e428f9c5
 
 2023-12-07 15:44:08,089 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "array-back_PLA_30m9s.gcode" --check-objects) successfully finished
 2023-12-07 15:44:08,091 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 323.66ms
+2023-12-07 15:53:34,170 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-07 15:53:35,425 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-07 15:53:36,952 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-07 15:53:36,952 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-07 15:53:37,203 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-07 15:53:37,459 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-07 15:53:38,212 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-07 15:54:56,229 [job_state.py:_status_update()] - Job Started: array-front_PLA_32m5s.gcode
+2023-12-07 15:57:32,138 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------fbc5195a9eaf5d43
+2023-12-07 15:57:37,751 [app.py:post()] - Processing Uploaded File: [a]_buffer-top-ecas+magnet_xN_PLA_7h20m.gcode
+2023-12-07 15:57:37,844 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-07 15:57:37,847 [shell_command.py:pipe_data_received()] - INFO:metadata:File '[a]_buffer-top-ecas+magnet_xN_PLA_7h20m.gcode' currently supports cancellation, processing aborted
+
+2023-12-07 15:57:37,892 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "[a]_buffer-top-ecas+magnet_xN_PLA_7h20m.gcode" --check-objects) successfully finished
+2023-12-07 15:57:37,894 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 5756.36ms
+2023-12-07 16:01:34,343 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------44d85f6aac3e5a54
+2023-12-07 16:01:40,302 [app.py:post()] - Processing Uploaded File: bufferslotx4_Plate1.gcode
+2023-12-07 16:01:40,394 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-07 16:01:40,397 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'bufferslotx4_Plate1.gcode' currently supports cancellation, processing aborted
+
+2023-12-07 16:01:40,439 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "bufferslotx4_Plate1.gcode" --check-objects) successfully finished
+2023-12-07 16:01:40,440 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 6097.41ms
+2023-12-07 16:01:50,893 [websockets.py:on_close()] - Websocket Closed: ID: 140732355166416 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.16
+2023-12-07 16:04:40,033 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------847e920477e8a1fd
+2023-12-07 16:04:41,298 [app.py:post()] - Processing Uploaded File: 3x Buffer Bottoms.gcode
+2023-12-07 16:04:41,400 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-07 16:04:41,403 [shell_command.py:pipe_data_received()] - INFO:metadata:File '3x Buffer Bottoms.gcode' currently supports cancellation, processing aborted
+
+2023-12-07 16:04:41,443 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "3x Buffer Bottoms.gcode" --check-objects) successfully finished
+2023-12-07 16:04:41,444 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 1411.78ms
+2023-12-07 16:06:37,588 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------4f7b1dc86a461a03
+2023-12-07 16:06:38,378 [app.py:post()] - Processing Uploaded File: Screen A (Print4).gcode
+2023-12-07 16:06:38,477 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-07 16:06:38,481 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Screen A (Print4).gcode' currently supports cancellation, processing aborted
+
+2023-12-07 16:06:38,529 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Screen A (Print4).gcode" --check-objects) successfully finished
+2023-12-07 16:06:38,530 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 941.90ms
+2023-12-07 16:08:45,128 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------c00f6c989a81a0fd
+2023-12-07 16:08:47,791 [app.py:post()] - Processing Uploaded File: screenb3x.gcode
+2023-12-07 16:08:47,882 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-07 16:08:47,885 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'screenb3x.gcode' currently supports cancellation, processing aborted
+
+2023-12-07 16:08:47,929 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "screenb3x.gcode" --check-objects) successfully finished
+2023-12-07 16:08:47,931 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 2803.63ms
