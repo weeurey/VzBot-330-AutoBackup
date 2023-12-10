@@ -1,0 +1,767 @@
+-------------------- Log Start | Sat Dec  9 16:43:50 2023 --------------------
+data_path: /home/pi/printer_data
+is_default_data_path: False
+config_file: /home/pi/printer_data/config/moonraker.conf
+startup_warnings: []
+verbose: False
+debug: False
+asyncio_debug: False
+is_backup_config: False
+is_python_package: False
+instance_uuid: 44e42bf3b1aa4a6390e0ef0b153be3c4
+unix_socket_path: /home/pi/printer_data/comms/moonraker.sock
+software_version: v0.8.0-202-gdddd968
+git_branch: master
+git_remote: origin
+git_repo_url: https://github.com/Arksine/moonraker.git
+modified_files: []
+unofficial_components: []
+log_file: /home/pi/printer_data/logs/moonraker.log
+python_version: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+msgspec_enabled: False
+uvloop_enabled: False
+
+#################### Moonraker Configuration ####################
+
+[server]
+host = 0.0.0.0
+port = 7125
+klippy_uds_address = /home/pi/printer_data/comms/klippy.sock
+
+[authorization]
+trusted_clients = 
+	127.0.0.1
+	10.0.0.0/8
+	127.0.0.0/8
+	169.254.0.0/16
+	172.16.0.0/12
+	192.168.0.0/16
+	FE80::/10
+	::1/128
+cors_domains = 
+	*.lan
+	*.local
+	*://localhost
+	*://localhost:*
+	*://my.mainsail.xyz
+	*://app.fluidd.xyz
+
+[octoprint_compat]
+
+[history]
+
+[update_manager]
+channel = dev
+refresh_interval = 168
+
+[update_manager KlipperScreen]
+type = git_repo
+path = ~/KlipperScreen
+origin = https://github.com/KlipperScreen/KlipperScreen.git
+virtualenv = ~/.KlipperScreen-env
+requirements = scripts/KlipperScreen-requirements.txt
+system_dependencies = scripts/system-dependencies.json
+managed_services = KlipperScreen
+
+[update_manager mainsail-config]
+type = git_repo
+primary_branch = master
+path = ~/mainsail-config
+origin = https://github.com/mainsail-crew/mainsail-config.git
+managed_services = klipper
+
+[update_manager mainsail]
+type = web
+channel = stable
+repo = mainsail-crew/mainsail
+path = ~/mainsail
+
+[file_manager]
+enable_object_processing = True
+
+[update_manager Klipper-Adaptive-Meshing-Purging]
+type = git_repo
+channel = dev
+path = ~/Klipper-Adaptive-Meshing-Purging
+origin = https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
+managed_services = klipper
+primary_branch = main
+
+[update_manager crowsnest]
+type = git_repo
+path = ~/crowsnest
+origin = https://github.com/mainsail-crew/crowsnest.git
+managed_services = crowsnest
+install_script = tools/pkglist.sh
+
+#################################################################
+All Configuration Files:
+/home/pi/printer_data/config/moonraker.conf
+#################################################################
+Unsafe Shutdown Count: 48
+
+System Info:
+
+***python***
+  version: (3, 11, 2, 'final', 0)
+  version_string: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+
+***cpu_info***
+  cpu_count: 4
+  bits: 64bit
+  processor: aarch64
+  cpu_desc: 
+  serial_number: 812c0b9b3c12713d
+  hardware_desc: BCM2835
+  model: Raspberry Pi 5 Model B Rev 1.0
+  total_memory: 4143408
+  memory_units: kB
+
+***sd_info***
+  manufacturer_id: 27
+  manufacturer: Unknown
+  oem_id: 5048
+  product_name: SD64G
+  product_revision: 6.0
+  serial_number: daaeb8db
+  manufacturer_date: 1/2023
+  capacity: 58.0 GiB
+  total_bytes: 62226694144
+
+***distribution***
+  name: Debian GNU/Linux 12 (bookworm)
+  id: debian
+  version: 12
+  version_parts: {'major': '12', 'minor': '', 'build_number': ''}
+  like: 
+  codename: bookworm
+  release_info: {}
+
+***virtualization***
+  virt_type: none
+  virt_identifier: none
+
+***network***
+
+***canbus***
+
+***Allowed Services***
+  klipper_mcu
+  webcamd
+  MoonCord
+  KlipperScreen
+  moonraker-telegram-bot
+  moonraker-obico
+  sonar
+  crowsnest
+  octoeverywhere
+  ratos-configurator
+
+Systemd unit moonraker.service:
+unit_name: moonraker.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['sysinit.target', 'system.slice', '-.mount', 'network-online.target']
+**After=['sysinit.target', '-.mount', 'network-online.target', 'basic.target', 'systemd-journald.socket', 'system.slice']
+**SupplementaryGroups=['moonraker-admin']
+**EnvironmentFiles=/home/pi/printer_data/systemd/moonraker.env
+**ExecStart=/home/pi/moonraker-env/bin/python $MOONRAKER_ARGS
+**WorkingDirectory=/home/pi/moonraker
+**FragmentPath=/etc/systemd/system/moonraker.service
+**Description=API Server for Klipper SV1
+**User=pi
+
+Systemd unit klipper.service:
+unit_name: klipper.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['sysinit.target', 'system.slice', '-.mount']
+**After=['basic.target', 'system.slice', '-.mount', 'sysinit.target', 'systemd-journald.socket', 'network-online.target']
+**SupplementaryGroups=[]
+**EnvironmentFiles=/home/pi/printer_data/systemd/klipper.env
+**ExecStart=/home/pi/klippy-env/bin/python $KLIPPER_ARGS
+**WorkingDirectory=/home/pi/klipper
+**FragmentPath=/etc/systemd/system/klipper.service
+**Description=Klipper 3D Printer Firmware SV1
+**User=pi
+Git Repo moonraker: No warnings detected
+Git Repo klipper: Warnings detected:
+  Repo has untracked source files: ['klippy/extras/gcode_shell_command.py']
+Git Repo KlipperScreen: No warnings detected
+Git Repo mainsail-config: No warnings detected
+Git Repo Klipper-Adaptive-Meshing-Purging: No warnings detected
+Git Repo crowsnest: No warnings detected
+Klipper Version: v0.12.0-1-g74473322-dirty
+CPU Throttled Flags: ['Previously Under-Volted', 'Previously Throttled']
+2023-12-09 16:43:50,205 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-09 16:43:50,205 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.90ms
+2023-12-09 16:43:50,205 [websockets.py:open()] - Websocket Opened: ID: 140732355179920, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 16:43:50,214 [websockets.py:_handle_identify()] - Websocket 140732355179920 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 16:43:54,809 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:43:56,062 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:43:57,585 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 16:43:57,585 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 16:43:57,836 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 16:43:58,091 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 16:43:58,594 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 16:43:59,843 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2023-12-09 16:43:59,844 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1702140210.813462, Usage: 0.28%, Memory: 57088 kB
+System Time: 1702140211.813844, Usage: 0.27%, Memory: 57088 kB
+System Time: 1702140212.814827, Usage: 0.24%, Memory: 57088 kB
+System Time: 1702140213.815716, Usage: 0.29%, Memory: 57088 kB
+System Time: 1702140214.815910, Usage: 0.29%, Memory: 57088 kB
+System Time: 1702140215.816993, Usage: 0.47%, Memory: 57088 kB
+System Time: 1702140216.819081, Usage: 0.52%, Memory: 57088 kB
+System Time: 1702140217.819670, Usage: 1.05%, Memory: 57088 kB
+System Time: 1702140218.820179, Usage: 0.28%, Memory: 57088 kB
+System Time: 1702140219.821519, Usage: 0.24%, Memory: 57088 kB
+System Time: 1702140220.822164, Usage: 0.27%, Memory: 57088 kB
+System Time: 1702140221.823426, Usage: 0.28%, Memory: 57088 kB
+System Time: 1702140222.823863, Usage: 0.33%, Memory: 57088 kB
+System Time: 1702140223.824539, Usage: 0.29%, Memory: 57088 kB
+System Time: 1702140224.825480, Usage: 0.3%, Memory: 57088 kB
+System Time: 1702140225.827201, Usage: 0.48%, Memory: 57088 kB
+System Time: 1702140226.827844, Usage: 0.31%, Memory: 57088 kB
+System Time: 1702140227.828602, Usage: 0.3%, Memory: 57088 kB
+System Time: 1702140228.829440, Usage: 1.19%, Memory: 57088 kB
+System Time: 1702140229.830455, Usage: 0.25%, Memory: 57088 kB
+System Time: 1702140230.831242, Usage: 25.32%, Memory: 57088 kB
+System Time: 1702140231.832204, Usage: 0.28%, Memory: 57088 kB
+System Time: 1702140232.833249, Usage: 0.51%, Memory: 57088 kB
+System Time: 1702140233.835895, Usage: 0.28%, Memory: 57088 kB
+System Time: 1702140234.836348, Usage: 1.59%, Memory: 57088 kB
+System Time: 1702140235.836695, Usage: 0.49%, Memory: 57088 kB
+System Time: 1702140236.837151, Usage: 1.72%, Memory: 57088 kB
+System Time: 1702140237.837751, Usage: 0.46%, Memory: 57088 kB
+System Time: 1702140238.838337, Usage: 2.6%, Memory: 57088 kB
+System Time: 1702140239.839870, Usage: 1.37%, Memory: 57088 kB
+CPU Temperature: 49.6
+2023-12-09 16:43:59,845 [proc_stats.py:_handle_shutdown()] - Throttled Flags: Previously Under-Volted Previously Throttled
+2023-12-09 16:44:43,840 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:44:45,093 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:44:51,634 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 16:44:51,635 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 16:44:51,885 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 16:44:52,142 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 16:44:52,896 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 16:47:10,347 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732355179920
+2023-12-09 16:47:15,208 [websockets.py:on_close()] - Websocket Closed: ID: 140732355179920 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.99
+2023-12-09 16:48:14,433 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-09 16:48:14,433 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.85ms
+2023-12-09 16:48:14,433 [websockets.py:open()] - Websocket Opened: ID: 140732355668176, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 16:48:14,477 [websockets.py:_handle_identify()] - Websocket 140732355668176 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 16:48:53,134 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary3VUZ23naaMwLuvNd
+2023-12-09 16:48:53,139 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 16:48:53,141 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.54ms
+2023-12-09 16:48:54,168 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:48:55,423 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:49:00,823 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryZO3zDHdqx88IhTBX
+2023-12-09 16:49:00,827 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 16:49:00,830 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.15ms
+2023-12-09 16:49:01,147 [klippy_connection.py:close()] - Error closing Klippy Unix Socket
+Traceback (most recent call last):
+  File "/home/pi/moonraker/moonraker/klippy_connection.py", line 740, in close
+    await self.writer.wait_closed()
+  File "/usr/lib/python3.11/asyncio/streams.py", line 350, in wait_closed
+    await self._protocol._get_close_waiter(self)
+  File "/usr/lib/python3.11/asyncio/selector_events.py", line 995, in _read_ready__data_received
+    data = self._sock.recv(self.max_size)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2023-12-09 16:49:01,147 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:49:02,402 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:49:03,927 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 16:49:03,928 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 16:49:04,178 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 16:49:04,434 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 16:49:04,935 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 16:49:26,888 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.81ms
+2023-12-09 16:49:26,888 [websockets.py:open()] - Websocket Opened: ID: 140732354928592, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 16:49:26,913 [websockets.py:_handle_identify()] - Websocket 140732354928592 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 16:50:26,965 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732354928592
+2023-12-09 16:50:31,891 [websockets.py:on_close()] - Websocket Closed: ID: 140732354928592 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.96
+2023-12-09 16:52:08,725 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarylFsQDyKfkk55pOlo
+2023-12-09 16:52:08,729 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 16:52:08,731 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.34ms
+2023-12-09 16:52:09,760 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:52:11,015 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:52:11,316 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 16:52:11,317 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 16:52:11,317 [klippy_connection.py:_check_ready()] - 
+pin PG15 used multiple times in config
+
+Once the underlying issue is corrected, use the "RESTART"
+command to reload the config and restart the host software.
+Printer is halted
+
+2023-12-09 16:54:48,329 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary4EDEJWKKAomNOu9U
+2023-12-09 16:54:48,334 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 16:54:48,337 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 8.46ms
+2023-12-09 16:54:48,649 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:54:49,903 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:54:50,924 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 16:54:50,925 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 16:54:50,925 [klippy_connection.py:_check_ready()] - 
+MCU 'mcu' shutdown: Not a valid PWM pin
+Once the underlying issue is corrected, use the
+"FIRMWARE_RESTART" command to reset the firmware, reload the
+config, and restart the host software.
+Printer is shutdown
+
+2023-12-09 16:55:29,724 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryuKBeFGzB9hUa5ZhX
+2023-12-09 16:55:29,729 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 16:55:29,731 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.12ms
+2023-12-09 16:55:29,753 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 16:55:31,008 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 16:55:37,048 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 16:55:37,050 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 16:55:37,050 [klippy_connection.py:_check_ready()] - 
+MCU 'mcu' shutdown: Not a valid PWM pin
+Once the underlying issue is corrected, use the
+"FIRMWARE_RESTART" command to reset the firmware, reload the
+config, and restart the host software.
+Printer is shutdown
+
+2023-12-09 17:02:21,280 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarylWa8cl6dJsDnJnOD
+2023-12-09 17:02:21,284 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:02:21,286 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.41ms
+2023-12-09 17:02:21,309 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:02:22,563 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:02:29,111 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:02:29,112 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:02:29,361 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:02:29,626 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:02:30,120 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:09:02,351 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.92ms
+2023-12-09 17:09:02,351 [websockets.py:open()] - Websocket Opened: ID: 140732327548624, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:09:02,358 [websockets.py:_handle_identify()] - Websocket 140732327548624 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:10:30,195 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryjw6eP7glt6uGdcmN
+2023-12-09 17:10:30,200 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:10:30,202 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.69ms
+2023-12-09 17:10:31,232 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:10:32,487 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:10:32,755 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:10:32,756 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:10:32,756 [klippy_connection.py:_check_ready()] - 
+pin PD13 used multiple times in config
+
+Once the underlying issue is corrected, use the "RESTART"
+command to reload the config and restart the host software.
+Printer is halted
+
+2023-12-09 17:10:52,577 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732327548624
+2023-12-09 17:10:57,353 [websockets.py:on_close()] - Websocket Closed: ID: 140732327548624 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.99
+2023-12-09 17:11:38,074 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryUKC8qQexDFmdo736
+2023-12-09 17:11:38,078 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:11:38,081 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.91ms
+2023-12-09 17:11:38,393 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:11:39,651 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:11:41,174 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:11:41,175 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:11:41,425 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:11:41,681 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:11:42,182 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:15:23,150 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryMk3g2g0TgYBsFelU
+2023-12-09 17:15:23,153 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:15:23,155 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.16ms
+2023-12-09 17:15:24,183 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:15:25,437 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:15:31,981 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:15:31,982 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:15:32,232 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:15:32,497 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:15:32,992 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:17:09,463 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.96ms
+2023-12-09 17:17:09,463 [websockets.py:open()] - Websocket Opened: ID: 140732355629072, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:17:09,471 [websockets.py:_handle_identify()] - Websocket 140732355629072 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:19:58,150 [app.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary29iG3ABgaTfqNpXP
+2023-12-09 17:19:58,153 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:19:58,156 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 6.41ms
+2023-12-09 17:20:07,172 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:20:08,427 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:20:09,273 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:20:10,528 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:20:17,075 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:20:17,075 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:20:17,326 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:20:17,593 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:20:18,585 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:20:37,046 [websockets.py:on_close()] - Websocket Closed: ID: 140732355629072 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 7.58
+2023-12-09 17:21:11,013 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2023-12-09 17:21:11,015 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1702142441.137805, Usage: 0.36%, Memory: 57360 kB
+System Time: 1702142442.138378, Usage: 0.38%, Memory: 57360 kB
+System Time: 1702142443.139109, Usage: 0.67%, Memory: 57360 kB
+System Time: 1702142444.140645, Usage: 1.32%, Memory: 57360 kB
+System Time: 1702142445.141117, Usage: 0.52%, Memory: 57360 kB
+System Time: 1702142446.142397, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702142447.143514, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702142448.144944, Usage: 0.68%, Memory: 57360 kB
+System Time: 1702142449.146731, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702142450.148669, Usage: 0.42%, Memory: 57360 kB
+System Time: 1702142451.149322, Usage: 0.43%, Memory: 57360 kB
+System Time: 1702142452.150759, Usage: 0.49%, Memory: 57360 kB
+System Time: 1702142453.151860, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702142454.153047, Usage: 0.49%, Memory: 57360 kB
+System Time: 1702142455.154343, Usage: 0.51%, Memory: 57360 kB
+System Time: 1702142456.155398, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702142457.156461, Usage: 0.46%, Memory: 57360 kB
+System Time: 1702142458.156947, Usage: 0.64%, Memory: 57360 kB
+System Time: 1702142459.157724, Usage: 0.71%, Memory: 57360 kB
+System Time: 1702142460.158452, Usage: 1.32%, Memory: 57360 kB
+System Time: 1702142461.158970, Usage: 0.43%, Memory: 57360 kB
+System Time: 1702142462.160713, Usage: 0.42%, Memory: 57360 kB
+System Time: 1702142463.160872, Usage: 0.44%, Memory: 57360 kB
+System Time: 1702142464.161935, Usage: 0.43%, Memory: 57360 kB
+System Time: 1702142465.162825, Usage: 0.43%, Memory: 57360 kB
+System Time: 1702142466.163410, Usage: 0.37%, Memory: 57360 kB
+System Time: 1702142467.163713, Usage: 0.38%, Memory: 57360 kB
+System Time: 1702142468.164565, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702142469.165418, Usage: 0.44%, Memory: 57360 kB
+System Time: 1702142470.166384, Usage: 0.48%, Memory: 57360 kB
+CPU Temperature: 47.95
+2023-12-09 17:21:11,017 [proc_stats.py:_handle_shutdown()] - Throttled Flags: Previously Under-Volted Previously Throttled
+2023-12-09 17:21:28,352 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.77ms
+2023-12-09 17:21:28,352 [websockets.py:open()] - Websocket Opened: ID: 140732328027280, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:21:28,363 [websockets.py:_handle_identify()] - Websocket 140732328027280 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:21:32,553 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:21:33,807 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:21:35,334 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:21:35,335 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:21:35,585 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:21:35,841 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:21:36,593 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:24:43,452 [websockets.py:on_close()] - Websocket Closed: ID: 140732328027280 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 5.09
+2023-12-09 17:25:51,230 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.91ms
+2023-12-09 17:25:51,230 [websockets.py:open()] - Websocket Opened: ID: 140732355267536, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:25:51,236 [websockets.py:_handle_identify()] - Websocket 140732355267536 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:26:58,784 [app.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryBga9J98ZUAQ6AKkA
+2023-12-09 17:26:58,788 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:26:58,791 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 7.12ms
+2023-12-09 17:27:07,795 [app.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryLAHssXSro7mcQe7x
+2023-12-09 17:27:07,799 [app.py:post()] - Processing Uploaded File: leds.cfg
+2023-12-09 17:27:07,801 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 5.97ms
+2023-12-09 17:27:08,855 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:27:10,112 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:27:16,659 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:27:16,660 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:27:16,910 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:27:17,175 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:27:17,669 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:29:01,267 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732355267536
+2023-12-09 17:29:06,232 [websockets.py:on_close()] - Websocket Closed: ID: 140732355267536 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2023-12-09 17:30:35,996 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.93ms
+2023-12-09 17:30:35,996 [websockets.py:open()] - Websocket Opened: ID: 140732327788240, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:30:36,243 [websockets.py:_handle_identify()] - Websocket 140732327788240 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:32:02,507 [app.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarykVOMIp9KW9p39ECH
+2023-12-09 17:32:02,511 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:32:02,513 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 6.04ms
+2023-12-09 17:32:03,570 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:32:04,826 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:32:11,376 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:32:11,377 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:32:11,626 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:32:11,892 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:32:12,886 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:34:48,375 [websockets.py:on_close()] - Websocket Closed: ID: 140732327788240 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.37
+2023-12-09 17:36:28,833 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.92ms
+2023-12-09 17:36:28,833 [websockets.py:open()] - Websocket Opened: ID: 140732328941520, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:36:28,849 [websockets.py:_handle_identify()] - Websocket 140732328941520 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:37:14,051 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryBnLEU47pc3CY4sYu
+2023-12-09 17:37:14,054 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:37:14,056 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 5.83ms
+2023-12-09 17:37:15,084 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:37:16,338 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:37:22,913 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:37:22,914 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:37:23,164 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:37:23,428 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:37:23,923 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:40:57,655 [websockets.py:on_close()] - Websocket Closed: ID: 140732328941520 Close Code: None, Close Reason: None, Pong Time Elapsed: 8.81
+2023-12-09 17:41:34,669 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryF1Z0pBisBdPzyA9k
+2023-12-09 17:41:34,673 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:41:34,675 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.77ms
+2023-12-09 17:41:35,704 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:41:36,959 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:41:42,665 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.86ms
+2023-12-09 17:41:42,665 [websockets.py:open()] - Websocket Opened: ID: 140732354804752, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:41:42,733 [websockets.py:_handle_identify()] - Websocket 140732354804752 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:41:43,515 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:41:43,516 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:41:43,766 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:41:44,030 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:41:44,775 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:44:06,479 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2023-12-09 17:44:06,481 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1702143817.349724, Usage: 0.44%, Memory: 57360 kB
+System Time: 1702143818.351428, Usage: 0.47%, Memory: 57360 kB
+System Time: 1702143819.352919, Usage: 0.72%, Memory: 57360 kB
+System Time: 1702143820.353492, Usage: 0.51%, Memory: 57360 kB
+System Time: 1702143821.354610, Usage: 0.52%, Memory: 57360 kB
+System Time: 1702143822.355528, Usage: 0.58%, Memory: 57360 kB
+System Time: 1702143823.356081, Usage: 0.6%, Memory: 57360 kB
+System Time: 1702143824.356968, Usage: 0.83%, Memory: 57360 kB
+System Time: 1702143825.358040, Usage: 1.49%, Memory: 57360 kB
+System Time: 1702143826.359222, Usage: 0.56%, Memory: 57360 kB
+System Time: 1702143827.360323, Usage: 0.54%, Memory: 57360 kB
+System Time: 1702143828.360859, Usage: 0.52%, Memory: 57360 kB
+System Time: 1702143829.362172, Usage: 2.02%, Memory: 57360 kB
+System Time: 1702143830.363439, Usage: 0.59%, Memory: 57360 kB
+System Time: 1702143831.364358, Usage: 0.54%, Memory: 57360 kB
+System Time: 1702143832.365077, Usage: 0.54%, Memory: 57360 kB
+System Time: 1702143833.366644, Usage: 0.59%, Memory: 57360 kB
+System Time: 1702143834.367338, Usage: 0.53%, Memory: 57360 kB
+System Time: 1702143835.368127, Usage: 0.57%, Memory: 57360 kB
+System Time: 1702143836.369147, Usage: 0.53%, Memory: 57360 kB
+System Time: 1702143837.369883, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702143838.371238, Usage: 0.49%, Memory: 57360 kB
+System Time: 1702143839.372325, Usage: 0.69%, Memory: 57360 kB
+System Time: 1702143840.373045, Usage: 0.76%, Memory: 57360 kB
+System Time: 1702143841.374397, Usage: 1.42%, Memory: 57360 kB
+System Time: 1702143842.375489, Usage: 0.52%, Memory: 57360 kB
+System Time: 1702143843.376718, Usage: 0.55%, Memory: 57360 kB
+System Time: 1702143844.377632, Usage: 0.48%, Memory: 57360 kB
+System Time: 1702143845.378700, Usage: 0.52%, Memory: 57360 kB
+System Time: 1702143846.379781, Usage: 0.47%, Memory: 57360 kB
+CPU Temperature: 47.4
+2023-12-09 17:44:06,483 [proc_stats.py:_handle_shutdown()] - Throttled Flags: Previously Under-Volted Previously Throttled
+2023-12-09 17:45:36,176 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:45:37,431 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:45:38,957 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:45:38,957 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:45:39,207 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:45:39,464 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:45:39,965 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:46:12,824 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732354804752
+2023-12-09 17:46:17,667 [websockets.py:on_close()] - Websocket Closed: ID: 140732354804752 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.98
+2023-12-09 17:46:30,947 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryvYiwv4fiu9Rfujox
+2023-12-09 17:46:30,952 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:46:30,955 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 8.75ms
+2023-12-09 17:46:31,982 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:46:33,236 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:46:39,782 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:46:39,783 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:46:40,033 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:46:40,298 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:46:40,792 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:48:47,281 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary5EmkMG8NjMiPV5OB
+2023-12-09 17:48:47,284 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:48:47,287 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 5.79ms
+2023-12-09 17:48:48,318 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:48:49,571 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:48:55,617 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:48:55,617 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:48:55,618 [klippy_connection.py:_check_ready()] - 
+MCU 'mcu' shutdown: Not a valid PWM pin
+Once the underlying issue is corrected, use the
+"FIRMWARE_RESTART" command to reset the firmware, reload the
+config, and restart the host software.
+Printer is shutdown
+
+2023-12-09 17:50:31,295 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryx2TriENUQBpp9kBh
+2023-12-09 17:50:31,299 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:50:31,301 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.48ms
+2023-12-09 17:50:31,323 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:50:32,577 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:50:32,845 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:50:32,846 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:50:32,846 [klippy_connection.py:_check_ready()] - 
+pin PA8 used multiple times in config
+
+Once the underlying issue is corrected, use the "RESTART"
+command to reload the config and restart the host software.
+Printer is halted
+
+2023-12-09 17:52:09,284 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryCF4W58tDE7pBe0HX
+2023-12-09 17:52:09,288 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:52:09,290 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.36ms
+2023-12-09 17:52:09,602 [klippy_connection.py:close()] - Error closing Klippy Unix Socket
+Traceback (most recent call last):
+  File "/home/pi/moonraker/moonraker/klippy_connection.py", line 740, in close
+    await self.writer.wait_closed()
+  File "/usr/lib/python3.11/asyncio/streams.py", line 350, in wait_closed
+    await self._protocol._get_close_waiter(self)
+  File "/usr/lib/python3.11/asyncio/selector_events.py", line 995, in _read_ready__data_received
+    data = self._sock.recv(self.max_size)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2023-12-09 17:52:09,603 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:52:09,604 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.info, Code: 503, Message: Klippy Disconnected
+2023-12-09 17:52:10,858 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:52:12,383 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:52:12,383 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:52:12,634 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:52:12,891 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:52:13,391 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:53:42,430 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2023-12-09 17:53:42,432 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1702144392.941211, Usage: 0.73%, Memory: 57536 kB
+System Time: 1702144393.942029, Usage: 1.27%, Memory: 57536 kB
+System Time: 1702144394.943093, Usage: 0.48%, Memory: 57536 kB
+System Time: 1702144395.945034, Usage: 0.4%, Memory: 57536 kB
+System Time: 1702144396.946077, Usage: 0.41%, Memory: 57536 kB
+System Time: 1702144397.947143, Usage: 0.41%, Memory: 57536 kB
+System Time: 1702144398.947472, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144399.948164, Usage: 0.63%, Memory: 57536 kB
+System Time: 1702144400.948931, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144401.949763, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144402.950575, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144403.951645, Usage: 0.45%, Memory: 57536 kB
+System Time: 1702144404.952136, Usage: 0.52%, Memory: 57536 kB
+System Time: 1702144405.952416, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144406.953199, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144407.954193, Usage: 0.43%, Memory: 57536 kB
+System Time: 1702144408.955433, Usage: 0.71%, Memory: 57536 kB
+System Time: 1702144409.957133, Usage: 1.53%, Memory: 57536 kB
+System Time: 1702144410.957640, Usage: 0.45%, Memory: 57536 kB
+System Time: 1702144411.958356, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144412.959385, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144413.960423, Usage: 0.43%, Memory: 57536 kB
+System Time: 1702144414.962366, Usage: 0.5%, Memory: 57536 kB
+System Time: 1702144415.963557, Usage: 0.43%, Memory: 57536 kB
+System Time: 1702144416.964420, Usage: 0.45%, Memory: 57536 kB
+System Time: 1702144417.965641, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144418.965654, Usage: 0.45%, Memory: 57536 kB
+System Time: 1702144419.966773, Usage: 0.62%, Memory: 57536 kB
+System Time: 1702144420.967900, Usage: 0.44%, Memory: 57536 kB
+System Time: 1702144421.968794, Usage: 0.43%, Memory: 57536 kB
+CPU Temperature: 44.65
+2023-12-09 17:53:42,433 [proc_stats.py:_handle_shutdown()] - Throttled Flags: Previously Under-Volted Previously Throttled
+2023-12-09 17:55:03,566 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.84ms
+2023-12-09 17:55:03,566 [websockets.py:open()] - Websocket Opened: ID: 140732356756880, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 17:55:03,576 [websockets.py:_handle_identify()] - Websocket 140732356756880 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 17:55:06,555 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:55:07,810 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:55:09,334 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:55:09,335 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:55:09,586 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 17:55:09,844 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 17:55:10,596 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 17:59:08,800 [app.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary8AZCwCSfe3JBmpZE
+2023-12-09 17:59:08,804 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 17:59:08,805 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 5.35ms
+2023-12-09 17:59:09,866 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 17:59:11,121 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 17:59:11,389 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 17:59:11,389 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 17:59:11,390 [klippy_connection.py:_check_ready()] - 
+Invalid pin description '!PE5 Fan Header 5v'
+Format is: [!] [chip_name:] pin_name
+
+Once the underlying issue is corrected, use the "RESTART"
+command to reload the config and restart the host software.
+Printer is halted
+
+2023-12-09 18:00:14,328 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732356756880
+2023-12-09 18:00:18,570 [websockets.py:on_close()] - Websocket Closed: ID: 140732356756880 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.97
+2023-12-09 18:00:42,947 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.93ms
+2023-12-09 18:00:42,947 [websockets.py:open()] - Websocket Opened: ID: 140732328171344, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 18:00:42,958 [websockets.py:_handle_identify()] - Websocket 140732328171344 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 18:01:01,215 [app.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryC70afpUHtxK6hLYW
+2023-12-09 18:01:01,219 [app.py:post()] - Processing Uploaded File: fans.cfg
+2023-12-09 18:01:01,222 [app.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 6.56ms
+2023-12-09 18:01:01,567 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2023-12-09 18:01:02,822 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2023-12-09 18:01:04,346 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2023-12-09 18:01:04,347 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2023-12-09 18:01:04,597 [job_state.py:_handle_started()] - Job state initialized: standby
+2023-12-09 18:01:04,853 [klippy_connection.py:_check_ready()] - Klippy ready
+2023-12-09 18:01:05,606 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Octopus Pro', 'temperature_sensor CB1', 'heater_bed', 'extruder']
+2023-12-09 18:01:47,489 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2023-12-09 18:01:47,491 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1702144878.394139, Usage: 0.49%, Memory: 57536 kB
+System Time: 1702144879.394291, Usage: 0.52%, Memory: 57536 kB
+System Time: 1702144880.395485, Usage: 1.05%, Memory: 57536 kB
+System Time: 1702144881.396598, Usage: 1.51%, Memory: 57536 kB
+System Time: 1702144882.397624, Usage: 0.52%, Memory: 57536 kB
+System Time: 1702144883.398724, Usage: 0.57%, Memory: 57536 kB
+System Time: 1702144884.398894, Usage: 0.6%, Memory: 57536 kB
+System Time: 1702144885.399173, Usage: 0.64%, Memory: 57536 kB
+System Time: 1702144886.400154, Usage: 0.51%, Memory: 57536 kB
+System Time: 1702144887.401036, Usage: 0.52%, Memory: 57536 kB
+System Time: 1702144888.401419, Usage: 0.61%, Memory: 57536 kB
+System Time: 1702144889.402562, Usage: 0.51%, Memory: 57536 kB
+System Time: 1702144890.403634, Usage: 0.77%, Memory: 57536 kB
+System Time: 1702144891.404408, Usage: 0.51%, Memory: 57536 kB
+System Time: 1702144892.404618, Usage: 0.52%, Memory: 57536 kB
+System Time: 1702144893.406385, Usage: 0.56%, Memory: 57536 kB
+System Time: 1702144894.407151, Usage: 0.52%, Memory: 57536 kB
+System Time: 1702144895.408166, Usage: 0.54%, Memory: 57536 kB
+System Time: 1702144896.409180, Usage: 0.75%, Memory: 57536 kB
+System Time: 1702144897.410232, Usage: 1.41%, Memory: 57536 kB
+System Time: 1702144898.410534, Usage: 0.51%, Memory: 57536 kB
+System Time: 1702144899.411566, Usage: 0.51%, Memory: 57536 kB
+System Time: 1702144900.412465, Usage: 0.7%, Memory: 57536 kB
+System Time: 1702144901.413234, Usage: 0.49%, Memory: 57536 kB
+System Time: 1702144902.414201, Usage: 0.48%, Memory: 57536 kB
+System Time: 1702144903.415349, Usage: 0.54%, Memory: 57536 kB
+System Time: 1702144904.416545, Usage: 0.51%, Memory: 57536 kB
+System Time: 1702144905.417060, Usage: 0.5%, Memory: 57536 kB
+System Time: 1702144906.418992, Usage: 0.45%, Memory: 57536 kB
+System Time: 1702144907.419130, Usage: 0.68%, Memory: 57536 kB
+CPU Temperature: 46.3
+2023-12-09 18:01:47,492 [proc_stats.py:_handle_shutdown()] - Throttled Flags: Previously Under-Volted Previously Throttled
+2023-12-09 18:03:13,017 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732328171344
+2023-12-09 18:03:17,950 [websockets.py:on_close()] - Websocket Closed: ID: 140732328171344 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.74
+2023-12-09 18:03:34,389 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.91ms
+2023-12-09 18:03:34,389 [websockets.py:open()] - Websocket Opened: ID: 140732328687312, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-09 18:03:34,396 [websockets.py:_handle_identify()] - Websocket 140732328687312 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 18:03:48,940 [websockets.py:on_close()] - Websocket Closed: ID: 140732328687312 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.46
+2023-12-09 18:53:49,063 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-09 19:03:49,065 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2023-12-09 20:33:10,571 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-09 20:33:10,572 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.81ms
+2023-12-09 20:33:10,572 [websockets.py:open()] - Websocket Opened: ID: 140732328165456, Proxied: True, User Agent: BBL-Slicer/v01.06.00.66 (light) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2023-12-09 20:33:10,575 [websockets.py:_handle_identify()] - Websocket 140732328165456 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-09 21:33:49,085 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+-------------------- Log Start | Sun Dec 10 14:52:10 2023 --------------------
+data_path: /home/pi/printer_data
+is_default_data_path: False
+config_file: /home/pi/printer_data/config/moonraker.conf
+startup_warnings: []
+verbose: False
+debug: False
+asyncio_debug: False
+is_backup_config: False
+is_python_package: False
+instance_uuid: 44e42bf3b1aa4a6390e0ef0b153be3c4
+unix_socket_path: /home/pi/printer_data/comms/moonraker.sock
+software_version: v0.8.0-202-gdddd968
+git_branch: master
+git_remote: origin
+git_repo_url: https://github.com/Arksine/moonraker.git
+modified_files: []
+unofficial_components: []
+log_file: /home/pi/printer_data/logs/moonraker.log
+python_version: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+msgspec_enabled: False
+uvloop_enabled: False
