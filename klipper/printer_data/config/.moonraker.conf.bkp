@@ -69,3 +69,15 @@ origin = https://github.com/mainsail-crew/crowsnest.git
 managed_services = crowsnest
 install_script = tools/pkglist.sh
 
+[update_manager BDsensor]
+type = git_repo
+primary_branch = new
+channel = dev
+path = ~/Bed_Distance_sensor
+origin = https://github.com/markniu/Bed_Distance_sensor.git
+install_script = ./klipper/install_BDsensor.sh
+is_system_service = False
+managed_services = klipper
+info_tags = 
+	desc=Bed Distance Sensor
+
