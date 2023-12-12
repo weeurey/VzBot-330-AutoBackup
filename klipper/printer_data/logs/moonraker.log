@@ -1222,3 +1222,19 @@ Content-Type: multipart/form-data; boundary=------------------------d1adf4a3ad39
 2023-12-12 14:10:14,580 [websockets.py:_handle_identify()] - Websocket 140732334250640 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-12 14:53:35,952 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
 2023-12-12 15:13:35,955 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-12 18:09:26,077 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-12 18:09:26,084 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------fc78c9081ce685e9
+2023-12-12 18:09:26,907 [app.py:post()] - Processing Uploaded File: Articulated_Lizard_5.2_Curl_PLA_43m55s.gcode
+2023-12-12 18:09:26,999 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-12 18:09:27,005 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Articulated_Lizard_5.2_Curl_PLA_43m55s.gcode' currently supports cancellation, processing aborted
+
+2023-12-12 18:09:27,068 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Articulated_Lizard_5.2_Curl_PLA_43m55s.gcode" --check-objects) successfully finished
+2023-12-12 18:09:27,073 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 989.46ms
+2023-12-12 18:09:27,201 [job_state.py:_status_update()] - Job Started: Articulated_Lizard_5.2_Curl_PLA_43m55s.gcode
+2023-12-12 18:27:00,745 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-12 18:27:00,745 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.77ms
+2023-12-12 18:27:00,745 [websockets.py:open()] - Websocket Opened: ID: 140732361470736, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-12 18:27:00,752 [websockets.py:_handle_identify()] - Websocket 140732361470736 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-12 18:29:26,505 [websockets.py:on_close()] - Websocket Closed: ID: 140732361470736 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.75
