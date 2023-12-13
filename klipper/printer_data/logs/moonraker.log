@@ -506,3 +506,70 @@ CPU Temperature: 51.8
 2023-12-13 12:01:21,784 [websockets.py:_handle_identify()] - Websocket 140732333011536 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-13 12:01:25,692 [websockets.py:on_close()] - Websocket Closed: ID: 140732333011536 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 3.92
 2023-12-13 12:03:36,159 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-13 12:20:22,914 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.82ms
+2023-12-13 12:20:22,915 [websockets.py:open()] - Websocket Opened: ID: 140732361040464, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 12:20:22,947 [websockets.py:_handle_identify()] - Websocket 140732361040464 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 12:20:43,675 [job_state.py:_status_update()] - Job Started: Articulated_Lizard_5.2_Curl_PLAcht_5h25m.gcode
+2023-12-13 12:21:51,335 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:21:52,747 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:22:00,643 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:22:02,270 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:22:03,704 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:22:51,335 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:22:52,747 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:23:00,644 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:23:02,270 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:23:03,705 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:23:51,337 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:23:52,748 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:23:56,980 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:23:58,044 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2023-12-13 12:24:00,645 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:24:02,271 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:24:03,706 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:24:51,338 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 240.00 seconds
+2023-12-13 12:24:52,748 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 240.00 seconds
+2023-12-13 12:24:56,981 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:24:58,045 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2023-12-13 12:25:00,647 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 240.00 seconds
+2023-12-13 12:25:02,272 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 240.00 seconds
+2023-12-13 12:25:03,706 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 240.00 seconds
+2023-12-13 12:25:51,339 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 300.00 seconds
+2023-12-13 12:25:52,749 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 300.00 seconds
+2023-12-13 12:25:56,981 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:25:58,046 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2023-12-13 12:27:10,772 [websockets.py:on_close()] - Websocket Closed: ID: 140732361040464 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 7.73
+2023-12-13 12:37:05,043 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.62ms
+2023-12-13 12:37:05,043 [websockets.py:open()] - Websocket Opened: ID: 140732333650896, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 12:37:05,065 [websockets.py:_handle_identify()] - Websocket 140732333650896 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 12:39:10,596 [websockets.py:on_close()] - Websocket Closed: ID: 140732333650896 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.31
+2023-12-13 12:43:45,722 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.59ms
+2023-12-13 12:43:45,722 [websockets.py:open()] - Websocket Opened: ID: 140732333818576, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 12:43:45,741 [websockets.py:_handle_identify()] - Websocket 140732333818576 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 12:46:26,542 [websockets.py:on_close()] - Websocket Closed: ID: 140732333818576 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 0.81
+2023-12-13 12:47:58,619 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.87ms
+2023-12-13 12:47:58,619 [websockets.py:open()] - Websocket Opened: ID: 140732362269264, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 12:47:58,629 [websockets.py:_handle_identify()] - Websocket 140732362269264 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 12:55:38,818 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732362269264
+2023-12-13 12:55:43,622 [websockets.py:on_close()] - Websocket Closed: ID: 140732362269264 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.48
+2023-12-13 12:57:10,830 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.64ms
+2023-12-13 12:57:10,831 [websockets.py:open()] - Websocket Opened: ID: 140732360650384, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 12:57:10,835 [websockets.py:_handle_identify()] - Websocket 140732360650384 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 12:57:11,193 [websockets.py:on_close()] - Websocket Closed: ID: 140732360650384 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 0.36
+2023-12-13 12:57:50,888 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.73ms
+2023-12-13 12:57:50,888 [websockets.py:open()] - Websocket Opened: ID: 140732360904208, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 12:57:50,921 [websockets.py:_handle_identify()] - Websocket 140732360904208 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 13:04:01,053 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732360904208
+2023-12-13 13:04:05,891 [websockets.py:on_close()] - Websocket Closed: ID: 140732360904208 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.77
+2023-12-13 13:09:19,736 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.83ms
+2023-12-13 13:09:19,737 [websockets.py:open()] - Websocket Opened: ID: 140732362272464, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 13:09:19,835 [websockets.py:_handle_identify()] - Websocket 140732362272464 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 13:09:22,103 [websockets.py:on_close()] - Websocket Closed: ID: 140732362272464 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 2.37
+2023-12-13 13:23:08,357 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.78ms
+2023-12-13 13:23:08,357 [websockets.py:open()] - Websocket Opened: ID: 140732361042768, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 13:23:08,362 [websockets.py:_handle_identify()] - Websocket 140732361042768 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 13:33:26,534 [websockets.py:on_close()] - Websocket Closed: ID: 140732361042768 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 27.78
+2023-12-13 13:37:56,184 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.62ms
+2023-12-13 13:37:56,184 [websockets.py:open()] - Websocket Opened: ID: 140732361134288, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-13 13:37:56,192 [websockets.py:_handle_identify()] - Websocket 140732361134288 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-13 13:38:04,368 [websockets.py:on_close()] - Websocket Closed: ID: 140732361134288 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 8.18
