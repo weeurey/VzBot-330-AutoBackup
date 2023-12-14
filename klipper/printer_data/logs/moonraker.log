@@ -264,3 +264,24 @@ Content-Type: multipart/form-data; boundary=------------------------f891332fe1eb
 2023-12-14 12:06:02,009 [websockets.py:open()] - Websocket Opened: ID: 140732361301264, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36, Host Name: 192.168.1.244
 2023-12-14 12:06:02,015 [websockets.py:_handle_identify()] - Websocket 140732361301264 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-14 13:08:36,393 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-14 15:35:17,560 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-14 15:35:17,560 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.78ms
+2023-12-14 15:35:17,561 [websockets.py:open()] - Websocket Opened: ID: 140732361297680, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-14 15:35:17,568 [websockets.py:_handle_identify()] - Websocket 140732361297680 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-14 15:42:03,234 [websockets.py:on_close()] - Websocket Closed: ID: 140732361301264 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.20
+2023-12-14 15:42:33,833 [websockets.py:on_close()] - Websocket Closed: ID: 140732361297680 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.85
+2023-12-14 15:44:25,850 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-14 15:44:25,855 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------ed251a0139f643ad
+2023-12-14 15:44:26,054 [app.py:post()] - Processing Uploaded File: [a]_buffer-top-ecas+magnet_xN_PLA_15m4s.gcode
+2023-12-14 15:44:26,152 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-14 15:44:26,158 [shell_command.py:pipe_data_received()] - INFO:metadata:File '[a]_buffer-top-ecas+magnet_xN_PLA_15m4s.gcode' currently supports cancellation, processing aborted
+
+2023-12-14 15:44:26,220 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "[a]_buffer-top-ecas+magnet_xN_PLA_15m4s.gcode" --check-objects) successfully finished
+2023-12-14 15:44:26,226 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 371.49ms
+2023-12-14 15:44:26,421 [job_state.py:_status_update()] - Job Started: [a]_buffer-top-ecas+magnet_xN_PLA_15m4s.gcode
+2023-12-14 15:59:22,149 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.76ms
+2023-12-14 15:59:22,150 [websockets.py:open()] - Websocket Opened: ID: 140732361296656, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-14 15:59:22,555 [websockets.py:_handle_identify()] - Websocket 140732361296656 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-14 16:03:02,698 [websockets.py:on_close()] - Websocket Closed: ID: 140732361296656 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 0.54
