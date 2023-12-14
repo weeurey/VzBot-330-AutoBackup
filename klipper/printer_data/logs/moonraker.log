@@ -1113,3 +1113,25 @@ Content-Type: multipart/form-data; boundary=------------------------61743b39e75c
 2023-12-14 23:09:53,257 [websockets.py:open()] - Websocket Opened: ID: 140734149312144, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2023-12-14 23:09:53,381 [websockets.py:_handle_identify()] - Websocket 140734149312144 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-14 23:09:59,234 [websockets.py:on_close()] - Websocket Closed: ID: 140734149312144 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 5.98
+2023-12-14 23:23:45,341 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------a16a86289bf3c2fe
+2023-12-14 23:23:45,456 [app.py:post()] - Processing Uploaded File: flowrate_0_PLA_11m46s.gcode
+2023-12-14 23:23:45,540 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-14 23:23:45,542 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'flowrate_0_PLA_11m46s.gcode' currently supports cancellation, processing aborted
+
+2023-12-14 23:23:45,580 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "flowrate_0_PLA_11m46s.gcode" --check-objects) successfully finished
+2023-12-14 23:23:45,586 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 245.23ms
+2023-12-14 23:23:45,599 [job_state.py:_status_update()] - Job Started: flowrate_0_PLA_11m46s.gcode
+2023-12-14 23:24:24,015 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.80ms
+2023-12-14 23:24:24,015 [websockets.py:open()] - Websocket Opened: ID: 140734149387600, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2023-12-14 23:24:24,018 [websockets.py:_handle_identify()] - Websocket 140734149387600 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-14 23:24:28,947 [websockets.py:on_close()] - Websocket Closed: ID: 140734149387600 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.93
+2023-12-14 23:24:29,125 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.65ms
+2023-12-14 23:24:29,125 [websockets.py:open()] - Websocket Opened: ID: 140734149316048, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2023-12-14 23:24:29,126 [websockets.py:_handle_identify()] - Websocket 140734149316048 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-14 23:27:49,201 [websockets.py:write_to_socket()] - Websocket closed while writing: 140734149316048
+2023-12-14 23:27:54,128 [websockets.py:on_close()] - Websocket Closed: ID: 140734149316048 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.78
+2023-12-14 23:27:56,782 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.82ms
+2023-12-14 23:27:56,782 [websockets.py:open()] - Websocket Opened: ID: 140734176064976, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2023-12-14 23:27:56,784 [websockets.py:_handle_identify()] - Websocket 140734176064976 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
