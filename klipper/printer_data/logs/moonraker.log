@@ -1291,3 +1291,5 @@ CPU Temperature: 57.3
 2023-12-15 19:48:54,677 [websockets.py:open()] - Websocket Opened: ID: 140733318152336, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2023-12-15 19:48:54,700 [websockets.py:_handle_identify()] - Websocket 140733318152336 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-15 19:50:17,494 [websockets.py:on_close()] - Websocket Closed: ID: 140733318152336 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 2.81
+2023-12-15 20:10:48,687 [job_state.py:_status_update()] - Job Started: [a]_buffer-screen-b_xN_PLA_1h13m.gcode
+2023-12-15 20:51:15,250 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
