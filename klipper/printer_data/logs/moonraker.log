@@ -218,3 +218,17 @@ CPU Throttled Flags: ['Previously Under-Volted', 'Previously Throttled']
 2023-12-15 00:38:40,654 [websockets.py:open()] - Websocket Opened: ID: 140734175884560, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2023-12-15 00:38:40,664 [websockets.py:_handle_identify()] - Websocket 140734175884560 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-15 00:38:52,309 [websockets.py:on_close()] - Websocket Closed: ID: 140734175884560 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.65
+2023-12-15 00:58:28,546 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-15 01:02:52,018 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-15 01:02:52,053 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------74eb9a0ea4f75584
+2023-12-15 01:02:53,810 [app.py:post()] - Processing Uploaded File: [a]_buffer-screen-a_xN_PLA_1h17m.gcode
+2023-12-15 01:02:53,907 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-15 01:02:53,914 [shell_command.py:pipe_data_received()] - INFO:metadata:File '[a]_buffer-screen-a_xN_PLA_1h17m.gcode' currently supports cancellation, processing aborted
+
+2023-12-15 01:02:53,970 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "[a]_buffer-screen-a_xN_PLA_1h17m.gcode" --check-objects) successfully finished
+2023-12-15 01:02:53,976 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 1923.68ms
+2023-12-15 01:02:53,991 [job_state.py:_status_update()] - Job Started: [a]_buffer-screen-a_xN_PLA_1h17m.gcode
+2023-12-15 01:43:28,553 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2023-12-15 02:03:28,557 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
