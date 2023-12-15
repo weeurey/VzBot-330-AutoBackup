@@ -1293,3 +1293,18 @@ CPU Temperature: 57.3
 2023-12-15 19:50:17,494 [websockets.py:on_close()] - Websocket Closed: ID: 140733318152336 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 2.81
 2023-12-15 20:10:48,687 [job_state.py:_status_update()] - Job Started: [a]_buffer-screen-b_xN_PLA_1h13m.gcode
 2023-12-15 20:51:15,250 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2023-12-15 22:20:50,840 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-15 22:20:50,846 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------a9bb187451757232
+2023-12-15 22:20:51,548 [app.py:post()] - Processing Uploaded File: [a]_buffer-top-magnet+magnet_xN (1)_PLA_51m56s.gcode
+2023-12-15 22:20:51,638 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-15 22:20:51,643 [shell_command.py:pipe_data_received()] - INFO:metadata:File '[a]_buffer-top-magnet+magnet_xN (1)_PLA_51m56s.gcode' currently supports cancellation, processing aborted
+
+2023-12-15 22:20:51,691 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "[a]_buffer-top-magnet+magnet_xN (1)_PLA_51m56s.gcode" --check-objects) successfully finished
+2023-12-15 22:20:51,697 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 851.09ms
+2023-12-15 22:20:51,800 [job_state.py:_status_update()] - Job Started: [a]_buffer-top-magnet+magnet_xN (1)_PLA_51m56s.gcode
+2023-12-15 23:15:14,677 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-15 23:15:14,677 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.74ms
+2023-12-15 23:15:14,677 [websockets.py:open()] - Websocket Opened: ID: 140733307548048, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-15 23:15:14,683 [websockets.py:_handle_identify()] - Websocket 140733307548048 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
