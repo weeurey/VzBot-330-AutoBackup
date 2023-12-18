@@ -16720,3 +16720,3283 @@ Stats 43.4: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stdde
 Stats 44.4: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=4000 bytes_read=10737 bytes_retransmit=9 bytes_invalid=0 send_seq=309 receive_seq=309 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998254  Pro: temp=18.6 CB1: temp=29.2 heater_bed: target=0 temp=19.1 pwm=0.000 sysload=2.86 cputime=0.510 memavail=3891568 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.0 pwm=0.000
 Stats 45.4: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=4006 bytes_read=10896 bytes_retransmit=9 bytes_invalid=0 send_seq=310 receive_seq=310 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998416  Pro: temp=18.5 CB1: temp=27.1 heater_bed: target=0 temp=19.4 pwm=0.000 sysload=2.79 cputime=0.513 memavail=3892544 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.0 pwm=0.000
 Stats 46.4: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=4012 bytes_read=11041 bytes_retransmit=9 bytes_invalid=0 send_seq=311 receive_seq=311 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179999350  Pro: temp=18.6 CB1: temp=27.6 heater_bed: target=0 temp=19.8 pwm=0.000 sysload=2.79 cputime=0.515 memavail=3891488 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.0 pwm=0.000
+Stats 267.6: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=5362 bytes_read=46812 bytes_retransmit=9 bytes_invalid=0 send_seq=536 receive_seq=536 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002104  Pro: temp=19.6 CB1: temp=38.6 heater_bed: target=0 temp=20.2 pwm=0.000 sysload=0.09 cputime=1.028 memavail=3884000 print_time=280.876 buffer_time=0.029 print_stall=0 extruder: target=0 temp=20.0 pwm=0.000
+Attempting MCU 'mcu' reset command
+b'Got EOF when reading from device'
+webhooks client 140734313152464: Disconnected
+Restarting printer
+Start printer at Mon Dec 18 16:01:07 2023 (1702915267.5 268.7)
+===== Config file =====
+[virtual_sdcard]
+path = /home/pi/printer_data/gcodes
+on_error_gcode = CANCEL_PRINT
+
+[pause_resume]
+recover_velocity = 350
+
+[display_status]
+
+[respond]
+
+[gcode_macro CANCEL_PRINT]
+description = Cancel the actual running print
+rename_existing = CANCEL_PRINT_BASE
+gcode = 
+	TURN_OFF_HEATERS
+	G91
+	G1 Z10 E-2 F3600
+	G1 E-3 F3600
+	G90
+	G1 X30 Y250 F7000; home X axis
+	M106 S80
+	G4 P10000
+	M106 S0
+	M221 S100
+	CANCEL_PRINT_BASE
+	CLEAR_PAUSE
+	
+	SET_GCODE_OFFSET Z=0.0
+	RESETSPEEDS
+	M84
+	
+	BED_MESH_CLEAR
+
+[gcode_macro PAUSE]
+description = Pause the actual running print
+rename_existing = BASE_PAUSE
+gcode = 
+	
+	{% set E = printer["gcode_macro PAUSE"].extrude|float %}
+	
+	
+	{% set x_park = printer.toolhead.axis_maximum.x|float - 5.0 %}
+	{% set y_park = printer.toolhead.axis_maximum.y|float - 5.0 %}
+	
+	{% set max_z = printer.toolhead.axis_maximum.z|float %}
+	{% set act_z = printer.toolhead.position.z|float %}
+	{% if act_z < (max_z - 2.0) %}
+	{% set z_safe = 2.0 %}
+	{% else %}
+	{% set z_safe = max_z - act_z %}
+	{% endif %}
+	
+	SAVE_GCODE_STATE NAME=PAUSE_state
+	BASE_PAUSE
+	SET_IDLE_TIMEOUT TIMEOUT=7200
+	G91
+	G1 E-{1} F2100
+	G1 Z{10} F900
+	G90
+	G1 X{50} Y{0} F6000
+variable_extrude = 1.0
+
+[gcode_macro RESUME]
+description = Resume the actual running print
+rename_existing = BASE_RESUME
+variable_last_extruder_temp = {'restore': False, 'temp': 0}
+variable_restore_idle_timeout = 0
+variable_idle_state = False
+gcode = 
+	
+	{% set E = printer["gcode_macro PAUSE"].extrude|float %}
+	
+	G91
+	G1 E{1} F2100
+	RESTORE_GCODE_STATE NAME=PAUSE_state
+	BASE_RESUME
+
+[gcode_macro SET_PAUSE_NEXT_LAYER]
+description = Enable a pause if the next layer is reached
+gcode = 
+	{% set pause_next_layer = printer['gcode_macro SET_PRINT_STATS_INFO'].pause_next_layer %}
+	{% set ENABLE = params.ENABLE|default(1)|int != 0 %}
+	{% set MACRO = params.MACRO|default(pause_next_layer.call, True) %}
+	SET_GCODE_VARIABLE MACRO=SET_PRINT_STATS_INFO VARIABLE=pause_next_layer VALUE="{{ 'enable': ENABLE, 'call': MACRO }}"
+
+[gcode_macro SET_PAUSE_AT_LAYER]
+description = Enable/disable a pause if a given layer number is reached
+gcode = 
+	{% set pause_at_layer = printer['gcode_macro SET_PRINT_STATS_INFO'].pause_at_layer %}
+	{% set ENABLE = params.ENABLE|int != 0 if params.ENABLE is defined
+	else params.LAYER is defined %}
+	{% set LAYER = params.LAYER|default(pause_at_layer.layer)|int %}
+	{% set MACRO = params.MACRO|default(pause_at_layer.call, True) %}
+	SET_GCODE_VARIABLE MACRO=SET_PRINT_STATS_INFO VARIABLE=pause_at_layer VALUE="{{ 'enable': ENABLE, 'layer': LAYER, 'call': MACRO }}"
+
+[gcode_macro SET_PRINT_STATS_INFO]
+rename_existing = SET_PRINT_STATS_INFO_BASE
+description = Overwrite, to get pause_next_layer and pause_at_layer feature
+variable_pause_next_layer = { 'enable': False, 'call': "PAUSE" }
+variable_pause_at_layer = { 'enable': False, 'layer': 0, 'call': "PAUSE" }
+gcode = 
+	{% if pause_next_layer.enable %}
+	RESPOND TYPE=echo MSG='{"%s, forced by pause_next_layer" % pause_next_layer.call}'
+	{pause_next_layer.call}
+	SET_PAUSE_NEXT_LAYER ENABLE=0
+	{% elif pause_at_layer.enable and params.CURRENT_LAYER is defined and params.CURRENT_LAYER|int == pause_at_layer.layer %}
+	RESPOND TYPE=echo MSG='{"%s, forced by pause_at_layer [%d]" % (pause_at_layer.call, pause_at_layer.layer)}'
+	{pause_at_layer.call}
+	SET_PAUSE_AT_LAYER ENABLE=0
+	{% endif %}
+	SET_PRINT_STATS_INFO_BASE {rawparams}
+
+[gcode_macro _TOOLHEAD_PARK_PAUSE_CANCEL]
+description = Helper: park toolhead used in PAUSE and CANCEL_PRINT
+gcode = 
+	
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set velocity = printer.configfile.settings.pause_resume.recover_velocity %}
+	{% set use_custom     = client.use_custom_pos|default(false)|lower == 'true' %}
+	{% set custom_park_x  = client.custom_park_x|default(0.0) %}
+	{% set custom_park_y  = client.custom_park_y|default(0.0) %}
+	{% set park_dz        = client.custom_park_dz|default(2.0)|abs %}
+	{% set sp_hop         = client.speed_hop|default(15) * 60 %}
+	{% set sp_move        = client.speed_move|default(velocity) * 60 %}
+	
+	{% set origin    = printer.gcode_move.homing_origin %}
+	{% set act       = printer.gcode_move.gcode_position %}
+	{% set max       = printer.toolhead.axis_maximum %}
+	{% set cone      = printer.toolhead.cone_start_z|default(max.z) %}
+	{% set round_bed = True if printer.configfile.settings.printer.kinematics is in ['delta','polar','rotary_delta','winch']
+	else False %}
+	
+	{% set z_min = params.Z_MIN|default(0)|float %}
+	{% set z_park = [[(act.z + park_dz), z_min]|max, (max.z - origin.z)]|min %}
+	{% set x_park = params.X       if params.X is defined
+	else custom_park_x  if use_custom
+	else 0.0            if round_bed
+	else (max.x - 5.0) %}
+	{% set y_park = params.Y       if params.Y is defined
+	else custom_park_y  if use_custom
+	else (max.y - 5.0)  if round_bed and z_park < cone
+	else 0.0            if round_bed
+	else (max.y - 5.0) %}
+	
+	_CLIENT_RETRACT
+	{% if "xyz" in printer.toolhead.homed_axes %}
+	G90
+	G1 Z{z_park} F{sp_hop}
+	G1 X{x_park} Y{y_park} F{sp_move}
+	{% if not printer.gcode_move.absolute_coordinates %} G91 {% endif %}
+	{% else %}
+	RESPOND TYPE=echo MSG='Printer not homed'
+	{% endif %}
+
+[gcode_macro _CLIENT_EXTRUDE]
+description = Extrudes, if the extruder is hot enough
+gcode = 
+	
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set use_fw_retract = (client.use_fw_retract|default(false)|lower == 'true') and (printer.firmware_retraction is defined) %}
+	{% set length = params.LENGTH|default(client.unretract)|default(1.0)|float %}
+	{% set speed = params.SPEED|default(client.speed_unretract)|default(35) %}
+	{% set absolute_extrude = printer.gcode_move.absolute_extrude %}
+	
+	{% if printer.toolhead.extruder != '' %}
+	{% if printer[printer.toolhead.extruder].can_extrude %}
+	{% if use_fw_retract %}
+	{% if length < 0 %}
+	G10
+	{% else %}
+	G11
+	{% endif %}
+	{% else %}
+	M83
+	G1 E{length} F{(speed|float|abs) * 60}
+	{% if absolute_extrude %}
+	M82
+	{% endif %}
+	{% endif %}
+	{% else %}
+	RESPOND TYPE=echo MSG='{"\"%s\" not hot enough" % printer.toolhead.extruder}'
+	{% endif %}
+	{% endif %}
+
+[gcode_macro _CLIENT_RETRACT]
+description = Retracts, if the extruder is hot enough
+gcode = 
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set length = params.LENGTH|default(client.retract)|default(1.0)|float %}
+	{% set speed = params.SPEED|default(client.speed_retract)|default(35) %}
+	
+	_CLIENT_EXTRUDE LENGTH=-{length|float|abs} SPEED={speed|float|abs}
+
+[tmc2209 extruder]
+interpolate = false
+uart_pin = PE4
+run_current = 0.50
+sense_resistor = 0.110
+stealthchop_threshold = 0
+
+[extruder]
+rotation_distance = 5.7
+full_steps_per_rotation = 200
+sensor_type = PT1000
+min_temp = 0
+max_temp = 330
+filament_diameter = 1.750
+step_pin = PC13
+dir_pin = !PF0
+enable_pin = !PF1
+heater_pin = PA2
+sensor_pin = PF4
+microsteps = 16
+nozzle_diameter = 0.600
+pressure_advance = 0.015
+pressure_advance_smooth_time = 0.02
+max_extrude_only_distance = 101
+control = pid
+pid_kp = 22.354
+pid_ki = 1.552
+pid_kd = 80.473
+
+[tmc2209 stepper_x]
+uart_pin = PC4
+diag_pin = PG6
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_x]
+step_pin = PF13
+dir_pin = !PF12
+enable_pin = !PF14
+endstop_pin = PG14
+microsteps = 16
+rotation_distance = 40
+position_endstop = -6
+position_min = -6
+position_max = 330
+homing_speed = 20
+full_steps_per_rotation = 200
+homing_retract_dist = 0
+homing_positive_dir = false
+step_pulse_duration = 0.000001
+
+[tmc2209 stepper_y]
+uart_pin = PD11
+diag_pin = PG9
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_y]
+step_pin = PG0
+dir_pin = PG1
+enable_pin = !PF15
+endstop_pin = PG15
+microsteps = 16
+rotation_distance = 40
+position_endstop = 0
+position_min = 0
+position_max = 315
+homing_speed = 20
+full_steps_per_rotation = 200
+homing_retract_dist = 0
+homing_positive_dir = false
+step_pulse_duration = 0.000001
+
+[tmc2209 stepper_x1]
+uart_pin = PE1
+diag_pin = PG14
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_x1]
+step_pin = PE2
+dir_pin = !PE3
+enable_pin = !PD4
+microsteps = 16
+rotation_distance = 40
+full_steps_per_rotation = 200
+step_pulse_duration = 0.000001
+
+[tmc2209 stepper_y1]
+uart_pin = PD3
+diag_pin = PG15
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_y1]
+step_pin = PE6
+dir_pin = !PA14
+enable_pin = !PE0
+microsteps = 16
+rotation_distance = 40
+full_steps_per_rotation = 200
+step_pulse_duration = 0.000001
+
+[stepper_z]
+step_pin = PF11
+dir_pin = PG3
+enable_pin = !PG5
+endstop_pin = probe:z_virtual_endstop
+microsteps = 16
+rotation_distance = 8
+position_min = -20
+position_max = 400
+full_steps_per_rotation = 200
+homing_retract_dist = 5.0
+homing_positive_dir = false
+homing_speed = 3
+second_homing_speed = 1
+step_pulse_duration = 0.000004
+
+[stepper_z1]
+step_pin = PG4
+dir_pin = PC1
+enable_pin = !PA0
+endstop_pin = probe:z_virtual_endstop
+microsteps = 16
+rotation_distance = 8
+
+[tmc2209 stepper_z]
+uart_pin = PC6
+run_current = 0.650
+sense_resistor = 0.110
+stealthchop_threshold = 0
+
+[tmc2209 stepper_z1]
+uart_pin = PC7
+run_current = 0.650
+sense_resistor = 0.110
+stealthchop_threshold = 0
+
+[temperature_sensor Octopus Pro]
+sensor_type = temperature_mcu
+min_temp = 10
+max_temp = 100
+
+[temperature_sensor CB1]
+sensor_type = temperature_host
+min_temp = 10
+max_temp = 100
+
+[fan_generic LED_Bar]
+pin = PD15
+max_power = 1
+shutdown_speed = 0
+kick_start_time = 0.1
+off_below = 0.10
+
+[heater_fan hotend_fan]
+pin = PA8
+max_power = 1.0
+kick_start_time = 0.5
+heater = extruder
+heater_temp = 50.0
+
+[fan]
+pin = !PE5
+enable_pin = PB11
+hardware_pwm = True
+max_power = 1
+cycle_time = 0.00002
+off_below = 0.012
+kick_start_time = 0.01
+
+[heater_bed]
+heater_pin = PA1
+sensor_pin = PF3
+sensor_type = NTC 100K MGB18-104F39050L32
+control = pid
+pid_kp = 34.679
+pid_ki = 1.492
+pid_kd = 201.572
+min_temp = 0
+max_temp = 120
+max_power = 1
+pwm_cycle_time = 0.0166
+
+[bed_screws]
+screw1 = 10,0
+screw2 = 10,260
+screw3 = 320,260
+screw4 = 320,0
+
+[screws_tilt_adjust]
+screw1 = 10, 0
+screw1_name = front left screw
+screw2 = 10, 260
+screw2_name = rear left screw
+screw3 = 300, 260
+screw3_name = rear right screw
+screw4 = 320, 0
+screw4_name = front right screw
+horizontal_move_z = 10.
+speed = 250
+screw_thread = CW-M3
+
+[force_move]
+enable_force_move = true
+
+[bed_mesh]
+speed = 350
+horizontal_move_z = 1
+mesh_min = 10, 5
+mesh_max = 310, 260
+mesh_pps = 3,3
+probe_count = 25,25
+algorithm = bicubic
+relative_reference_index = 12
+bicubic_tension = 0.2
+fade_start = 1
+fade_end = 10
+split_delta_z = .025
+move_check_distance = 5
+
+[gcode_macro BED_MESH]
+gcode = 
+	BED_MESH_CALIBRATE
+
+[gcode_macro PA_TUNING]
+gcode = 
+	SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=1 ACCEL=500
+	TUNING_TOWER COMMAND=SET_PRESSURE_ADVANCE PARAMETER=ADVANCE START=0 FACTOR=.005
+
+[gcode_macro HOTEND_PID]
+gcode = 
+	{% set tool_temp = params.TEMPERATURE|default(220)|int %}
+	{% set tool_name = printer.toolhead.extruder %}
+	PID_CALIBRATE HEATER={tool_name} TARGET={tool_temp}
+
+[gcode_macro BED_PID]
+gcode = 
+	{% set bed_temp = params.TEMPERATURE|default(60)|int %}
+	PID_CALIBRATE HEATER=heater_bed TARGET={bed_temp}
+
+[gcode_macro SCREWS_TILT]
+gcode = 
+	SCREWS_TILT_CALCULATE
+
+[gcode_macro DUMP_WARNINGS]
+description = Debug: Print all warning messages from klipper
+gcode = 
+	{% set parameters = ["printer.configfile.warnings:"] %}
+	{% for warning in printer.configfile.warnings %}
+	{% set parameters = parameters.append("%s -> %s -> %s\n%s" % (warning.type, warning.section, warning.option, warning.message)) %}
+	{% endfor %}
+	{action_respond_info(parameters|join("\n"))}
+
+[gcode_macro enable_stepper]
+gcode = 
+	SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_x1 ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_y1 ENABLE=1
+
+[gcode_macro disable-steppers]
+gcode = 
+	m84
+
+[gcode_macro M600]
+gcode = 
+	G4 P1500
+	{% set X = params.X|default(50)|float %}
+	{% set Y = params.Y|default(0)|float %}
+	{% set Z = params.Z|default(10)|float %}
+	
+	SAVE_GCODE_STATE NAME=M600_state
+	PAUSE
+	
+	G91
+	G1 E-{1} F2100
+	G1 Z{Z}
+	G90
+	G1 X{X} Y{Y} F4000
+	G91
+	M83
+	G1 E5 F800
+	G1 E-180 F2000
+	M82
+	RESTORE_GCODE_STATE NAME=M600_state
+
+[gcode_macro PURGE]
+gcode = 
+	M83
+	G1 E120 F250
+
+[gcode_macro _UNLOAD_FILAMENT]
+gcode = 
+	{% set e_temp = params.TEMPERATURE|default(235)|int %}
+	M118 Filament unloading!
+	M117 Filament unloading!
+	M82
+	G92 E0
+	{% if printer.extruder.can_extrude|lower != 'true' %}
+	
+	M118 Hotend heating!
+	M109 S{e_temp} T0
+	{% endif %}
+	G1 E10 F{5*60}
+	G0 E-5 F{60*60}
+	G0 E-70 F{5*60}
+	M400
+	M118 Filament unload complete!
+	M117 Filament unload complete!
+
+[gcode_macro _LOAD_FILAMENT]
+gcode = 
+	{% set e_temp = params.TEMPERATURE|default(230)|int %}
+	M109 S{e_temp}
+	M83
+	G1 E50 F300
+	G1 E-1 F100
+	M82
+	M104 S0
+
+[gcode_macro UNLOAD_PLA]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=200
+
+[gcode_macro LOAD_PLA]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=200
+
+[gcode_macro UNLOAD_ABS]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=250
+
+[gcode_macro LOAD_ABS]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=250
+
+[gcode_macro UNLOAD_PETG]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=235
+
+[gcode_macro LOAD_PETG]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=235
+
+[gcode_macro LOAD_FILAMENT]
+gcode = 
+	{% set speed = params.SPEED|default(300) %}
+	{% set max_velocity = printer.configfile.settings['extruder'].max_extrude_only_velocity %}
+	SAVE_GCODE_STATE NAME=load_state
+	M300
+	G91
+	G92 E0
+	G1 E350 F{max_velocity}
+	G1 E25 F{speed}
+	M300
+	M300
+	RESTORE_GCODE_STATE NAME=load_state
+
+[gcode_macro UNLOAD_FILAMENT]
+gcode = 
+	{% set speed = params.SPEED|default(300) %}
+	{% set max_velocity = printer.configfile.settings['extruder'].max_extrude_only_velocity %}
+	SAVE_GCODE_STATE NAME=unload_state
+	G91
+	M300
+	G92 E0
+	G1 E25 F{speed}
+	G1 E-420 F{max_velocity}
+	M300
+	M300
+	RESTORE_GCODE_STATE NAME=unload_state
+
+[gcode_macro START_PRINT]
+gcode = 
+	
+	{% set DWELL = params.DWELL|default(00)|int %}
+	{% set bedTemp = params.BED|default(100)|int %}
+	{% set hotendTemp = params.HOTEND|default(250)|int %}
+	
+	
+	
+	
+	SET_FAN_SPEED FAN=LED_Bar SPEED=0.5
+	CLEAR_PAUSE
+	RESETSPEEDS
+	G21
+	G90
+	M83
+	M140 S{bedTemp}; start heating the bed
+	M104 S100
+	SET_DISPLAY_TEXT MSG="Waiting for temperatures..."
+	HEATSOAK DWELL={DWELL}
+	G28 X Y
+	ATTACH_PROBE_LOCK
+	G28 Z
+	SET_DISPLAY_TEXT MSG="Adjusting Z Tilt"
+	Z_TILT_ADJUST
+	G28 Z
+	
+	SET_DISPLAY_TEXT MSG="Calibrating Bed Mesh"
+	BED_MESH_CLEAR
+	BED_MESH_CALIBRATE
+	BED_MESH_PROFILE LOAD=default
+	DOCK_PROBE_UNLOCK
+	SET_DISPLAY_TEXT MSG="Heating Extruder to temp"
+	M109 S190; wait for extruder to heat up
+	G1 X1 Y1 Z0.5 F9000
+	M109 S{hotendTemp}; wait for extruder to heat up
+	
+	
+	
+	FIXED_PURGE_LINE
+	M83
+	SET_DISPLAY_TEXT MSG="Printing..."
+
+[gcode_macro HEATSOAK]
+gcode = 
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion..."
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 5% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 10% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 15% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 20% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 25% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 30% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 35% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 40% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 45% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 50% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 55% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 60% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 65% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 70% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 75% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 80% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 85% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 90% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 95% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Thermal expansion done"
+
+[gcode_macro _CG28]
+gcode = 
+	{% if "xyz" not in printer.toolhead.homed_axes %}
+	G28
+	{% endif %}
+
+[gcode_macro FIXED_PURGE_LINE]
+gcode = 
+	M83
+	G92 E0
+	G1 Z1 F3000
+	G1 X1 Y80 Z0.3 E10  F1200
+	G1 X1 Y120 E11  F1200
+	G1 E-0.8 F1000
+	G92 E0
+	G1 Z1 F2000
+
+[gcode_macro END_PRINT]
+gcode = 
+	TURN_OFF_HEATERS
+	G91
+	G1 Z10 E-2 F3600
+	
+	G90
+	G1 X30 Y250 F7000; home X axis
+	M106 S80
+	G4 P10000
+	M106 S0
+	M221 S100
+	CLEAR_PAUSE
+	
+	SET_GCODE_OFFSET Z=0.0
+	RESETSPEEDS
+	
+	M84
+	BED_MESH_CLEAR
+	SET_FAN_SPEED FAN=LED_Bar SPEED=0
+	UPDATE_GIT
+
+[gcode_macro PARK]
+description = Park the toolhead at the front and retract some filament if the nozzle is hot
+gcode = 
+	{% set E = params.E|default(1.7)|float %}
+	
+	{% set Px, Py = printer["gcode_macro _USER_VARIABLES"].park_position_xy|map('float') %}
+	{% set park_lift_z = printer["gcode_macro _USER_VARIABLES"].park_lift_z %}
+	
+	{% set St = printer["gcode_macro _USER_VARIABLES"].travel_speed * 60 %}
+	{% set Sz = printer["gcode_macro _USER_VARIABLES"].z_drop_speed * 60 %}
+	
+	{% set max_z = printer.toolhead.axis_maximum.z|float %}
+	{% set act_z = printer.toolhead.position.z|float %}
+	
+	{% set z_safe = act_z + park_lift_z %}
+	{% if z_safe > max_z %}
+	{% set z_safe = max_z %}
+	{% endif %}
+	
+	
+	{% if printer.extruder.temperature > 185 %}
+	G10
+	{% endif %}
+	G90
+	G1 Z{z_safe} F{Sz}
+	
+	G0 X{Px} Y{Py} F{St}
+
+[gcode_macro RESETSPEEDS]
+gcode = 
+	SET_VELOCITY_LIMIT VELOCITY={printer.configfile.settings.printer.max_velocity}
+	SET_VELOCITY_LIMIT ACCEL={printer.configfile.settings.printer.max_accel}
+	SET_VELOCITY_LIMIT ACCEL_TO_DECEL={printer.configfile.settings.printer.max_accel_to_decel}
+	SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY={printer.configfile.settings.printer.square_corner_velocity}
+
+[gcode_macro DISABLEXYE]
+gcode = 
+	SET_STEPPER_ENABLE STEPPER=extruder ENABLE=0
+	SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=0
+	
+	SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=0
+	
+	SET_STEPPER_ENABLE STEPPER=stepper_z ENABLE=1
+
+[gcode_macro TEST_SPEED]
+gcode = 
+	
+	{% set speed  = params.SPEED|default(printer.configfile.settings.printer.max_velocity)|int %}
+	
+	{% set iterations = params.ITERATIONS|default(5)|int %}
+	
+	{% set accel  = params.ACCEL|default(printer.configfile.settings.printer.max_accel)|int %}
+	
+	{% set bound = params.BOUND|default(20)|int %}
+	
+	{% set smallpatternsize = SMALLPATTERNSIZE|default(20)|int %}
+	
+	
+	
+	{% set x_min = 10 + bound %}
+	{% set x_max = 300 - bound %}
+	{% set y_min = 10 + bound %}
+	{% set y_max = 300 - bound %}
+	
+	
+	
+	{% set x_center = (printer.toolhead.axis_minimum.x|float + printer.toolhead.axis_maximum.x|float ) / 2 %}
+	{% set y_center = (printer.toolhead.axis_minimum.y|float + printer.toolhead.axis_maximum.y|float ) / 2 %}
+	
+	
+	{% set x_center_min = x_center - (smallpatternsize/2) %}
+	{% set x_center_max = x_center + (smallpatternsize/2) %}
+	{% set y_center_min = y_center - (smallpatternsize/2) %}
+	{% set y_center_max = y_center + (smallpatternsize/2) %}
+	
+	
+	SAVE_GCODE_STATE NAME=TEST_SPEED
+	
+	
+	{ action_respond_info("TEST_SPEED: starting %d iterations at speed %d, accel %d" % (iterations, speed, accel)) }
+	
+	
+	M400
+	G28
+	
+	{% if printer.configfile.settings.quad_gantry_level %}
+	{% if printer.quad_gantry_level.applied == False %}
+	QUAD_GANTRY_LEVEL
+	G28 Z
+	{% endif %}
+	{% endif %}
+	
+	G90
+	G1 X{printer.toolhead.axis_maximum.x-50} Y{printer.toolhead.axis_maximum.y-50} F{30*60}
+	M400
+	G28 X Y
+	G0 X{300} Y{300} F{30*60}
+	G4 P1000
+	GET_POSITION
+	
+	
+	G0 X{x_min} Y{y_min} Z{bound + 10} F{speed*60}
+	
+	
+	SET_VELOCITY_LIMIT VELOCITY={speed} ACCEL={accel} ACCEL_TO_DECEL={accel / 2}
+	
+	{% for i in range(iterations) %}
+	
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_max} Y{y_max} F{speed*60}
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	G0 X{x_min} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	
+	
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_min} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	
+	
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_max} Y{y_center_max} F{speed*60}
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	G0 X{x_center_min} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	
+	
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_min} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	{% endfor %}
+	
+	
+	SET_VELOCITY_LIMIT VELOCITY={printer.configfile.settings.printer.max_velocity} ACCEL={printer.configfile.settings.printer.max_accel} ACCEL_TO_DECEL={printer.configfile.settings.printer.max_accel_to_decel}
+	
+	
+	M400
+	G28
+	
+	G90
+	G0 X{300} Y{300} F{30*60}
+	G4 P1000
+	GET_POSITION
+	
+	
+	RESTORE_GCODE_STATE NAME=TEST_SPEED
+
+[gcode_macro update_git]
+gcode = 
+	RUN_SHELL_COMMAND CMD=update_git_script
+
+[gcode_shell_command update_git_script]
+command = bash /home/pi/klipper-backup/script.sh
+timeout = 90.0
+verbose = True
+
+[safe_z_home]
+home_xy_position = 165, 165
+z_hop = 10
+
+[z_tilt]
+z_positions = 
+	-80,  -20
+	350, -20
+points = 
+	15, 150
+	275, 150
+speed = 50
+horizontal_move_z = 15
+retries = 30
+retry_tolerance = 0.080
+
+[input_shaper]
+shaper_type_x = zv
+shaper_freq_x = 120.6
+shaper_type_y = zv
+shaper_freq_y = 76.6
+
+[BDsensor]
+scl_pin = PB6
+sda_pin = PB7
+delay = 20
+z_offset = 0
+z_adjust = -0
+x_offset = 0
+y_offset = 21.43
+no_stop_probe = true
+position_endstop = 1
+speed = 0.8
+
+[printer]
+kinematics = corexy
+max_velocity = 1000
+max_accel = 20000
+max_z_velocity = 20
+max_z_accel = 300
+square_corner_velocity = 10
+
+[exclude_object]
+
+[gcode_arcs]
+resolution = 0.05
+
+[idle_timeout]
+timeout = 3000
+
+[mcu]
+serial = /dev/serial/by-id/usb-Klipper_stm32f446xx_2F0018001750344D30353320-if00
+
+[probe]
+z_offset = 8.100
+
+[bed_mesh default]
+version = 1
+points = 
+	-0.215000, -0.210000, -0.190000, -0.185000, -0.170000, -0.145000, -0.135000, -0.120000, -0.105000, -0.070000, -0.055000, -0.035000, 0.000000, 0.010000, 0.025000, 0.050000, 0.080000, 0.105000, 0.130000, 0.135000, 0.150000, 0.155000, 0.165000, 0.190000, 0.205000
+	-0.160000, -0.155000, -0.160000, -0.150000, -0.130000, -0.110000, -0.105000, -0.085000, -0.055000, -0.035000, -0.025000, 0.000000, 0.025000, 0.055000, 0.075000, 0.100000, 0.110000, 0.130000, 0.160000, 0.170000, 0.190000, 0.190000, 0.205000, 0.205000, 0.220000
+	-0.160000, -0.150000, -0.140000, -0.135000, -0.115000, -0.105000, -0.090000, -0.070000, -0.040000, -0.025000, -0.010000, 0.015000, 0.030000, 0.045000, 0.080000, 0.100000, 0.115000, 0.135000, 0.160000, 0.165000, 0.180000, 0.185000, 0.190000, 0.220000, 0.235000
+	-0.120000, -0.115000, -0.115000, -0.100000, -0.080000, -0.070000, -0.065000, -0.040000, -0.015000, 0.010000, 0.030000, 0.050000, 0.065000, 0.090000, 0.110000, 0.130000, 0.145000, 0.175000, 0.195000, 0.195000, 0.195000, 0.205000, 0.210000, 0.235000, 0.240000
+	-0.075000, -0.065000, -0.055000, -0.045000, -0.040000, -0.020000, -0.005000, 0.015000, 0.035000, 0.065000, 0.075000, 0.090000, 0.105000, 0.115000, 0.140000, 0.170000, 0.175000, 0.190000, 0.205000, 0.205000, 0.205000, 0.210000, 0.215000, 0.240000, 0.240000
+	-0.045000, -0.050000, -0.055000, -0.045000, -0.015000, -0.005000, -0.005000, 0.020000, 0.060000, 0.065000, 0.075000, 0.100000, 0.115000, 0.125000, 0.135000, 0.170000, 0.175000, 0.175000, 0.205000, 0.205000, 0.205000, 0.205000, 0.210000, 0.220000, 0.225000
+	-0.035000, -0.030000, -0.030000, -0.020000, 0.000000, 0.015000, 0.015000, 0.035000, 0.065000, 0.085000, 0.100000, 0.110000, 0.115000, 0.130000, 0.160000, 0.170000, 0.180000, 0.180000, 0.200000, 0.200000, 0.200000, 0.205000, 0.205000, 0.220000, 0.235000
+	0.005000, 0.010000, 0.015000, 0.025000, 0.035000, 0.040000, 0.055000, 0.085000, 0.095000, 0.110000, 0.115000, 0.125000, 0.140000, 0.160000, 0.175000, 0.180000, 0.190000, 0.190000, 0.225000, 0.225000, 0.225000, 0.225000, 0.230000, 0.235000, 0.250000
+	0.055000, 0.065000, 0.060000, 0.065000, 0.075000, 0.090000, 0.100000, 0.110000, 0.120000, 0.130000, 0.140000, 0.155000, 0.170000, 0.180000, 0.190000, 0.195000, 0.210000, 0.220000, 0.235000, 0.235000, 0.235000, 0.235000, 0.245000, 0.250000, 0.260000
+	0.100000, 0.105000, 0.110000, 0.110000, 0.120000, 0.135000, 0.145000, 0.150000, 0.155000, 0.155000, 0.170000, 0.185000, 0.190000, 0.195000, 0.195000, 0.215000, 0.230000, 0.235000, 0.245000, 0.245000, 0.245000, 0.235000, 0.245000, 0.250000, 0.260000
+	0.100000, 0.115000, 0.125000, 0.130000, 0.135000, 0.145000, 0.150000, 0.155000, 0.165000, 0.175000, 0.190000, 0.200000, 0.205000, 0.205000, 0.215000, 0.225000, 0.230000, 0.245000, 0.255000, 0.240000, 0.240000, 0.240000, 0.245000, 0.250000, 0.250000
+	0.155000, 0.150000, 0.150000, 0.150000, 0.160000, 0.165000, 0.165000, 0.175000, 0.175000, 0.195000, 0.200000, 0.215000, 0.205000, 0.210000, 0.215000, 0.225000, 0.235000, 0.240000, 0.245000, 0.240000, 0.240000, 0.235000, 0.220000, 0.235000, 0.240000
+	0.170000, 0.165000, 0.165000, 0.170000, 0.180000, 0.190000, 0.190000, 0.185000, 0.200000, 0.205000, 0.220000, 0.230000, 0.225000, 0.225000, 0.240000, 0.245000, 0.240000, 0.250000, 0.255000, 0.245000, 0.250000, 0.245000, 0.245000, 0.240000, 0.240000
+	0.210000, 0.200000, 0.195000, 0.200000, 0.210000, 0.210000, 0.210000, 0.215000, 0.215000, 0.215000, 0.235000, 0.245000, 0.235000, 0.235000, 0.245000, 0.250000, 0.240000, 0.250000, 0.250000, 0.250000, 0.255000, 0.250000, 0.235000, 0.235000, 0.240000
+	0.240000, 0.250000, 0.250000, 0.245000, 0.260000, 0.260000, 0.255000, 0.255000, 0.255000, 0.250000, 0.265000, 0.265000, 0.260000, 0.255000, 0.260000, 0.255000, 0.255000, 0.270000, 0.260000, 0.255000, 0.250000, 0.255000, 0.245000, 0.250000, 0.240000
+	0.270000, 0.260000, 0.255000, 0.265000, 0.265000, 0.265000, 0.265000, 0.260000, 0.260000, 0.255000, 0.265000, 0.265000, 0.265000, 0.255000, 0.255000, 0.250000, 0.255000, 0.250000, 0.250000, 0.245000, 0.245000, 0.235000, 0.230000, 0.235000, 0.240000
+	0.275000, 0.280000, 0.275000, 0.275000, 0.275000, 0.275000, 0.275000, 0.275000, 0.280000, 0.280000, 0.280000, 0.270000, 0.270000, 0.270000, 0.265000, 0.265000, 0.265000, 0.270000, 0.260000, 0.255000, 0.235000, 0.235000, 0.235000, 0.240000, 0.235000
+	0.335000, 0.315000, 0.305000, 0.310000, 0.305000, 0.300000, 0.295000, 0.290000, 0.300000, 0.295000, 0.290000, 0.290000, 0.280000, 0.270000, 0.270000, 0.275000, 0.275000, 0.265000, 0.250000, 0.245000, 0.235000, 0.225000, 0.225000, 0.230000, 0.235000
+	0.355000, 0.350000, 0.345000, 0.325000, 0.330000, 0.325000, 0.325000, 0.325000, 0.315000, 0.310000, 0.300000, 0.290000, 0.285000, 0.290000, 0.275000, 0.275000, 0.265000, 0.265000, 0.250000, 0.245000, 0.235000, 0.225000, 0.230000, 0.225000, 0.215000
+	0.395000, 0.385000, 0.380000, 0.370000, 0.365000, 0.370000, 0.360000, 0.355000, 0.345000, 0.340000, 0.330000, 0.320000, 0.310000, 0.305000, 0.300000, 0.290000, 0.275000, 0.260000, 0.255000, 0.255000, 0.250000, 0.235000, 0.230000, 0.230000, 0.230000
+	0.395000, 0.390000, 0.375000, 0.375000, 0.375000, 0.370000, 0.365000, 0.360000, 0.355000, 0.335000, 0.325000, 0.315000, 0.315000, 0.300000, 0.295000, 0.280000, 0.255000, 0.260000, 0.250000, 0.240000, 0.230000, 0.235000, 0.230000, 0.205000, 0.195000
+	0.405000, 0.395000, 0.395000, 0.390000, 0.380000, 0.375000, 0.370000, 0.360000, 0.355000, 0.345000, 0.325000, 0.325000, 0.310000, 0.295000, 0.290000, 0.270000, 0.250000, 0.240000, 0.235000, 0.235000, 0.230000, 0.205000, 0.195000, 0.195000, 0.195000
+	0.405000, 0.395000, 0.380000, 0.375000, 0.375000, 0.370000, 0.360000, 0.345000, 0.340000, 0.330000, 0.305000, 0.300000, 0.285000, 0.270000, 0.250000, 0.235000, 0.220000, 0.215000, 0.220000, 0.205000, 0.195000, 0.175000, 0.175000, 0.170000, 0.165000
+	0.405000, 0.390000, 0.395000, 0.385000, 0.365000, 0.350000, 0.345000, 0.330000, 0.320000, 0.305000, 0.290000, 0.265000, 0.260000, 0.240000, 0.225000, 0.215000, 0.205000, 0.190000, 0.180000, 0.185000, 0.165000, 0.150000, 0.145000, 0.145000, 0.145000
+	0.430000, 0.425000, 0.400000, 0.395000, 0.385000, 0.370000, 0.365000, 0.340000, 0.320000, 0.305000, 0.295000, 0.270000, 0.250000, 0.235000, 0.215000, 0.215000, 0.200000, 0.190000, 0.185000, 0.165000, 0.155000, 0.145000, 0.135000, 0.130000, 0.135000
+x_count = 25
+y_count = 25
+mesh_x_pps = 3
+mesh_y_pps = 3
+algo = bicubic
+tension = 0.2
+min_x = 10.0
+max_x = 310.0
+min_y = 26.43
+max_y = 281.31
+=======================
+Extruder max_extrude_ratio=0.598682
+mcu 'mcu': Starting serial connect
+mcu 'mcu': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Klipper_stm32f446xx_2F0018001750344D30353320-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Klipper_stm32f446xx_2F0018001750344D30353320-if00'
+webhooks client 140734302278800: New connection
+webhooks client 140734302278800: Client info {'program': 'Moonraker', 'version': 'v0.8.0-206-g9ad8fed'}
+Loaded MCU 'mcu' 129 commands (v0.12.0-25-g99d7af87 / gcc: (15:12.2.rel1-1) 12.2.1 20221205 binutils: (2.40-2+18+b1) 2.40)
+MCU 'mcu' config: ADC_MAX=4095 BUS_PINS_i2c1=PB6,PB7 BUS_PINS_i2c1a=PB8,PB9 BUS_PINS_i2c2=PB10,PB11 BUS_PINS_i2c3=PA8,PC9 BUS_PINS_sdio=PC12,PD2,PC8,PC9,PC10,PC11 BUS_PINS_spi1=PA6,PA7,PA5 BUS_PINS_spi1a=PB4,PB5,PB3 BUS_PINS_spi2=PB14,PB15,PB13 BUS_PINS_spi2a=PC2,PC3,PB10 BUS_PINS_spi3=PB4,PB5,PB3 BUS_PINS_spi3a=PC11,PC12,PC10 BUS_PINS_spi4=PE13,PE14,PE12 CLOCK_FREQ=180000000 MCU=stm32f446xx PWM_MAX=255 RESERVE_PINS_USB=PA11,PA12 RESERVE_PINS_crystal=PH0,PH1 STATS_SUMSQ_BASE=256 STEPPER_BOTH_EDGE=1
+mcu_temperature 'mcu' nominal base=-275.483871 slope=1320.967742
+Sending MCU 'mcu' printer configuration...
+Configured MCU 'mcu' (1024 moves)
+Starting heater checks for heater_bed
+bed_mesh: generated points
+Index |  Tool Adjusted  |   Probe
+  0   | (10.0, -16.4)   | (10.0, 5.0)
+  1   | (22.5, -16.4)   | (22.5, 5.0)
+  2   | (35.0, -16.4)   | (35.0, 5.0)
+  3   | (47.5, -16.4)   | (47.5, 5.0)
+  4   | (60.0, -16.4)   | (60.0, 5.0)
+  5   | (72.5, -16.4)   | (72.5, 5.0)
+  6   | (85.0, -16.4)   | (85.0, 5.0)
+  7   | (97.5, -16.4)   | (97.5, 5.0)
+  8   | (110.0, -16.4)  | (110.0, 5.0)
+  9   | (122.5, -16.4)  | (122.5, 5.0)
+  10  | (135.0, -16.4)  | (135.0, 5.0)
+  11  | (147.5, -16.4)  | (147.5, 5.0)
+  12  | (160.0, -16.4)  | (160.0, 5.0)
+  13  | (172.5, -16.4)  | (172.5, 5.0)
+  14  | (185.0, -16.4)  | (185.0, 5.0)
+  15  | (197.5, -16.4)  | (197.5, 5.0)
+  16  | (210.0, -16.4)  | (210.0, 5.0)
+  17  | (222.5, -16.4)  | (222.5, 5.0)
+  18  | (235.0, -16.4)  | (235.0, 5.0)
+  19  | (247.5, -16.4)  | (247.5, 5.0)
+  20  | (260.0, -16.4)  | (260.0, 5.0)
+  21  | (272.5, -16.4)  | (272.5, 5.0)
+  22  | (285.0, -16.4)  | (285.0, 5.0)
+  23  | (297.5, -16.4)  | (297.5, 5.0)
+  24  | (310.0, -16.4)  | (310.0, 5.0)
+  25  | (310.0, -5.8)   | (310.0, 15.6)
+  26  | (297.5, -5.8)   | (297.5, 15.6)
+  27  | (285.0, -5.8)   | (285.0, 15.6)
+  28  | (272.5, -5.8)   | (272.5, 15.6)
+  29  | (260.0, -5.8)   | (260.0, 15.6)
+  30  | (247.5, -5.8)   | (247.5, 15.6)
+  31  | (235.0, -5.8)   | (235.0, 15.6)
+  32  | (222.5, -5.8)   | (222.5, 15.6)
+  33  | (210.0, -5.8)   | (210.0, 15.6)
+  34  | (197.5, -5.8)   | (197.5, 15.6)
+  35  | (185.0, -5.8)   | (185.0, 15.6)
+  36  | (172.5, -5.8)   | (172.5, 15.6)
+  37  | (160.0, -5.8)   | (160.0, 15.6)
+  38  | (147.5, -5.8)   | (147.5, 15.6)
+  39  | (135.0, -5.8)   | (135.0, 15.6)
+  40  | (122.5, -5.8)   | (122.5, 15.6)
+  41  | (110.0, -5.8)   | (110.0, 15.6)
+  42  | (97.5, -5.8)    | (97.5, 15.6)
+  43  | (85.0, -5.8)    | (85.0, 15.6)
+  44  | (72.5, -5.8)    | (72.5, 15.6)
+  45  | (60.0, -5.8)    | (60.0, 15.6)
+  46  | (47.5, -5.8)    | (47.5, 15.6)
+  47  | (35.0, -5.8)    | (35.0, 15.6)
+  48  | (22.5, -5.8)    | (22.5, 15.6)
+  49  | (10.0, -5.8)    | (10.0, 15.6)
+  50  | (10.0, 4.8)     | (10.0, 26.2)
+  51  | (22.5, 4.8)     | (22.5, 26.2)
+  52  | (35.0, 4.8)     | (35.0, 26.2)
+  53  | (47.5, 4.8)     | (47.5, 26.2)
+  54  | (60.0, 4.8)     | (60.0, 26.2)
+  55  | (72.5, 4.8)     | (72.5, 26.2)
+  56  | (85.0, 4.8)     | (85.0, 26.2)
+  57  | (97.5, 4.8)     | (97.5, 26.2)
+  58  | (110.0, 4.8)    | (110.0, 26.2)
+  59  | (122.5, 4.8)    | (122.5, 26.2)
+  60  | (135.0, 4.8)    | (135.0, 26.2)
+  61  | (147.5, 4.8)    | (147.5, 26.2)
+  62  | (160.0, 4.8)    | (160.0, 26.2)
+  63  | (172.5, 4.8)    | (172.5, 26.2)
+  64  | (185.0, 4.8)    | (185.0, 26.2)
+  65  | (197.5, 4.8)    | (197.5, 26.2)
+  66  | (210.0, 4.8)    | (210.0, 26.2)
+  67  | (222.5, 4.8)    | (222.5, 26.2)
+  68  | (235.0, 4.8)    | (235.0, 26.2)
+  69  | (247.5, 4.8)    | (247.5, 26.2)
+  70  | (260.0, 4.8)    | (260.0, 26.2)
+  71  | (272.5, 4.8)    | (272.5, 26.2)
+  72  | (285.0, 4.8)    | (285.0, 26.2)
+  73  | (297.5, 4.8)    | (297.5, 26.2)
+  74  | (310.0, 4.8)    | (310.0, 26.2)
+  75  | (310.0, 15.4)   | (310.0, 36.9)
+  76  | (297.5, 15.4)   | (297.5, 36.9)
+  77  | (285.0, 15.4)   | (285.0, 36.9)
+  78  | (272.5, 15.4)   | (272.5, 36.9)
+  79  | (260.0, 15.4)   | (260.0, 36.9)
+  80  | (247.5, 15.4)   | (247.5, 36.9)
+  81  | (235.0, 15.4)   | (235.0, 36.9)
+  82  | (222.5, 15.4)   | (222.5, 36.9)
+  83  | (210.0, 15.4)   | (210.0, 36.9)
+  84  | (197.5, 15.4)   | (197.5, 36.9)
+  85  | (185.0, 15.4)   | (185.0, 36.9)
+  86  | (172.5, 15.4)   | (172.5, 36.9)
+  87  | (160.0, 15.4)   | (160.0, 36.9)
+  88  | (147.5, 15.4)   | (147.5, 36.9)
+  89  | (135.0, 15.4)   | (135.0, 36.9)
+  90  | (122.5, 15.4)   | (122.5, 36.9)
+  91  | (110.0, 15.4)   | (110.0, 36.9)
+  92  | (97.5, 15.4)    | (97.5, 36.9)
+  93  | (85.0, 15.4)    | (85.0, 36.9)
+  94  | (72.5, 15.4)    | (72.5, 36.9)
+  95  | (60.0, 15.4)    | (60.0, 36.9)
+  96  | (47.5, 15.4)    | (47.5, 36.9)
+  97  | (35.0, 15.4)    | (35.0, 36.9)
+  98  | (22.5, 15.4)    | (22.5, 36.9)
+  99  | (10.0, 15.4)    | (10.0, 36.9)
+  100 | (10.0, 26.0)    | (10.0, 47.5)
+  101 | (22.5, 26.0)    | (22.5, 47.5)
+  102 | (35.0, 26.0)    | (35.0, 47.5)
+  103 | (47.5, 26.0)    | (47.5, 47.5)
+  104 | (60.0, 26.0)    | (60.0, 47.5)
+  105 | (72.5, 26.0)    | (72.5, 47.5)
+  106 | (85.0, 26.0)    | (85.0, 47.5)
+  107 | (97.5, 26.0)    | (97.5, 47.5)
+  108 | (110.0, 26.0)   | (110.0, 47.5)
+  109 | (122.5, 26.0)   | (122.5, 47.5)
+  110 | (135.0, 26.0)   | (135.0, 47.5)
+  111 | (147.5, 26.0)   | (147.5, 47.5)
+  112 | (160.0, 26.0)   | (160.0, 47.5)
+  113 | (172.5, 26.0)   | (172.5, 47.5)
+  114 | (185.0, 26.0)   | (185.0, 47.5)
+  115 | (197.5, 26.0)   | (197.5, 47.5)
+  116 | (210.0, 26.0)   | (210.0, 47.5)
+  117 | (222.5, 26.0)   | (222.5, 47.5)
+  118 | (235.0, 26.0)   | (235.0, 47.5)
+  119 | (247.5, 26.0)   | (247.5, 47.5)
+  120 | (260.0, 26.0)   | (260.0, 47.5)
+  121 | (272.5, 26.0)   | (272.5, 47.5)
+  122 | (285.0, 26.0)   | (285.0, 47.5)
+  123 | (297.5, 26.0)   | (297.5, 47.5)
+  124 | (310.0, 26.0)   | (310.0, 47.5)
+  125 | (310.0, 36.7)   | (310.0, 58.1)
+  126 | (297.5, 36.7)   | (297.5, 58.1)
+  127 | (285.0, 36.7)   | (285.0, 58.1)
+  128 | (272.5, 36.7)   | (272.5, 58.1)
+  129 | (260.0, 36.7)   | (260.0, 58.1)
+  130 | (247.5, 36.7)   | (247.5, 58.1)
+  131 | (235.0, 36.7)   | (235.0, 58.1)
+  132 | (222.5, 36.7)   | (222.5, 58.1)
+  133 | (210.0, 36.7)   | (210.0, 58.1)
+  134 | (197.5, 36.7)   | (197.5, 58.1)
+  135 | (185.0, 36.7)   | (185.0, 58.1)
+  136 | (172.5, 36.7)   | (172.5, 58.1)
+  137 | (160.0, 36.7)   | (160.0, 58.1)
+  138 | (147.5, 36.7)   | (147.5, 58.1)
+  139 | (135.0, 36.7)   | (135.0, 58.1)
+  140 | (122.5, 36.7)   | (122.5, 58.1)
+  141 | (110.0, 36.7)   | (110.0, 58.1)
+  142 | (97.5, 36.7)    | (97.5, 58.1)
+  143 | (85.0, 36.7)    | (85.0, 58.1)
+  144 | (72.5, 36.7)    | (72.5, 58.1)
+  145 | (60.0, 36.7)    | (60.0, 58.1)
+  146 | (47.5, 36.7)    | (47.5, 58.1)
+  147 | (35.0, 36.7)    | (35.0, 58.1)
+  148 | (22.5, 36.7)    | (22.5, 58.1)
+  149 | (10.0, 36.7)    | (10.0, 58.1)
+  150 | (10.0, 47.3)    | (10.0, 68.7)
+  151 | (22.5, 47.3)    | (22.5, 68.7)
+  152 | (35.0, 47.3)    | (35.0, 68.7)
+  153 | (47.5, 47.3)    | (47.5, 68.7)
+  154 | (60.0, 47.3)    | (60.0, 68.7)
+  155 | (72.5, 47.3)    | (72.5, 68.7)
+  156 | (85.0, 47.3)    | (85.0, 68.7)
+  157 | (97.5, 47.3)    | (97.5, 68.7)
+  158 | (110.0, 47.3)   | (110.0, 68.7)
+  159 | (122.5, 47.3)   | (122.5, 68.7)
+  160 | (135.0, 47.3)   | (135.0, 68.7)
+  161 | (147.5, 47.3)   | (147.5, 68.7)
+  162 | (160.0, 47.3)   | (160.0, 68.7)
+  163 | (172.5, 47.3)   | (172.5, 68.7)
+  164 | (185.0, 47.3)   | (185.0, 68.7)
+  165 | (197.5, 47.3)   | (197.5, 68.7)
+  166 | (210.0, 47.3)   | (210.0, 68.7)
+  167 | (222.5, 47.3)   | (222.5, 68.7)
+  168 | (235.0, 47.3)   | (235.0, 68.7)
+  169 | (247.5, 47.3)   | (247.5, 68.7)
+  170 | (260.0, 47.3)   | (260.0, 68.7)
+  171 | (272.5, 47.3)   | (272.5, 68.7)
+  172 | (285.0, 47.3)   | (285.0, 68.7)
+  173 | (297.5, 47.3)   | (297.5, 68.7)
+  174 | (310.0, 47.3)   | (310.0, 68.7)
+  175 | (310.0, 57.9)   | (310.0, 79.3)
+  176 | (297.5, 57.9)   | (297.5, 79.3)
+  177 | (285.0, 57.9)   | (285.0, 79.3)
+  178 | (272.5, 57.9)   | (272.5, 79.3)
+  179 | (260.0, 57.9)   | (260.0, 79.3)
+  180 | (247.5, 57.9)   | (247.5, 79.3)
+  181 | (235.0, 57.9)   | (235.0, 79.3)
+  182 | (222.5, 57.9)   | (222.5, 79.3)
+  183 | (210.0, 57.9)   | (210.0, 79.3)
+  184 | (197.5, 57.9)   | (197.5, 79.3)
+  185 | (185.0, 57.9)   | (185.0, 79.3)
+  186 | (172.5, 57.9)   | (172.5, 79.3)
+  187 | (160.0, 57.9)   | (160.0, 79.3)
+  188 | (147.5, 57.9)   | (147.5, 79.3)
+  189 | (135.0, 57.9)   | (135.0, 79.3)
+  190 | (122.5, 57.9)   | (122.5, 79.3)
+  191 | (110.0, 57.9)   | (110.0, 79.3)
+  192 | (97.5, 57.9)    | (97.5, 79.3)
+  193 | (85.0, 57.9)    | (85.0, 79.3)
+  194 | (72.5, 57.9)    | (72.5, 79.3)
+  195 | (60.0, 57.9)    | (60.0, 79.3)
+  196 | (47.5, 57.9)    | (47.5, 79.3)
+  197 | (35.0, 57.9)    | (35.0, 79.3)
+  198 | (22.5, 57.9)    | (22.5, 79.3)
+  199 | (10.0, 57.9)    | (10.0, 79.3)
+  200 | (10.0, 68.5)    | (10.0, 90.0)
+  201 | (22.5, 68.5)    | (22.5, 90.0)
+  202 | (35.0, 68.5)    | (35.0, 90.0)
+  203 | (47.5, 68.5)    | (47.5, 90.0)
+  204 | (60.0, 68.5)    | (60.0, 90.0)
+  205 | (72.5, 68.5)    | (72.5, 90.0)
+  206 | (85.0, 68.5)    | (85.0, 90.0)
+  207 | (97.5, 68.5)    | (97.5, 90.0)
+  208 | (110.0, 68.5)   | (110.0, 90.0)
+  209 | (122.5, 68.5)   | (122.5, 90.0)
+  210 | (135.0, 68.5)   | (135.0, 90.0)
+  211 | (147.5, 68.5)   | (147.5, 90.0)
+  212 | (160.0, 68.5)   | (160.0, 90.0)
+  213 | (172.5, 68.5)   | (172.5, 90.0)
+  214 | (185.0, 68.5)   | (185.0, 90.0)
+  215 | (197.5, 68.5)   | (197.5, 90.0)
+  216 | (210.0, 68.5)   | (210.0, 90.0)
+  217 | (222.5, 68.5)   | (222.5, 90.0)
+  218 | (235.0, 68.5)   | (235.0, 90.0)
+  219 | (247.5, 68.5)   | (247.5, 90.0)
+  220 | (260.0, 68.5)   | (260.0, 90.0)
+  221 | (272.5, 68.5)   | (272.5, 90.0)
+  222 | (285.0, 68.5)   | (285.0, 90.0)
+  223 | (297.5, 68.5)   | (297.5, 90.0)
+  224 | (310.0, 68.5)   | (310.0, 90.0)
+  225 | (310.0, 79.2)   | (310.0, 100.6)
+  226 | (297.5, 79.2)   | (297.5, 100.6)
+  227 | (285.0, 79.2)   | (285.0, 100.6)
+  228 | (272.5, 79.2)   | (272.5, 100.6)
+  229 | (260.0, 79.2)   | (260.0, 100.6)
+  230 | (247.5, 79.2)   | (247.5, 100.6)
+  231 | (235.0, 79.2)   | (235.0, 100.6)
+  232 | (222.5, 79.2)   | (222.5, 100.6)
+  233 | (210.0, 79.2)   | (210.0, 100.6)
+  234 | (197.5, 79.2)   | (197.5, 100.6)
+  235 | (185.0, 79.2)   | (185.0, 100.6)
+  236 | (172.5, 79.2)   | (172.5, 100.6)
+  237 | (160.0, 79.2)   | (160.0, 100.6)
+  238 | (147.5, 79.2)   | (147.5, 100.6)
+  239 | (135.0, 79.2)   | (135.0, 100.6)
+  240 | (122.5, 79.2)   | (122.5, 100.6)
+  241 | (110.0, 79.2)   | (110.0, 100.6)
+  242 | (97.5, 79.2)    | (97.5, 100.6)
+  243 | (85.0, 79.2)    | (85.0, 100.6)
+  244 | (72.5, 79.2)    | (72.5, 100.6)
+  245 | (60.0, 79.2)    | (60.0, 100.6)
+  246 | (47.5, 79.2)    | (47.5, 100.6)
+  247 | (35.0, 79.2)    | (35.0, 100.6)
+  248 | (22.5, 79.2)    | (22.5, 100.6)
+  249 | (10.0, 79.2)    | (10.0, 100.6)
+  250 | (10.0, 89.8)    | (10.0, 111.2)
+  251 | (22.5, 89.8)    | (22.5, 111.2)
+  252 | (35.0, 89.8)    | (35.0, 111.2)
+  253 | (47.5, 89.8)    | (47.5, 111.2)
+  254 | (60.0, 89.8)    | (60.0, 111.2)
+  255 | (72.5, 89.8)    | (72.5, 111.2)
+  256 | (85.0, 89.8)    | (85.0, 111.2)
+  257 | (97.5, 89.8)    | (97.5, 111.2)
+  258 | (110.0, 89.8)   | (110.0, 111.2)
+  259 | (122.5, 89.8)   | (122.5, 111.2)
+  260 | (135.0, 89.8)   | (135.0, 111.2)
+  261 | (147.5, 89.8)   | (147.5, 111.2)
+  262 | (160.0, 89.8)   | (160.0, 111.2)
+  263 | (172.5, 89.8)   | (172.5, 111.2)
+  264 | (185.0, 89.8)   | (185.0, 111.2)
+  265 | (197.5, 89.8)   | (197.5, 111.2)
+  266 | (210.0, 89.8)   | (210.0, 111.2)
+  267 | (222.5, 89.8)   | (222.5, 111.2)
+  268 | (235.0, 89.8)   | (235.0, 111.2)
+  269 | (247.5, 89.8)   | (247.5, 111.2)
+  270 | (260.0, 89.8)   | (260.0, 111.2)
+  271 | (272.5, 89.8)   | (272.5, 111.2)
+  272 | (285.0, 89.8)   | (285.0, 111.2)
+  273 | (297.5, 89.8)   | (297.5, 111.2)
+  274 | (310.0, 89.8)   | (310.0, 111.2)
+  275 | (310.0, 100.4)  | (310.0, 121.8)
+  276 | (297.5, 100.4)  | (297.5, 121.8)
+  277 | (285.0, 100.4)  | (285.0, 121.8)
+  278 | (272.5, 100.4)  | (272.5, 121.8)
+  279 | (260.0, 100.4)  | (260.0, 121.8)
+  280 | (247.5, 100.4)  | (247.5, 121.8)
+  281 | (235.0, 100.4)  | (235.0, 121.8)
+  282 | (222.5, 100.4)  | (222.5, 121.8)
+  283 | (210.0, 100.4)  | (210.0, 121.8)
+  284 | (197.5, 100.4)  | (197.5, 121.8)
+  285 | (185.0, 100.4)  | (185.0, 121.8)
+  286 | (172.5, 100.4)  | (172.5, 121.8)
+  287 | (160.0, 100.4)  | (160.0, 121.8)
+  288 | (147.5, 100.4)  | (147.5, 121.8)
+  289 | (135.0, 100.4)  | (135.0, 121.8)
+  290 | (122.5, 100.4)  | (122.5, 121.8)
+  291 | (110.0, 100.4)  | (110.0, 121.8)
+  292 | (97.5, 100.4)   | (97.5, 121.8)
+  293 | (85.0, 100.4)   | (85.0, 121.8)
+  294 | (72.5, 100.4)   | (72.5, 121.8)
+  295 | (60.0, 100.4)   | (60.0, 121.8)
+  296 | (47.5, 100.4)   | (47.5, 121.8)
+  297 | (35.0, 100.4)   | (35.0, 121.8)
+  298 | (22.5, 100.4)   | (22.5, 121.8)
+  299 | (10.0, 100.4)   | (10.0, 121.8)
+  300 | (10.0, 111.0)   | (10.0, 132.4)
+  301 | (22.5, 111.0)   | (22.5, 132.4)
+  302 | (35.0, 111.0)   | (35.0, 132.4)
+  303 | (47.5, 111.0)   | (47.5, 132.4)
+  304 | (60.0, 111.0)   | (60.0, 132.4)
+  305 | (72.5, 111.0)   | (72.5, 132.4)
+  306 | (85.0, 111.0)   | (85.0, 132.4)
+  307 | (97.5, 111.0)   | (97.5, 132.4)
+  308 | (110.0, 111.0)  | (110.0, 132.4)
+  309 | (122.5, 111.0)  | (122.5, 132.4)
+  310 | (135.0, 111.0)  | (135.0, 132.4)
+  311 | (147.5, 111.0)  | (147.5, 132.4)
+  312 | (160.0, 111.0)  | (160.0, 132.4)
+  313 | (172.5, 111.0)  | (172.5, 132.4)
+  314 | (185.0, 111.0)  | (185.0, 132.4)
+  315 | (197.5, 111.0)  | (197.5, 132.4)
+  316 | (210.0, 111.0)  | (210.0, 132.4)
+  317 | (222.5, 111.0)  | (222.5, 132.4)
+  318 | (235.0, 111.0)  | (235.0, 132.4)
+  319 | (247.5, 111.0)  | (247.5, 132.4)
+  320 | (260.0, 111.0)  | (260.0, 132.4)
+  321 | (272.5, 111.0)  | (272.5, 132.4)
+  322 | (285.0, 111.0)  | (285.0, 132.4)
+  323 | (297.5, 111.0)  | (297.5, 132.4)
+  324 | (310.0, 111.0)  | (310.0, 132.4)
+  325 | (310.0, 121.6)  | (310.0, 143.1)
+  326 | (297.5, 121.6)  | (297.5, 143.1)
+  327 | (285.0, 121.6)  | (285.0, 143.1)
+  328 | (272.5, 121.6)  | (272.5, 143.1)
+  329 | (260.0, 121.6)  | (260.0, 143.1)
+  330 | (247.5, 121.6)  | (247.5, 143.1)
+  331 | (235.0, 121.6)  | (235.0, 143.1)
+  332 | (222.5, 121.6)  | (222.5, 143.1)
+  333 | (210.0, 121.6)  | (210.0, 143.1)
+  334 | (197.5, 121.6)  | (197.5, 143.1)
+  335 | (185.0, 121.6)  | (185.0, 143.1)
+  336 | (172.5, 121.6)  | (172.5, 143.1)
+  337 | (160.0, 121.6)  | (160.0, 143.1)
+  338 | (147.5, 121.6)  | (147.5, 143.1)
+  339 | (135.0, 121.6)  | (135.0, 143.1)
+  340 | (122.5, 121.6)  | (122.5, 143.1)
+  341 | (110.0, 121.6)  | (110.0, 143.1)
+  342 | (97.5, 121.6)   | (97.5, 143.1)
+  343 | (85.0, 121.6)   | (85.0, 143.1)
+  344 | (72.5, 121.6)   | (72.5, 143.1)
+  345 | (60.0, 121.6)   | (60.0, 143.1)
+  346 | (47.5, 121.6)   | (47.5, 143.1)
+  347 | (35.0, 121.6)   | (35.0, 143.1)
+  348 | (22.5, 121.6)   | (22.5, 143.1)
+  349 | (10.0, 121.6)   | (10.0, 143.1)
+  350 | (10.0, 132.3)   | (10.0, 153.7)
+  351 | (22.5, 132.3)   | (22.5, 153.7)
+  352 | (35.0, 132.3)   | (35.0, 153.7)
+  353 | (47.5, 132.3)   | (47.5, 153.7)
+  354 | (60.0, 132.3)   | (60.0, 153.7)
+  355 | (72.5, 132.3)   | (72.5, 153.7)
+  356 | (85.0, 132.3)   | (85.0, 153.7)
+  357 | (97.5, 132.3)   | (97.5, 153.7)
+  358 | (110.0, 132.3)  | (110.0, 153.7)
+  359 | (122.5, 132.3)  | (122.5, 153.7)
+  360 | (135.0, 132.3)  | (135.0, 153.7)
+  361 | (147.5, 132.3)  | (147.5, 153.7)
+  362 | (160.0, 132.3)  | (160.0, 153.7)
+  363 | (172.5, 132.3)  | (172.5, 153.7)
+  364 | (185.0, 132.3)  | (185.0, 153.7)
+  365 | (197.5, 132.3)  | (197.5, 153.7)
+  366 | (210.0, 132.3)  | (210.0, 153.7)
+  367 | (222.5, 132.3)  | (222.5, 153.7)
+  368 | (235.0, 132.3)  | (235.0, 153.7)
+  369 | (247.5, 132.3)  | (247.5, 153.7)
+  370 | (260.0, 132.3)  | (260.0, 153.7)
+  371 | (272.5, 132.3)  | (272.5, 153.7)
+  372 | (285.0, 132.3)  | (285.0, 153.7)
+  373 | (297.5, 132.3)  | (297.5, 153.7)
+  374 | (310.0, 132.3)  | (310.0, 153.7)
+  375 | (310.0, 142.9)  | (310.0, 164.3)
+  376 | (297.5, 142.9)  | (297.5, 164.3)
+  377 | (285.0, 142.9)  | (285.0, 164.3)
+  378 | (272.5, 142.9)  | (272.5, 164.3)
+  379 | (260.0, 142.9)  | (260.0, 164.3)
+  380 | (247.5, 142.9)  | (247.5, 164.3)
+  381 | (235.0, 142.9)  | (235.0, 164.3)
+  382 | (222.5, 142.9)  | (222.5, 164.3)
+  383 | (210.0, 142.9)  | (210.0, 164.3)
+  384 | (197.5, 142.9)  | (197.5, 164.3)
+  385 | (185.0, 142.9)  | (185.0, 164.3)
+  386 | (172.5, 142.9)  | (172.5, 164.3)
+  387 | (160.0, 142.9)  | (160.0, 164.3)
+  388 | (147.5, 142.9)  | (147.5, 164.3)
+  389 | (135.0, 142.9)  | (135.0, 164.3)
+  390 | (122.5, 142.9)  | (122.5, 164.3)
+  391 | (110.0, 142.9)  | (110.0, 164.3)
+  392 | (97.5, 142.9)   | (97.5, 164.3)
+  393 | (85.0, 142.9)   | (85.0, 164.3)
+  394 | (72.5, 142.9)   | (72.5, 164.3)
+  395 | (60.0, 142.9)   | (60.0, 164.3)
+  396 | (47.5, 142.9)   | (47.5, 164.3)
+  397 | (35.0, 142.9)   | (35.0, 164.3)
+  398 | (22.5, 142.9)   | (22.5, 164.3)
+  399 | (10.0, 142.9)   | (10.0, 164.3)
+  400 | (10.0, 153.5)   | (10.0, 174.9)
+  401 | (22.5, 153.5)   | (22.5, 174.9)
+  402 | (35.0, 153.5)   | (35.0, 174.9)
+  403 | (47.5, 153.5)   | (47.5, 174.9)
+  404 | (60.0, 153.5)   | (60.0, 174.9)
+  405 | (72.5, 153.5)   | (72.5, 174.9)
+  406 | (85.0, 153.5)   | (85.0, 174.9)
+  407 | (97.5, 153.5)   | (97.5, 174.9)
+  408 | (110.0, 153.5)  | (110.0, 174.9)
+  409 | (122.5, 153.5)  | (122.5, 174.9)
+  410 | (135.0, 153.5)  | (135.0, 174.9)
+  411 | (147.5, 153.5)  | (147.5, 174.9)
+  412 | (160.0, 153.5)  | (160.0, 174.9)
+  413 | (172.5, 153.5)  | (172.5, 174.9)
+  414 | (185.0, 153.5)  | (185.0, 174.9)
+  415 | (197.5, 153.5)  | (197.5, 174.9)
+  416 | (210.0, 153.5)  | (210.0, 174.9)
+  417 | (222.5, 153.5)  | (222.5, 174.9)
+  418 | (235.0, 153.5)  | (235.0, 174.9)
+  419 | (247.5, 153.5)  | (247.5, 174.9)
+  420 | (260.0, 153.5)  | (260.0, 174.9)
+  421 | (272.5, 153.5)  | (272.5, 174.9)
+  422 | (285.0, 153.5)  | (285.0, 174.9)
+  423 | (297.5, 153.5)  | (297.5, 174.9)
+  424 | (310.0, 153.5)  | (310.0, 174.9)
+  425 | (310.0, 164.1)  | (310.0, 185.5)
+  426 | (297.5, 164.1)  | (297.5, 185.5)
+  427 | (285.0, 164.1)  | (285.0, 185.5)
+  428 | (272.5, 164.1)  | (272.5, 185.5)
+  429 | (260.0, 164.1)  | (260.0, 185.5)
+  430 | (247.5, 164.1)  | (247.5, 185.5)
+  431 | (235.0, 164.1)  | (235.0, 185.5)
+  432 | (222.5, 164.1)  | (222.5, 185.5)
+  433 | (210.0, 164.1)  | (210.0, 185.5)
+  434 | (197.5, 164.1)  | (197.5, 185.5)
+  435 | (185.0, 164.1)  | (185.0, 185.5)
+  436 | (172.5, 164.1)  | (172.5, 185.5)
+  437 | (160.0, 164.1)  | (160.0, 185.5)
+  438 | (147.5, 164.1)  | (147.5, 185.5)
+  439 | (135.0, 164.1)  | (135.0, 185.5)
+  440 | (122.5, 164.1)  | (122.5, 185.5)
+  441 | (110.0, 164.1)  | (110.0, 185.5)
+  442 | (97.5, 164.1)   | (97.5, 185.5)
+  443 | (85.0, 164.1)   | (85.0, 185.5)
+  444 | (72.5, 164.1)   | (72.5, 185.5)
+  445 | (60.0, 164.1)   | (60.0, 185.5)
+  446 | (47.5, 164.1)   | (47.5, 185.5)
+  447 | (35.0, 164.1)   | (35.0, 185.5)
+  448 | (22.5, 164.1)   | (22.5, 185.5)
+  449 | (10.0, 164.1)   | (10.0, 185.5)
+  450 | (10.0, 174.7)   | (10.0, 196.2)
+  451 | (22.5, 174.7)   | (22.5, 196.2)
+  452 | (35.0, 174.7)   | (35.0, 196.2)
+  453 | (47.5, 174.7)   | (47.5, 196.2)
+  454 | (60.0, 174.7)   | (60.0, 196.2)
+  455 | (72.5, 174.7)   | (72.5, 196.2)
+  456 | (85.0, 174.7)   | (85.0, 196.2)
+  457 | (97.5, 174.7)   | (97.5, 196.2)
+  458 | (110.0, 174.7)  | (110.0, 196.2)
+  459 | (122.5, 174.7)  | (122.5, 196.2)
+  460 | (135.0, 174.7)  | (135.0, 196.2)
+  461 | (147.5, 174.7)  | (147.5, 196.2)
+  462 | (160.0, 174.7)  | (160.0, 196.2)
+  463 | (172.5, 174.7)  | (172.5, 196.2)
+  464 | (185.0, 174.7)  | (185.0, 196.2)
+  465 | (197.5, 174.7)  | (197.5, 196.2)
+  466 | (210.0, 174.7)  | (210.0, 196.2)
+  467 | (222.5, 174.7)  | (222.5, 196.2)
+  468 | (235.0, 174.7)  | (235.0, 196.2)
+  469 | (247.5, 174.7)  | (247.5, 196.2)
+  470 | (260.0, 174.7)  | (260.0, 196.2)
+  471 | (272.5, 174.7)  | (272.5, 196.2)
+  472 | (285.0, 174.7)  | (285.0, 196.2)
+  473 | (297.5, 174.7)  | (297.5, 196.2)
+  474 | (310.0, 174.7)  | (310.0, 196.2)
+  475 | (310.0, 185.4)  | (310.0, 206.8)
+  476 | (297.5, 185.4)  | (297.5, 206.8)
+  477 | (285.0, 185.4)  | (285.0, 206.8)
+  478 | (272.5, 185.4)  | (272.5, 206.8)
+  479 | (260.0, 185.4)  | (260.0, 206.8)
+  480 | (247.5, 185.4)  | (247.5, 206.8)
+  481 | (235.0, 185.4)  | (235.0, 206.8)
+  482 | (222.5, 185.4)  | (222.5, 206.8)
+  483 | (210.0, 185.4)  | (210.0, 206.8)
+  484 | (197.5, 185.4)  | (197.5, 206.8)
+  485 | (185.0, 185.4)  | (185.0, 206.8)
+  486 | (172.5, 185.4)  | (172.5, 206.8)
+  487 | (160.0, 185.4)  | (160.0, 206.8)
+  488 | (147.5, 185.4)  | (147.5, 206.8)
+  489 | (135.0, 185.4)  | (135.0, 206.8)
+  490 | (122.5, 185.4)  | (122.5, 206.8)
+  491 | (110.0, 185.4)  | (110.0, 206.8)
+  492 | (97.5, 185.4)   | (97.5, 206.8)
+  493 | (85.0, 185.4)   | (85.0, 206.8)
+  494 | (72.5, 185.4)   | (72.5, 206.8)
+  495 | (60.0, 185.4)   | (60.0, 206.8)
+  496 | (47.5, 185.4)   | (47.5, 206.8)
+  497 | (35.0, 185.4)   | (35.0, 206.8)
+  498 | (22.5, 185.4)   | (22.5, 206.8)
+  499 | (10.0, 185.4)   | (10.0, 206.8)
+  500 | (10.0, 196.0)   | (10.0, 217.4)
+  501 | (22.5, 196.0)   | (22.5, 217.4)
+  502 | (35.0, 196.0)   | (35.0, 217.4)
+  503 | (47.5, 196.0)   | (47.5, 217.4)
+  504 | (60.0, 196.0)   | (60.0, 217.4)
+  505 | (72.5, 196.0)   | (72.5, 217.4)
+  506 | (85.0, 196.0)   | (85.0, 217.4)
+  507 | (97.5, 196.0)   | (97.5, 217.4)
+  508 | (110.0, 196.0)  | (110.0, 217.4)
+  509 | (122.5, 196.0)  | (122.5, 217.4)
+  510 | (135.0, 196.0)  | (135.0, 217.4)
+  511 | (147.5, 196.0)  | (147.5, 217.4)
+  512 | (160.0, 196.0)  | (160.0, 217.4)
+  513 | (172.5, 196.0)  | (172.5, 217.4)
+  514 | (185.0, 196.0)  | (185.0, 217.4)
+  515 | (197.5, 196.0)  | (197.5, 217.4)
+  516 | (210.0, 196.0)  | (210.0, 217.4)
+  517 | (222.5, 196.0)  | (222.5, 217.4)
+  518 | (235.0, 196.0)  | (235.0, 217.4)
+  519 | (247.5, 196.0)  | (247.5, 217.4)
+  520 | (260.0, 196.0)  | (260.0, 217.4)
+  521 | (272.5, 196.0)  | (272.5, 217.4)
+  522 | (285.0, 196.0)  | (285.0, 217.4)
+  523 | (297.5, 196.0)  | (297.5, 217.4)
+  524 | (310.0, 196.0)  | (310.0, 217.4)
+  525 | (310.0, 206.6)  | (310.0, 228.0)
+  526 | (297.5, 206.6)  | (297.5, 228.0)
+  527 | (285.0, 206.6)  | (285.0, 228.0)
+  528 | (272.5, 206.6)  | (272.5, 228.0)
+  529 | (260.0, 206.6)  | (260.0, 228.0)
+  530 | (247.5, 206.6)  | (247.5, 228.0)
+  531 | (235.0, 206.6)  | (235.0, 228.0)
+  532 | (222.5, 206.6)  | (222.5, 228.0)
+  533 | (210.0, 206.6)  | (210.0, 228.0)
+  534 | (197.5, 206.6)  | (197.5, 228.0)
+  535 | (185.0, 206.6)  | (185.0, 228.0)
+  536 | (172.5, 206.6)  | (172.5, 228.0)
+  537 | (160.0, 206.6)  | (160.0, 228.0)
+  538 | (147.5, 206.6)  | (147.5, 228.0)
+  539 | (135.0, 206.6)  | (135.0, 228.0)
+  540 | (122.5, 206.6)  | (122.5, 228.0)
+  541 | (110.0, 206.6)  | (110.0, 228.0)
+  542 | (97.5, 206.6)   | (97.5, 228.0)
+  543 | (85.0, 206.6)   | (85.0, 228.0)
+  544 | (72.5, 206.6)   | (72.5, 228.0)
+  545 | (60.0, 206.6)   | (60.0, 228.0)
+  546 | (47.5, 206.6)   | (47.5, 228.0)
+  547 | (35.0, 206.6)   | (35.0, 228.0)
+  548 | (22.5, 206.6)   | (22.5, 228.0)
+  549 | (10.0, 206.6)   | (10.0, 228.0)
+  550 | (10.0, 217.2)   | (10.0, 238.6)
+  551 | (22.5, 217.2)   | (22.5, 238.6)
+  552 | (35.0, 217.2)   | (35.0, 238.6)
+  553 | (47.5, 217.2)   | (47.5, 238.6)
+  554 | (60.0, 217.2)   | (60.0, 238.6)
+  555 | (72.5, 217.2)   | (72.5, 238.6)
+  556 | (85.0, 217.2)   | (85.0, 238.6)
+  557 | (97.5, 217.2)   | (97.5, 238.6)
+  558 | (110.0, 217.2)  | (110.0, 238.6)
+  559 | (122.5, 217.2)  | (122.5, 238.6)
+  560 | (135.0, 217.2)  | (135.0, 238.6)
+  561 | (147.5, 217.2)  | (147.5, 238.6)
+  562 | (160.0, 217.2)  | (160.0, 238.6)
+  563 | (172.5, 217.2)  | (172.5, 238.6)
+  564 | (185.0, 217.2)  | (185.0, 238.6)
+  565 | (197.5, 217.2)  | (197.5, 238.6)
+  566 | (210.0, 217.2)  | (210.0, 238.6)
+  567 | (222.5, 217.2)  | (222.5, 238.6)
+  568 | (235.0, 217.2)  | (235.0, 238.6)
+  569 | (247.5, 217.2)  | (247.5, 238.6)
+  570 | (260.0, 217.2)  | (260.0, 238.6)
+  571 | (272.5, 217.2)  | (272.5, 238.6)
+  572 | (285.0, 217.2)  | (285.0, 238.6)
+  573 | (297.5, 217.2)  | (297.5, 238.6)
+  574 | (310.0, 217.2)  | (310.0, 238.6)
+  575 | (310.0, 227.8)  | (310.0, 249.3)
+  576 | (297.5, 227.8)  | (297.5, 249.3)
+  577 | (285.0, 227.8)  | (285.0, 249.3)
+  578 | (272.5, 227.8)  | (272.5, 249.3)
+  579 | (260.0, 227.8)  | (260.0, 249.3)
+  580 | (247.5, 227.8)  | (247.5, 249.3)
+  581 | (235.0, 227.8)  | (235.0, 249.3)
+  582 | (222.5, 227.8)  | (222.5, 249.3)
+  583 | (210.0, 227.8)  | (210.0, 249.3)
+  584 | (197.5, 227.8)  | (197.5, 249.3)
+  585 | (185.0, 227.8)  | (185.0, 249.3)
+  586 | (172.5, 227.8)  | (172.5, 249.3)
+  587 | (160.0, 227.8)  | (160.0, 249.3)
+  588 | (147.5, 227.8)  | (147.5, 249.3)
+  589 | (135.0, 227.8)  | (135.0, 249.3)
+  590 | (122.5, 227.8)  | (122.5, 249.3)
+  591 | (110.0, 227.8)  | (110.0, 249.3)
+  592 | (97.5, 227.8)   | (97.5, 249.3)
+  593 | (85.0, 227.8)   | (85.0, 249.3)
+  594 | (72.5, 227.8)   | (72.5, 249.3)
+  595 | (60.0, 227.8)   | (60.0, 249.3)
+  596 | (47.5, 227.8)   | (47.5, 249.3)
+  597 | (35.0, 227.8)   | (35.0, 249.3)
+  598 | (22.5, 227.8)   | (22.5, 249.3)
+  599 | (10.0, 227.8)   | (10.0, 249.3)
+  600 | (10.0, 238.5)   | (10.0, 259.9)
+  601 | (22.5, 238.5)   | (22.5, 259.9)
+  602 | (35.0, 238.5)   | (35.0, 259.9)
+  603 | (47.5, 238.5)   | (47.5, 259.9)
+  604 | (60.0, 238.5)   | (60.0, 259.9)
+  605 | (72.5, 238.5)   | (72.5, 259.9)
+  606 | (85.0, 238.5)   | (85.0, 259.9)
+  607 | (97.5, 238.5)   | (97.5, 259.9)
+  608 | (110.0, 238.5)  | (110.0, 259.9)
+  609 | (122.5, 238.5)  | (122.5, 259.9)
+  610 | (135.0, 238.5)  | (135.0, 259.9)
+  611 | (147.5, 238.5)  | (147.5, 259.9)
+  612 | (160.0, 238.5)  | (160.0, 259.9)
+  613 | (172.5, 238.5)  | (172.5, 259.9)
+  614 | (185.0, 238.5)  | (185.0, 259.9)
+  615 | (197.5, 238.5)  | (197.5, 259.9)
+  616 | (210.0, 238.5)  | (210.0, 259.9)
+  617 | (222.5, 238.5)  | (222.5, 259.9)
+  618 | (235.0, 238.5)  | (235.0, 259.9)
+  619 | (247.5, 238.5)  | (247.5, 259.9)
+  620 | (260.0, 238.5)  | (260.0, 259.9)
+  621 | (272.5, 238.5)  | (272.5, 259.9)
+  622 | (285.0, 238.5)  | (285.0, 259.9)
+  623 | (297.5, 238.5)  | (297.5, 259.9)
+  624 | (310.0, 238.5)  | (310.0, 259.9)
+bed_mesh: relative_reference_index 12 is (160.00, 5.00)
+Starting heater checks for extruder
+Stats 275.1: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3335 bytes_read=6940 bytes_retransmit=9 bytes_invalid=0 send_seq=258 receive_seq=258 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180057846  Pro: temp=0.0 CB1: temp=39.7 heater_bed: target=0 temp=0.0 pwm=0.000 sysload=0.09 cputime=1.275 memavail=3883472 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=0.0 pwm=0.000
+webhooks: registering remote method 'shutdown_machine' for connection id: 140734302278800
+webhooks: registering remote method 'reboot_machine' for connection id: 140734302278800
+webhooks: registering remote method 'pause_job_queue' for connection id: 140734302278800
+webhooks: registering remote method 'start_job_queue' for connection id: 140734302278800
+Stats 276.1: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3341 bytes_read=7085 bytes_retransmit=9 bytes_invalid=0 send_seq=259 receive_seq=259 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180030997  Pro: temp=19.3 CB1: temp=39.1 heater_bed: target=0 temp=20.7 pwm=0.000 sysload=0.08 cputime=1.285 memavail=3883248 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 277.1: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3347 bytes_read=7259 bytes_retransmit=9 bytes_invalid=0 send_seq=260 receive_seq=260 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180020392  Pro: temp=19.3 CB1: temp=39.7 heater_bed: target=0 temp=20.9 pwm=0.000 sysload=0.08 cputime=1.293 memavail=3883264 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 278.1: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3353 bytes_read=7418 bytes_retransmit=9 bytes_invalid=0 send_seq=261 receive_seq=261 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179999435  Pro: temp=19.5 CB1: temp=39.1 heater_bed: target=0 temp=20.1 pwm=0.000 sysload=0.08 cputime=1.296 memavail=3883264 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.3 pwm=0.000
+Stats 279.1: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3359 bytes_read=7563 bytes_retransmit=9 bytes_invalid=0 send_seq=262 receive_seq=262 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998385  Pro: temp=19.2 CB1: temp=40.2 heater_bed: target=0 temp=19.0 pwm=0.000 sysload=0.08 cputime=1.298 memavail=3883264 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.3 pwm=0.000
+Stats 280.1: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000038 bytes_write=3365 bytes_read=7752 bytes_retransmit=9 bytes_invalid=0 send_seq=263 receive_seq=263 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179994677  Pro: temp=19.4 CB1: temp=39.1 heater_bed: target=0 temp=18.5 pwm=0.000 sysload=0.08 cputime=1.301 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 281.1: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000038 bytes_write=3371 bytes_read=7911 bytes_retransmit=9 bytes_invalid=0 send_seq=264 receive_seq=264 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000321  Pro: temp=19.5 CB1: temp=40.2 heater_bed: target=0 temp=19.3 pwm=0.000 sysload=0.07 cputime=1.304 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 282.1: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000038 bytes_write=3377 bytes_read=8056 bytes_retransmit=9 bytes_invalid=0 send_seq=265 receive_seq=265 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180001586  Pro: temp=19.5 CB1: temp=39.7 heater_bed: target=0 temp=20.4 pwm=0.000 sysload=0.07 cputime=1.307 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 283.1: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000038 bytes_write=3383 bytes_read=8230 bytes_retransmit=9 bytes_invalid=0 send_seq=266 receive_seq=266 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000918  Pro: temp=19.5 CB1: temp=39.1 heater_bed: target=0 temp=21.0 pwm=0.000 sysload=0.07 cputime=1.310 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 284.1: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000038 bytes_write=3389 bytes_read=8389 bytes_retransmit=9 bytes_invalid=0 send_seq=267 receive_seq=267 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179999282  Pro: temp=19.6 CB1: temp=39.1 heater_bed: target=0 temp=20.4 pwm=0.000 sysload=0.07 cputime=1.313 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 285.1: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3395 bytes_read=8548 bytes_retransmit=9 bytes_invalid=0 send_seq=268 receive_seq=268 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179997543  Pro: temp=19.4 CB1: temp=40.2 heater_bed: target=0 temp=19.3 pwm=0.000 sysload=0.07 cputime=1.315 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 286.1: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3401 bytes_read=8722 bytes_retransmit=9 bytes_invalid=0 send_seq=269 receive_seq=269 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000364  Pro: temp=19.4 CB1: temp=40.2 heater_bed: target=0 temp=18.4 pwm=0.000 sysload=0.07 cputime=1.318 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 287.1: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3407 bytes_read=8881 bytes_retransmit=9 bytes_invalid=0 send_seq=270 receive_seq=270 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000961  Pro: temp=19.4 CB1: temp=39.7 heater_bed: target=0 temp=18.9 pwm=0.000 sysload=0.07 cputime=1.321 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 288.1: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3413 bytes_read=9026 bytes_retransmit=9 bytes_invalid=0 send_seq=271 receive_seq=271 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000713  Pro: temp=19.5 CB1: temp=40.2 heater_bed: target=0 temp=19.9 pwm=0.000 sysload=0.07 cputime=1.324 memavail=3883280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 289.1: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3419 bytes_read=9200 bytes_retransmit=9 bytes_invalid=0 send_seq=272 receive_seq=272 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002443  Pro: temp=19.6 CB1: temp=39.1 heater_bed: target=0 temp=20.7 pwm=0.000 sysload=0.07 cputime=1.327 memavail=3883296 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 290.1: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3425 bytes_read=9373 bytes_retransmit=9 bytes_invalid=0 send_seq=273 receive_seq=273 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002940  Pro: temp=19.6 CB1: temp=38.0 heater_bed: target=0 temp=20.7 pwm=0.000 sysload=0.07 cputime=1.331 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 291.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3431 bytes_read=9518 bytes_retransmit=9 bytes_invalid=0 send_seq=274 receive_seq=274 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180003623  Pro: temp=19.8 CB1: temp=39.7 heater_bed: target=0 temp=20.0 pwm=0.000 sysload=0.06 cputime=1.334 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 292.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3437 bytes_read=9692 bytes_retransmit=9 bytes_invalid=0 send_seq=275 receive_seq=275 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180003443  Pro: temp=19.6 CB1: temp=39.7 heater_bed: target=0 temp=18.7 pwm=0.000 sysload=0.06 cputime=1.337 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 293.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3443 bytes_read=9842 bytes_retransmit=9 bytes_invalid=0 send_seq=276 receive_seq=276 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180003569  Pro: temp=19.8 CB1: temp=39.1 heater_bed: target=0 temp=18.3 pwm=0.000 sysload=0.06 cputime=1.340 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 294.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3449 bytes_read=9980 bytes_retransmit=9 bytes_invalid=0 send_seq=277 receive_seq=277 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180003192  Pro: temp=19.8 CB1: temp=39.7 heater_bed: target=0 temp=18.4 pwm=0.000 sysload=0.06 cputime=1.343 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 295.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3455 bytes_read=10168 bytes_retransmit=9 bytes_invalid=0 send_seq=278 receive_seq=278 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002558  Pro: temp=19.7 CB1: temp=39.1 heater_bed: target=0 temp=19.4 pwm=0.000 sysload=0.06 cputime=1.346 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 296.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3461 bytes_read=10327 bytes_retransmit=9 bytes_invalid=0 send_seq=279 receive_seq=279 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180001781  Pro: temp=19.8 CB1: temp=40.2 heater_bed: target=0 temp=20.2 pwm=0.000 sysload=0.06 cputime=1.349 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 297.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3467 bytes_read=10472 bytes_retransmit=9 bytes_invalid=0 send_seq=280 receive_seq=280 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002287  Pro: temp=19.8 CB1: temp=39.1 heater_bed: target=0 temp=20.7 pwm=0.000 sysload=0.06 cputime=1.351 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 298.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3473 bytes_read=10646 bytes_retransmit=9 bytes_invalid=0 send_seq=281 receive_seq=281 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180001833  Pro: temp=19.9 CB1: temp=40.2 heater_bed: target=0 temp=20.6 pwm=0.000 sysload=0.06 cputime=1.355 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 299.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3485 bytes_read=10821 bytes_retransmit=9 bytes_invalid=0 send_seq=283 receive_seq=283 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180001911  Pro: temp=19.7 CB1: temp=39.7 heater_bed: target=0 temp=20.1 pwm=0.000 sysload=0.06 cputime=1.358 memavail=3883344 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 300.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3491 bytes_read=10980 bytes_retransmit=9 bytes_invalid=0 send_seq=284 receive_seq=284 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002519  Pro: temp=19.8 CB1: temp=40.8 heater_bed: target=0 temp=19.3 pwm=0.000 sysload=0.06 cputime=1.361 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 301.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3497 bytes_read=11154 bytes_retransmit=9 bytes_invalid=0 send_seq=285 receive_seq=285 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002560  Pro: temp=19.7 CB1: temp=39.1 heater_bed: target=0 temp=18.4 pwm=0.000 sysload=0.05 cputime=1.365 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 302.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3503 bytes_read=11313 bytes_retransmit=9 bytes_invalid=0 send_seq=286 receive_seq=286 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002192  Pro: temp=19.9 CB1: temp=39.1 heater_bed: target=0 temp=18.2 pwm=0.000 sysload=0.05 cputime=1.368 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 303.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3509 bytes_read=11458 bytes_retransmit=9 bytes_invalid=0 send_seq=287 receive_seq=287 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002458  Pro: temp=19.9 CB1: temp=39.7 heater_bed: target=0 temp=18.5 pwm=0.000 sysload=0.05 cputime=1.371 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 304.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3515 bytes_read=11632 bytes_retransmit=9 bytes_invalid=0 send_seq=288 receive_seq=288 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002288  Pro: temp=19.8 CB1: temp=40.2 heater_bed: target=0 temp=19.2 pwm=0.000 sysload=0.05 cputime=1.375 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 305.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3521 bytes_read=11805 bytes_retransmit=9 bytes_invalid=0 send_seq=289 receive_seq=289 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002534  Pro: temp=19.8 CB1: temp=41.4 heater_bed: target=0 temp=19.9 pwm=0.000 sysload=0.05 cputime=1.378 memavail=3883616 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.1 pwm=0.000
+Stats 306.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3527 bytes_read=11950 bytes_retransmit=9 bytes_invalid=0 send_seq=290 receive_seq=290 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002685  Pro: temp=19.9 CB1: temp=39.7 heater_bed: target=0 temp=20.6 pwm=0.000 sysload=0.05 cputime=1.382 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 307.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3533 bytes_read=12124 bytes_retransmit=9 bytes_invalid=0 send_seq=291 receive_seq=291 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002559  Pro: temp=19.8 CB1: temp=39.1 heater_bed: target=0 temp=20.8 pwm=0.000 sysload=0.05 cputime=1.385 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.3 pwm=0.000
+Stats 308.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3539 bytes_read=12283 bytes_retransmit=9 bytes_invalid=0 send_seq=292 receive_seq=292 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002417  Pro: temp=20.0 CB1: temp=39.7 heater_bed: target=0 temp=20.5 pwm=0.000 sysload=0.05 cputime=1.388 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 309.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3545 bytes_read=12428 bytes_retransmit=9 bytes_invalid=0 send_seq=293 receive_seq=293 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002264  Pro: temp=19.8 CB1: temp=39.7 heater_bed: target=0 temp=20.0 pwm=0.000 sysload=0.05 cputime=1.391 memavail=3883376 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 310.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3551 bytes_read=12616 bytes_retransmit=9 bytes_invalid=0 send_seq=294 receive_seq=294 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002592  Pro: temp=20.0 CB1: temp=40.2 heater_bed: target=0 temp=19.0 pwm=0.000 sysload=0.05 cputime=1.394 memavail=3883456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 311.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3557 bytes_read=12775 bytes_retransmit=9 bytes_invalid=0 send_seq=295 receive_seq=295 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002700  Pro: temp=19.6 CB1: temp=39.1 heater_bed: target=0 temp=18.6 pwm=0.000 sysload=0.04 cputime=1.397 memavail=3883456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 312.2: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3563 bytes_read=12920 bytes_retransmit=9 bytes_invalid=0 send_seq=296 receive_seq=296 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180002825  Pro: temp=19.4 CB1: temp=39.7 heater_bed: target=0 temp=18.5 pwm=0.000 sysload=0.04 cputime=1.400 memavail=3883456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Starting Klippy...
+Args: ['/home/pi/klipper/klippy/klippy.py', '/home/pi/printer_data/config/printer.cfg', '-I', '/home/pi/printer_data/comms/klippy.serial', '-l', '/home/pi/printer_data/logs/klippy.log', '-a', '/home/pi/printer_data/comms/klippy.sock']
+Git version: 'v0.12.0-30-g2c2bb720-dirty'
+Untracked files: klippy/extras/gcode_shell_command.py, klippy/extras/BDsensor.py
+Modified files: scripts/buildcommands.py, src/Makefile
+Branch: master
+Remote: origin
+Tracked URL: https://github.com/Klipper3d/klipper
+CPU: 4 core ?
+Python: '3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]'
+Start printer at Mon Dec 18 16:02:22 2023 (1702915342.6 19.3)
+===== Config file =====
+[virtual_sdcard]
+path = /home/pi/printer_data/gcodes
+on_error_gcode = CANCEL_PRINT
+
+[pause_resume]
+recover_velocity = 350
+
+[display_status]
+
+[respond]
+
+[gcode_macro CANCEL_PRINT]
+description = Cancel the actual running print
+rename_existing = CANCEL_PRINT_BASE
+gcode = 
+	TURN_OFF_HEATERS
+	G91
+	G1 Z10 E-2 F3600
+	G1 E-3 F3600
+	G90
+	G1 X30 Y250 F7000; home X axis
+	M106 S80
+	G4 P10000
+	M106 S0
+	M221 S100
+	CANCEL_PRINT_BASE
+	CLEAR_PAUSE
+	
+	SET_GCODE_OFFSET Z=0.0
+	RESETSPEEDS
+	M84
+	
+	BED_MESH_CLEAR
+
+[gcode_macro PAUSE]
+description = Pause the actual running print
+rename_existing = BASE_PAUSE
+gcode = 
+	
+	{% set E = printer["gcode_macro PAUSE"].extrude|float %}
+	
+	
+	{% set x_park = printer.toolhead.axis_maximum.x|float - 5.0 %}
+	{% set y_park = printer.toolhead.axis_maximum.y|float - 5.0 %}
+	
+	{% set max_z = printer.toolhead.axis_maximum.z|float %}
+	{% set act_z = printer.toolhead.position.z|float %}
+	{% if act_z < (max_z - 2.0) %}
+	{% set z_safe = 2.0 %}
+	{% else %}
+	{% set z_safe = max_z - act_z %}
+	{% endif %}
+	
+	SAVE_GCODE_STATE NAME=PAUSE_state
+	BASE_PAUSE
+	SET_IDLE_TIMEOUT TIMEOUT=7200
+	G91
+	G1 E-{1} F2100
+	G1 Z{10} F900
+	G90
+	G1 X{50} Y{0} F6000
+variable_extrude = 1.0
+
+[gcode_macro RESUME]
+description = Resume the actual running print
+rename_existing = BASE_RESUME
+variable_last_extruder_temp = {'restore': False, 'temp': 0}
+variable_restore_idle_timeout = 0
+variable_idle_state = False
+gcode = 
+	
+	{% set E = printer["gcode_macro PAUSE"].extrude|float %}
+	
+	G91
+	G1 E{1} F2100
+	RESTORE_GCODE_STATE NAME=PAUSE_state
+	BASE_RESUME
+
+[gcode_macro SET_PAUSE_NEXT_LAYER]
+description = Enable a pause if the next layer is reached
+gcode = 
+	{% set pause_next_layer = printer['gcode_macro SET_PRINT_STATS_INFO'].pause_next_layer %}
+	{% set ENABLE = params.ENABLE|default(1)|int != 0 %}
+	{% set MACRO = params.MACRO|default(pause_next_layer.call, True) %}
+	SET_GCODE_VARIABLE MACRO=SET_PRINT_STATS_INFO VARIABLE=pause_next_layer VALUE="{{ 'enable': ENABLE, 'call': MACRO }}"
+
+[gcode_macro SET_PAUSE_AT_LAYER]
+description = Enable/disable a pause if a given layer number is reached
+gcode = 
+	{% set pause_at_layer = printer['gcode_macro SET_PRINT_STATS_INFO'].pause_at_layer %}
+	{% set ENABLE = params.ENABLE|int != 0 if params.ENABLE is defined
+	else params.LAYER is defined %}
+	{% set LAYER = params.LAYER|default(pause_at_layer.layer)|int %}
+	{% set MACRO = params.MACRO|default(pause_at_layer.call, True) %}
+	SET_GCODE_VARIABLE MACRO=SET_PRINT_STATS_INFO VARIABLE=pause_at_layer VALUE="{{ 'enable': ENABLE, 'layer': LAYER, 'call': MACRO }}"
+
+[gcode_macro SET_PRINT_STATS_INFO]
+rename_existing = SET_PRINT_STATS_INFO_BASE
+description = Overwrite, to get pause_next_layer and pause_at_layer feature
+variable_pause_next_layer = { 'enable': False, 'call': "PAUSE" }
+variable_pause_at_layer = { 'enable': False, 'layer': 0, 'call': "PAUSE" }
+gcode = 
+	{% if pause_next_layer.enable %}
+	RESPOND TYPE=echo MSG='{"%s, forced by pause_next_layer" % pause_next_layer.call}'
+	{pause_next_layer.call}
+	SET_PAUSE_NEXT_LAYER ENABLE=0
+	{% elif pause_at_layer.enable and params.CURRENT_LAYER is defined and params.CURRENT_LAYER|int == pause_at_layer.layer %}
+	RESPOND TYPE=echo MSG='{"%s, forced by pause_at_layer [%d]" % (pause_at_layer.call, pause_at_layer.layer)}'
+	{pause_at_layer.call}
+	SET_PAUSE_AT_LAYER ENABLE=0
+	{% endif %}
+	SET_PRINT_STATS_INFO_BASE {rawparams}
+
+[gcode_macro _TOOLHEAD_PARK_PAUSE_CANCEL]
+description = Helper: park toolhead used in PAUSE and CANCEL_PRINT
+gcode = 
+	
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set velocity = printer.configfile.settings.pause_resume.recover_velocity %}
+	{% set use_custom     = client.use_custom_pos|default(false)|lower == 'true' %}
+	{% set custom_park_x  = client.custom_park_x|default(0.0) %}
+	{% set custom_park_y  = client.custom_park_y|default(0.0) %}
+	{% set park_dz        = client.custom_park_dz|default(2.0)|abs %}
+	{% set sp_hop         = client.speed_hop|default(15) * 60 %}
+	{% set sp_move        = client.speed_move|default(velocity) * 60 %}
+	
+	{% set origin    = printer.gcode_move.homing_origin %}
+	{% set act       = printer.gcode_move.gcode_position %}
+	{% set max       = printer.toolhead.axis_maximum %}
+	{% set cone      = printer.toolhead.cone_start_z|default(max.z) %}
+	{% set round_bed = True if printer.configfile.settings.printer.kinematics is in ['delta','polar','rotary_delta','winch']
+	else False %}
+	
+	{% set z_min = params.Z_MIN|default(0)|float %}
+	{% set z_park = [[(act.z + park_dz), z_min]|max, (max.z - origin.z)]|min %}
+	{% set x_park = params.X       if params.X is defined
+	else custom_park_x  if use_custom
+	else 0.0            if round_bed
+	else (max.x - 5.0) %}
+	{% set y_park = params.Y       if params.Y is defined
+	else custom_park_y  if use_custom
+	else (max.y - 5.0)  if round_bed and z_park < cone
+	else 0.0            if round_bed
+	else (max.y - 5.0) %}
+	
+	_CLIENT_RETRACT
+	{% if "xyz" in printer.toolhead.homed_axes %}
+	G90
+	G1 Z{z_park} F{sp_hop}
+	G1 X{x_park} Y{y_park} F{sp_move}
+	{% if not printer.gcode_move.absolute_coordinates %} G91 {% endif %}
+	{% else %}
+	RESPOND TYPE=echo MSG='Printer not homed'
+	{% endif %}
+
+[gcode_macro _CLIENT_EXTRUDE]
+description = Extrudes, if the extruder is hot enough
+gcode = 
+	
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set use_fw_retract = (client.use_fw_retract|default(false)|lower == 'true') and (printer.firmware_retraction is defined) %}
+	{% set length = params.LENGTH|default(client.unretract)|default(1.0)|float %}
+	{% set speed = params.SPEED|default(client.speed_unretract)|default(35) %}
+	{% set absolute_extrude = printer.gcode_move.absolute_extrude %}
+	
+	{% if printer.toolhead.extruder != '' %}
+	{% if printer[printer.toolhead.extruder].can_extrude %}
+	{% if use_fw_retract %}
+	{% if length < 0 %}
+	G10
+	{% else %}
+	G11
+	{% endif %}
+	{% else %}
+	M83
+	G1 E{length} F{(speed|float|abs) * 60}
+	{% if absolute_extrude %}
+	M82
+	{% endif %}
+	{% endif %}
+	{% else %}
+	RESPOND TYPE=echo MSG='{"\"%s\" not hot enough" % printer.toolhead.extruder}'
+	{% endif %}
+	{% endif %}
+
+[gcode_macro _CLIENT_RETRACT]
+description = Retracts, if the extruder is hot enough
+gcode = 
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set length = params.LENGTH|default(client.retract)|default(1.0)|float %}
+	{% set speed = params.SPEED|default(client.speed_retract)|default(35) %}
+	
+	_CLIENT_EXTRUDE LENGTH=-{length|float|abs} SPEED={speed|float|abs}
+
+[tmc2209 extruder]
+interpolate = false
+uart_pin = PE4
+run_current = 0.50
+sense_resistor = 0.110
+stealthchop_threshold = 0
+
+[extruder]
+rotation_distance = 5.7
+full_steps_per_rotation = 200
+sensor_type = PT1000
+min_temp = 0
+max_temp = 330
+filament_diameter = 1.750
+step_pin = PC13
+dir_pin = !PF0
+enable_pin = !PF1
+heater_pin = PA2
+sensor_pin = PF4
+microsteps = 16
+nozzle_diameter = 0.600
+pressure_advance = 0.015
+pressure_advance_smooth_time = 0.02
+max_extrude_only_distance = 101
+control = pid
+pid_kp = 22.354
+pid_ki = 1.552
+pid_kd = 80.473
+
+[tmc2209 stepper_x]
+uart_pin = PC4
+diag_pin = PG6
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_x]
+step_pin = PF13
+dir_pin = !PF12
+enable_pin = !PF14
+endstop_pin = PG14
+microsteps = 16
+rotation_distance = 40
+position_endstop = -6
+position_min = -6
+position_max = 330
+homing_speed = 20
+full_steps_per_rotation = 200
+homing_retract_dist = 0
+homing_positive_dir = false
+step_pulse_duration = 0.000001
+
+[tmc2209 stepper_y]
+uart_pin = PD11
+diag_pin = PG9
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_y]
+step_pin = PG0
+dir_pin = PG1
+enable_pin = !PF15
+endstop_pin = PG15
+microsteps = 16
+rotation_distance = 40
+position_endstop = 0
+position_min = 0
+position_max = 315
+homing_speed = 20
+full_steps_per_rotation = 200
+homing_retract_dist = 0
+homing_positive_dir = false
+step_pulse_duration = 0.000001
+
+[tmc2209 stepper_x1]
+uart_pin = PE1
+diag_pin = PG14
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_x1]
+step_pin = PE2
+dir_pin = !PE3
+enable_pin = !PD4
+microsteps = 16
+rotation_distance = 40
+full_steps_per_rotation = 200
+step_pulse_duration = 0.000001
+
+[tmc2209 stepper_y1]
+uart_pin = PD3
+diag_pin = PG15
+run_current = 1.67
+stealthchop_threshold = 0
+sense_resistor = 0.110
+
+[stepper_y1]
+step_pin = PE6
+dir_pin = !PA14
+enable_pin = !PE0
+microsteps = 16
+rotation_distance = 40
+full_steps_per_rotation = 200
+step_pulse_duration = 0.000001
+
+[stepper_z]
+step_pin = PF11
+dir_pin = PG3
+enable_pin = !PG5
+endstop_pin = probe:z_virtual_endstop
+microsteps = 16
+rotation_distance = 8
+position_min = -20
+position_max = 400
+full_steps_per_rotation = 200
+homing_retract_dist = 5.0
+homing_positive_dir = false
+homing_speed = 3
+second_homing_speed = 1
+step_pulse_duration = 0.000004
+
+[stepper_z1]
+step_pin = PG4
+dir_pin = PC1
+enable_pin = !PA0
+endstop_pin = probe:z_virtual_endstop
+microsteps = 16
+rotation_distance = 8
+
+[tmc2209 stepper_z]
+uart_pin = PC6
+run_current = 0.650
+sense_resistor = 0.110
+stealthchop_threshold = 0
+
+[tmc2209 stepper_z1]
+uart_pin = PC7
+run_current = 0.650
+sense_resistor = 0.110
+stealthchop_threshold = 0
+
+[temperature_sensor Octopus Pro]
+sensor_type = temperature_mcu
+min_temp = 10
+max_temp = 100
+
+[temperature_sensor CB1]
+sensor_type = temperature_host
+min_temp = 10
+max_temp = 100
+
+[fan_generic LED_Bar]
+pin = PD15
+max_power = 1
+shutdown_speed = 0
+kick_start_time = 0.1
+off_below = 0.10
+
+[heater_fan hotend_fan]
+pin = PA8
+max_power = 1.0
+kick_start_time = 0.5
+heater = extruder
+heater_temp = 50.0
+
+[fan]
+pin = !PE5
+enable_pin = PB11
+hardware_pwm = True
+max_power = 1
+cycle_time = 0.00002
+off_below = 0.012
+kick_start_time = 0.01
+
+[heater_bed]
+heater_pin = PA1
+sensor_pin = PF3
+sensor_type = NTC 100K MGB18-104F39050L32
+control = pid
+pid_kp = 34.679
+pid_ki = 1.492
+pid_kd = 201.572
+min_temp = 0
+max_temp = 120
+max_power = 1
+pwm_cycle_time = 0.0166
+
+[bed_screws]
+screw1 = 10,0
+screw2 = 10,260
+screw3 = 320,260
+screw4 = 320,0
+
+[screws_tilt_adjust]
+screw1 = 10, 0
+screw1_name = front left screw
+screw2 = 10, 260
+screw2_name = rear left screw
+screw3 = 300, 260
+screw3_name = rear right screw
+screw4 = 320, 0
+screw4_name = front right screw
+horizontal_move_z = 10.
+speed = 250
+screw_thread = CW-M3
+
+[force_move]
+enable_force_move = true
+
+[bed_mesh]
+speed = 350
+horizontal_move_z = 1
+mesh_min = 10, 5
+mesh_max = 310, 260
+mesh_pps = 3,3
+probe_count = 25,25
+algorithm = bicubic
+relative_reference_index = 12
+bicubic_tension = 0.2
+fade_start = 1
+fade_end = 10
+split_delta_z = .025
+move_check_distance = 5
+
+[gcode_macro BED_MESH]
+gcode = 
+	BED_MESH_CALIBRATE
+
+[gcode_macro PA_TUNING]
+gcode = 
+	SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=1 ACCEL=500
+	TUNING_TOWER COMMAND=SET_PRESSURE_ADVANCE PARAMETER=ADVANCE START=0 FACTOR=.005
+
+[gcode_macro HOTEND_PID]
+gcode = 
+	{% set tool_temp = params.TEMPERATURE|default(220)|int %}
+	{% set tool_name = printer.toolhead.extruder %}
+	PID_CALIBRATE HEATER={tool_name} TARGET={tool_temp}
+
+[gcode_macro BED_PID]
+gcode = 
+	{% set bed_temp = params.TEMPERATURE|default(60)|int %}
+	PID_CALIBRATE HEATER=heater_bed TARGET={bed_temp}
+
+[gcode_macro SCREWS_TILT]
+gcode = 
+	SCREWS_TILT_CALCULATE
+
+[gcode_macro DUMP_WARNINGS]
+description = Debug: Print all warning messages from klipper
+gcode = 
+	{% set parameters = ["printer.configfile.warnings:"] %}
+	{% for warning in printer.configfile.warnings %}
+	{% set parameters = parameters.append("%s -> %s -> %s\n%s" % (warning.type, warning.section, warning.option, warning.message)) %}
+	{% endfor %}
+	{action_respond_info(parameters|join("\n"))}
+
+[gcode_macro enable_stepper]
+gcode = 
+	SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_x1 ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_y1 ENABLE=1
+
+[gcode_macro disable-steppers]
+gcode = 
+	m84
+
+[gcode_macro M600]
+gcode = 
+	G4 P1500
+	{% set X = params.X|default(50)|float %}
+	{% set Y = params.Y|default(0)|float %}
+	{% set Z = params.Z|default(10)|float %}
+	
+	SAVE_GCODE_STATE NAME=M600_state
+	PAUSE
+	
+	G91
+	G1 E-{1} F2100
+	G1 Z{Z}
+	G90
+	G1 X{X} Y{Y} F4000
+	G91
+	M83
+	G1 E5 F800
+	G1 E-180 F2000
+	M82
+	RESTORE_GCODE_STATE NAME=M600_state
+
+[gcode_macro PURGE]
+gcode = 
+	M83
+	G1 E120 F250
+
+[gcode_macro _UNLOAD_FILAMENT]
+gcode = 
+	{% set e_temp = params.TEMPERATURE|default(235)|int %}
+	M118 Filament unloading!
+	M117 Filament unloading!
+	M82
+	G92 E0
+	{% if printer.extruder.can_extrude|lower != 'true' %}
+	
+	M118 Hotend heating!
+	M109 S{e_temp} T0
+	{% endif %}
+	G1 E10 F{5*60}
+	G0 E-5 F{60*60}
+	G0 E-70 F{5*60}
+	M400
+	M118 Filament unload complete!
+	M117 Filament unload complete!
+
+[gcode_macro _LOAD_FILAMENT]
+gcode = 
+	{% set e_temp = params.TEMPERATURE|default(230)|int %}
+	M109 S{e_temp}
+	M83
+	G1 E50 F300
+	G1 E-1 F100
+	M82
+	M104 S0
+
+[gcode_macro UNLOAD_PLA]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=200
+
+[gcode_macro LOAD_PLA]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=200
+
+[gcode_macro UNLOAD_ABS]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=250
+
+[gcode_macro LOAD_ABS]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=250
+
+[gcode_macro UNLOAD_PETG]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=235
+
+[gcode_macro LOAD_PETG]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=235
+
+[gcode_macro LOAD_FILAMENT]
+gcode = 
+	{% set speed = params.SPEED|default(300) %}
+	{% set max_velocity = printer.configfile.settings['extruder'].max_extrude_only_velocity %}
+	SAVE_GCODE_STATE NAME=load_state
+	M300
+	G91
+	G92 E0
+	G1 E350 F{max_velocity}
+	G1 E25 F{speed}
+	M300
+	M300
+	RESTORE_GCODE_STATE NAME=load_state
+
+[gcode_macro UNLOAD_FILAMENT]
+gcode = 
+	{% set speed = params.SPEED|default(300) %}
+	{% set max_velocity = printer.configfile.settings['extruder'].max_extrude_only_velocity %}
+	SAVE_GCODE_STATE NAME=unload_state
+	G91
+	M300
+	G92 E0
+	G1 E25 F{speed}
+	G1 E-420 F{max_velocity}
+	M300
+	M300
+	RESTORE_GCODE_STATE NAME=unload_state
+
+[gcode_macro START_PRINT]
+gcode = 
+	
+	{% set DWELL = params.DWELL|default(00)|int %}
+	{% set bedTemp = params.BED|default(100)|int %}
+	{% set hotendTemp = params.HOTEND|default(250)|int %}
+	
+	
+	
+	
+	SET_FAN_SPEED FAN=LED_Bar SPEED=0.5
+	CLEAR_PAUSE
+	RESETSPEEDS
+	G21
+	G90
+	M83
+	M140 S{bedTemp}; start heating the bed
+	M104 S100
+	SET_DISPLAY_TEXT MSG="Waiting for temperatures..."
+	HEATSOAK DWELL={DWELL}
+	G28 X Y
+	ATTACH_PROBE_LOCK
+	G28 Z
+	SET_DISPLAY_TEXT MSG="Adjusting Z Tilt"
+	Z_TILT_ADJUST
+	G28 Z
+	
+	SET_DISPLAY_TEXT MSG="Calibrating Bed Mesh"
+	BED_MESH_CLEAR
+	BED_MESH_CALIBRATE
+	BED_MESH_PROFILE LOAD=default
+	DOCK_PROBE_UNLOCK
+	SET_DISPLAY_TEXT MSG="Heating Extruder to temp"
+	M109 S190; wait for extruder to heat up
+	G1 X1 Y1 Z0.5 F9000
+	M109 S{hotendTemp}; wait for extruder to heat up
+	
+	
+	
+	FIXED_PURGE_LINE
+	M83
+	SET_DISPLAY_TEXT MSG="Printing..."
+
+[gcode_macro HEATSOAK]
+gcode = 
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion..."
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 5% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 10% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 15% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 20% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 25% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 30% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 35% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 40% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 45% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 50% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 55% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 60% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 65% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 70% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 75% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 80% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 85% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 90% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 95% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Thermal expansion done"
+
+[gcode_macro _CG28]
+gcode = 
+	{% if "xyz" not in printer.toolhead.homed_axes %}
+	G28
+	{% endif %}
+
+[gcode_macro FIXED_PURGE_LINE]
+gcode = 
+	M83
+	G92 E0
+	G1 Z1 F3000
+	G1 X1 Y80 Z0.3 E10  F1200
+	G1 X1 Y120 E11  F1200
+	G1 E-0.8 F1000
+	G92 E0
+	G1 Z1 F2000
+
+[gcode_macro END_PRINT]
+gcode = 
+	TURN_OFF_HEATERS
+	G91
+	G1 Z10 E-2 F3600
+	
+	G90
+	G1 X30 Y250 F7000; home X axis
+	M106 S80
+	G4 P10000
+	M106 S0
+	M221 S100
+	CLEAR_PAUSE
+	
+	SET_GCODE_OFFSET Z=0.0
+	RESETSPEEDS
+	
+	M84
+	BED_MESH_CLEAR
+	SET_FAN_SPEED FAN=LED_Bar SPEED=0
+	UPDATE_GIT
+
+[gcode_macro PARK]
+description = Park the toolhead at the front and retract some filament if the nozzle is hot
+gcode = 
+	{% set E = params.E|default(1.7)|float %}
+	
+	{% set Px, Py = printer["gcode_macro _USER_VARIABLES"].park_position_xy|map('float') %}
+	{% set park_lift_z = printer["gcode_macro _USER_VARIABLES"].park_lift_z %}
+	
+	{% set St = printer["gcode_macro _USER_VARIABLES"].travel_speed * 60 %}
+	{% set Sz = printer["gcode_macro _USER_VARIABLES"].z_drop_speed * 60 %}
+	
+	{% set max_z = printer.toolhead.axis_maximum.z|float %}
+	{% set act_z = printer.toolhead.position.z|float %}
+	
+	{% set z_safe = act_z + park_lift_z %}
+	{% if z_safe > max_z %}
+	{% set z_safe = max_z %}
+	{% endif %}
+	
+	
+	{% if printer.extruder.temperature > 185 %}
+	G10
+	{% endif %}
+	G90
+	G1 Z{z_safe} F{Sz}
+	
+	G0 X{Px} Y{Py} F{St}
+
+[gcode_macro RESETSPEEDS]
+gcode = 
+	SET_VELOCITY_LIMIT VELOCITY={printer.configfile.settings.printer.max_velocity}
+	SET_VELOCITY_LIMIT ACCEL={printer.configfile.settings.printer.max_accel}
+	SET_VELOCITY_LIMIT ACCEL_TO_DECEL={printer.configfile.settings.printer.max_accel_to_decel}
+	SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY={printer.configfile.settings.printer.square_corner_velocity}
+
+[gcode_macro DISABLEXYE]
+gcode = 
+	SET_STEPPER_ENABLE STEPPER=extruder ENABLE=0
+	SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=0
+	
+	SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=0
+	
+	SET_STEPPER_ENABLE STEPPER=stepper_z ENABLE=1
+
+[gcode_macro TEST_SPEED]
+gcode = 
+	
+	{% set speed  = params.SPEED|default(printer.configfile.settings.printer.max_velocity)|int %}
+	
+	{% set iterations = params.ITERATIONS|default(5)|int %}
+	
+	{% set accel  = params.ACCEL|default(printer.configfile.settings.printer.max_accel)|int %}
+	
+	{% set bound = params.BOUND|default(20)|int %}
+	
+	{% set smallpatternsize = SMALLPATTERNSIZE|default(20)|int %}
+	
+	
+	
+	{% set x_min = 10 + bound %}
+	{% set x_max = 300 - bound %}
+	{% set y_min = 10 + bound %}
+	{% set y_max = 300 - bound %}
+	
+	
+	
+	{% set x_center = (printer.toolhead.axis_minimum.x|float + printer.toolhead.axis_maximum.x|float ) / 2 %}
+	{% set y_center = (printer.toolhead.axis_minimum.y|float + printer.toolhead.axis_maximum.y|float ) / 2 %}
+	
+	
+	{% set x_center_min = x_center - (smallpatternsize/2) %}
+	{% set x_center_max = x_center + (smallpatternsize/2) %}
+	{% set y_center_min = y_center - (smallpatternsize/2) %}
+	{% set y_center_max = y_center + (smallpatternsize/2) %}
+	
+	
+	SAVE_GCODE_STATE NAME=TEST_SPEED
+	
+	
+	{ action_respond_info("TEST_SPEED: starting %d iterations at speed %d, accel %d" % (iterations, speed, accel)) }
+	
+	
+	M400
+	G28
+	
+	{% if printer.configfile.settings.quad_gantry_level %}
+	{% if printer.quad_gantry_level.applied == False %}
+	QUAD_GANTRY_LEVEL
+	G28 Z
+	{% endif %}
+	{% endif %}
+	
+	G90
+	G1 X{printer.toolhead.axis_maximum.x-50} Y{printer.toolhead.axis_maximum.y-50} F{30*60}
+	M400
+	G28 X Y
+	G0 X{300} Y{300} F{30*60}
+	G4 P1000
+	GET_POSITION
+	
+	
+	G0 X{x_min} Y{y_min} Z{bound + 10} F{speed*60}
+	
+	
+	SET_VELOCITY_LIMIT VELOCITY={speed} ACCEL={accel} ACCEL_TO_DECEL={accel / 2}
+	
+	{% for i in range(iterations) %}
+	
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_max} Y{y_max} F{speed*60}
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	G0 X{x_min} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	
+	
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_min} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	
+	
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_max} Y{y_center_max} F{speed*60}
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	G0 X{x_center_min} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	
+	
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_min} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	{% endfor %}
+	
+	
+	SET_VELOCITY_LIMIT VELOCITY={printer.configfile.settings.printer.max_velocity} ACCEL={printer.configfile.settings.printer.max_accel} ACCEL_TO_DECEL={printer.configfile.settings.printer.max_accel_to_decel}
+	
+	
+	M400
+	G28
+	
+	G90
+	G0 X{300} Y{300} F{30*60}
+	G4 P1000
+	GET_POSITION
+	
+	
+	RESTORE_GCODE_STATE NAME=TEST_SPEED
+
+[gcode_macro update_git]
+gcode = 
+	RUN_SHELL_COMMAND CMD=update_git_script
+
+[gcode_shell_command update_git_script]
+command = bash /home/pi/klipper-backup/script.sh
+timeout = 90.0
+verbose = True
+
+[safe_z_home]
+home_xy_position = 165, 165
+z_hop = 10
+
+[z_tilt]
+z_positions = 
+	-80,  -20
+	350, -20
+points = 
+	15, 150
+	275, 150
+speed = 50
+horizontal_move_z = 15
+retries = 30
+retry_tolerance = 0.080
+
+[input_shaper]
+shaper_type_x = zv
+shaper_freq_x = 120.6
+shaper_type_y = zv
+shaper_freq_y = 76.6
+
+[BDsensor]
+scl_pin = PB6
+sda_pin = PB7
+delay = 20
+z_offset = 0
+z_adjust = -0
+x_offset = 0
+y_offset = 21.43
+no_stop_probe = true
+position_endstop = 1
+speed = 0.8
+
+[printer]
+kinematics = corexy
+max_velocity = 1000
+max_accel = 20000
+max_z_velocity = 20
+max_z_accel = 300
+square_corner_velocity = 10
+
+[exclude_object]
+
+[gcode_arcs]
+resolution = 0.05
+
+[idle_timeout]
+timeout = 3000
+
+[mcu]
+serial = /dev/serial/by-id/usb-Klipper_stm32f446xx_2F0018001750344D30353320-if00
+
+[probe]
+z_offset = 8.100
+
+[bed_mesh default]
+version = 1
+points = 
+	-0.215000, -0.210000, -0.190000, -0.185000, -0.170000, -0.145000, -0.135000, -0.120000, -0.105000, -0.070000, -0.055000, -0.035000, 0.000000, 0.010000, 0.025000, 0.050000, 0.080000, 0.105000, 0.130000, 0.135000, 0.150000, 0.155000, 0.165000, 0.190000, 0.205000
+	-0.160000, -0.155000, -0.160000, -0.150000, -0.130000, -0.110000, -0.105000, -0.085000, -0.055000, -0.035000, -0.025000, 0.000000, 0.025000, 0.055000, 0.075000, 0.100000, 0.110000, 0.130000, 0.160000, 0.170000, 0.190000, 0.190000, 0.205000, 0.205000, 0.220000
+	-0.160000, -0.150000, -0.140000, -0.135000, -0.115000, -0.105000, -0.090000, -0.070000, -0.040000, -0.025000, -0.010000, 0.015000, 0.030000, 0.045000, 0.080000, 0.100000, 0.115000, 0.135000, 0.160000, 0.165000, 0.180000, 0.185000, 0.190000, 0.220000, 0.235000
+	-0.120000, -0.115000, -0.115000, -0.100000, -0.080000, -0.070000, -0.065000, -0.040000, -0.015000, 0.010000, 0.030000, 0.050000, 0.065000, 0.090000, 0.110000, 0.130000, 0.145000, 0.175000, 0.195000, 0.195000, 0.195000, 0.205000, 0.210000, 0.235000, 0.240000
+	-0.075000, -0.065000, -0.055000, -0.045000, -0.040000, -0.020000, -0.005000, 0.015000, 0.035000, 0.065000, 0.075000, 0.090000, 0.105000, 0.115000, 0.140000, 0.170000, 0.175000, 0.190000, 0.205000, 0.205000, 0.205000, 0.210000, 0.215000, 0.240000, 0.240000
+	-0.045000, -0.050000, -0.055000, -0.045000, -0.015000, -0.005000, -0.005000, 0.020000, 0.060000, 0.065000, 0.075000, 0.100000, 0.115000, 0.125000, 0.135000, 0.170000, 0.175000, 0.175000, 0.205000, 0.205000, 0.205000, 0.205000, 0.210000, 0.220000, 0.225000
+	-0.035000, -0.030000, -0.030000, -0.020000, 0.000000, 0.015000, 0.015000, 0.035000, 0.065000, 0.085000, 0.100000, 0.110000, 0.115000, 0.130000, 0.160000, 0.170000, 0.180000, 0.180000, 0.200000, 0.200000, 0.200000, 0.205000, 0.205000, 0.220000, 0.235000
+	0.005000, 0.010000, 0.015000, 0.025000, 0.035000, 0.040000, 0.055000, 0.085000, 0.095000, 0.110000, 0.115000, 0.125000, 0.140000, 0.160000, 0.175000, 0.180000, 0.190000, 0.190000, 0.225000, 0.225000, 0.225000, 0.225000, 0.230000, 0.235000, 0.250000
+	0.055000, 0.065000, 0.060000, 0.065000, 0.075000, 0.090000, 0.100000, 0.110000, 0.120000, 0.130000, 0.140000, 0.155000, 0.170000, 0.180000, 0.190000, 0.195000, 0.210000, 0.220000, 0.235000, 0.235000, 0.235000, 0.235000, 0.245000, 0.250000, 0.260000
+	0.100000, 0.105000, 0.110000, 0.110000, 0.120000, 0.135000, 0.145000, 0.150000, 0.155000, 0.155000, 0.170000, 0.185000, 0.190000, 0.195000, 0.195000, 0.215000, 0.230000, 0.235000, 0.245000, 0.245000, 0.245000, 0.235000, 0.245000, 0.250000, 0.260000
+	0.100000, 0.115000, 0.125000, 0.130000, 0.135000, 0.145000, 0.150000, 0.155000, 0.165000, 0.175000, 0.190000, 0.200000, 0.205000, 0.205000, 0.215000, 0.225000, 0.230000, 0.245000, 0.255000, 0.240000, 0.240000, 0.240000, 0.245000, 0.250000, 0.250000
+	0.155000, 0.150000, 0.150000, 0.150000, 0.160000, 0.165000, 0.165000, 0.175000, 0.175000, 0.195000, 0.200000, 0.215000, 0.205000, 0.210000, 0.215000, 0.225000, 0.235000, 0.240000, 0.245000, 0.240000, 0.240000, 0.235000, 0.220000, 0.235000, 0.240000
+	0.170000, 0.165000, 0.165000, 0.170000, 0.180000, 0.190000, 0.190000, 0.185000, 0.200000, 0.205000, 0.220000, 0.230000, 0.225000, 0.225000, 0.240000, 0.245000, 0.240000, 0.250000, 0.255000, 0.245000, 0.250000, 0.245000, 0.245000, 0.240000, 0.240000
+	0.210000, 0.200000, 0.195000, 0.200000, 0.210000, 0.210000, 0.210000, 0.215000, 0.215000, 0.215000, 0.235000, 0.245000, 0.235000, 0.235000, 0.245000, 0.250000, 0.240000, 0.250000, 0.250000, 0.250000, 0.255000, 0.250000, 0.235000, 0.235000, 0.240000
+	0.240000, 0.250000, 0.250000, 0.245000, 0.260000, 0.260000, 0.255000, 0.255000, 0.255000, 0.250000, 0.265000, 0.265000, 0.260000, 0.255000, 0.260000, 0.255000, 0.255000, 0.270000, 0.260000, 0.255000, 0.250000, 0.255000, 0.245000, 0.250000, 0.240000
+	0.270000, 0.260000, 0.255000, 0.265000, 0.265000, 0.265000, 0.265000, 0.260000, 0.260000, 0.255000, 0.265000, 0.265000, 0.265000, 0.255000, 0.255000, 0.250000, 0.255000, 0.250000, 0.250000, 0.245000, 0.245000, 0.235000, 0.230000, 0.235000, 0.240000
+	0.275000, 0.280000, 0.275000, 0.275000, 0.275000, 0.275000, 0.275000, 0.275000, 0.280000, 0.280000, 0.280000, 0.270000, 0.270000, 0.270000, 0.265000, 0.265000, 0.265000, 0.270000, 0.260000, 0.255000, 0.235000, 0.235000, 0.235000, 0.240000, 0.235000
+	0.335000, 0.315000, 0.305000, 0.310000, 0.305000, 0.300000, 0.295000, 0.290000, 0.300000, 0.295000, 0.290000, 0.290000, 0.280000, 0.270000, 0.270000, 0.275000, 0.275000, 0.265000, 0.250000, 0.245000, 0.235000, 0.225000, 0.225000, 0.230000, 0.235000
+	0.355000, 0.350000, 0.345000, 0.325000, 0.330000, 0.325000, 0.325000, 0.325000, 0.315000, 0.310000, 0.300000, 0.290000, 0.285000, 0.290000, 0.275000, 0.275000, 0.265000, 0.265000, 0.250000, 0.245000, 0.235000, 0.225000, 0.230000, 0.225000, 0.215000
+	0.395000, 0.385000, 0.380000, 0.370000, 0.365000, 0.370000, 0.360000, 0.355000, 0.345000, 0.340000, 0.330000, 0.320000, 0.310000, 0.305000, 0.300000, 0.290000, 0.275000, 0.260000, 0.255000, 0.255000, 0.250000, 0.235000, 0.230000, 0.230000, 0.230000
+	0.395000, 0.390000, 0.375000, 0.375000, 0.375000, 0.370000, 0.365000, 0.360000, 0.355000, 0.335000, 0.325000, 0.315000, 0.315000, 0.300000, 0.295000, 0.280000, 0.255000, 0.260000, 0.250000, 0.240000, 0.230000, 0.235000, 0.230000, 0.205000, 0.195000
+	0.405000, 0.395000, 0.395000, 0.390000, 0.380000, 0.375000, 0.370000, 0.360000, 0.355000, 0.345000, 0.325000, 0.325000, 0.310000, 0.295000, 0.290000, 0.270000, 0.250000, 0.240000, 0.235000, 0.235000, 0.230000, 0.205000, 0.195000, 0.195000, 0.195000
+	0.405000, 0.395000, 0.380000, 0.375000, 0.375000, 0.370000, 0.360000, 0.345000, 0.340000, 0.330000, 0.305000, 0.300000, 0.285000, 0.270000, 0.250000, 0.235000, 0.220000, 0.215000, 0.220000, 0.205000, 0.195000, 0.175000, 0.175000, 0.170000, 0.165000
+	0.405000, 0.390000, 0.395000, 0.385000, 0.365000, 0.350000, 0.345000, 0.330000, 0.320000, 0.305000, 0.290000, 0.265000, 0.260000, 0.240000, 0.225000, 0.215000, 0.205000, 0.190000, 0.180000, 0.185000, 0.165000, 0.150000, 0.145000, 0.145000, 0.145000
+	0.430000, 0.425000, 0.400000, 0.395000, 0.385000, 0.370000, 0.365000, 0.340000, 0.320000, 0.305000, 0.295000, 0.270000, 0.250000, 0.235000, 0.215000, 0.215000, 0.200000, 0.190000, 0.185000, 0.165000, 0.155000, 0.145000, 0.135000, 0.130000, 0.135000
+x_count = 25
+y_count = 25
+mesh_x_pps = 3
+mesh_y_pps = 3
+algo = bicubic
+tension = 0.2
+min_x = 10.0
+max_x = 310.0
+min_y = 26.43
+max_y = 281.31
+=======================
+Extruder max_extrude_ratio=0.598682
+mcu 'mcu': Starting serial connect
+Loaded MCU 'mcu' 129 commands (v0.12.0-25-g99d7af87 / gcc: (15:12.2.rel1-1) 12.2.1 20221205 binutils: (2.40-2+18+b1) 2.40)
+MCU 'mcu' config: ADC_MAX=4095 BUS_PINS_i2c1=PB6,PB7 BUS_PINS_i2c1a=PB8,PB9 BUS_PINS_i2c2=PB10,PB11 BUS_PINS_i2c3=PA8,PC9 BUS_PINS_sdio=PC12,PD2,PC8,PC9,PC10,PC11 BUS_PINS_spi1=PA6,PA7,PA5 BUS_PINS_spi1a=PB4,PB5,PB3 BUS_PINS_spi2=PB14,PB15,PB13 BUS_PINS_spi2a=PC2,PC3,PB10 BUS_PINS_spi3=PB4,PB5,PB3 BUS_PINS_spi3a=PC11,PC12,PC10 BUS_PINS_spi4=PE13,PE14,PE12 CLOCK_FREQ=180000000 MCU=stm32f446xx PWM_MAX=255 RESERVE_PINS_USB=PA11,PA12 RESERVE_PINS_crystal=PH0,PH1 STATS_SUMSQ_BASE=256 STEPPER_BOTH_EDGE=1
+mcu_temperature 'mcu' nominal base=-275.483871 slope=1320.967742
+Sending MCU 'mcu' printer configuration...
+Configured MCU 'mcu' (1024 moves)
+Starting heater checks for heater_bed
+bed_mesh: generated points
+Index |  Tool Adjusted  |   Probe
+  0   | (10.0, -16.4)   | (10.0, 5.0)
+  1   | (22.5, -16.4)   | (22.5, 5.0)
+  2   | (35.0, -16.4)   | (35.0, 5.0)
+  3   | (47.5, -16.4)   | (47.5, 5.0)
+  4   | (60.0, -16.4)   | (60.0, 5.0)
+  5   | (72.5, -16.4)   | (72.5, 5.0)
+  6   | (85.0, -16.4)   | (85.0, 5.0)
+  7   | (97.5, -16.4)   | (97.5, 5.0)
+  8   | (110.0, -16.4)  | (110.0, 5.0)
+  9   | (122.5, -16.4)  | (122.5, 5.0)
+  10  | (135.0, -16.4)  | (135.0, 5.0)
+  11  | (147.5, -16.4)  | (147.5, 5.0)
+  12  | (160.0, -16.4)  | (160.0, 5.0)
+  13  | (172.5, -16.4)  | (172.5, 5.0)
+  14  | (185.0, -16.4)  | (185.0, 5.0)
+  15  | (197.5, -16.4)  | (197.5, 5.0)
+  16  | (210.0, -16.4)  | (210.0, 5.0)
+  17  | (222.5, -16.4)  | (222.5, 5.0)
+  18  | (235.0, -16.4)  | (235.0, 5.0)
+  19  | (247.5, -16.4)  | (247.5, 5.0)
+  20  | (260.0, -16.4)  | (260.0, 5.0)
+  21  | (272.5, -16.4)  | (272.5, 5.0)
+  22  | (285.0, -16.4)  | (285.0, 5.0)
+  23  | (297.5, -16.4)  | (297.5, 5.0)
+  24  | (310.0, -16.4)  | (310.0, 5.0)
+  25  | (310.0, -5.8)   | (310.0, 15.6)
+  26  | (297.5, -5.8)   | (297.5, 15.6)
+  27  | (285.0, -5.8)   | (285.0, 15.6)
+  28  | (272.5, -5.8)   | (272.5, 15.6)
+  29  | (260.0, -5.8)   | (260.0, 15.6)
+  30  | (247.5, -5.8)   | (247.5, 15.6)
+  31  | (235.0, -5.8)   | (235.0, 15.6)
+  32  | (222.5, -5.8)   | (222.5, 15.6)
+  33  | (210.0, -5.8)   | (210.0, 15.6)
+  34  | (197.5, -5.8)   | (197.5, 15.6)
+  35  | (185.0, -5.8)   | (185.0, 15.6)
+  36  | (172.5, -5.8)   | (172.5, 15.6)
+  37  | (160.0, -5.8)   | (160.0, 15.6)
+  38  | (147.5, -5.8)   | (147.5, 15.6)
+  39  | (135.0, -5.8)   | (135.0, 15.6)
+  40  | (122.5, -5.8)   | (122.5, 15.6)
+  41  | (110.0, -5.8)   | (110.0, 15.6)
+  42  | (97.5, -5.8)    | (97.5, 15.6)
+  43  | (85.0, -5.8)    | (85.0, 15.6)
+  44  | (72.5, -5.8)    | (72.5, 15.6)
+  45  | (60.0, -5.8)    | (60.0, 15.6)
+  46  | (47.5, -5.8)    | (47.5, 15.6)
+  47  | (35.0, -5.8)    | (35.0, 15.6)
+  48  | (22.5, -5.8)    | (22.5, 15.6)
+  49  | (10.0, -5.8)    | (10.0, 15.6)
+  50  | (10.0, 4.8)     | (10.0, 26.2)
+  51  | (22.5, 4.8)     | (22.5, 26.2)
+  52  | (35.0, 4.8)     | (35.0, 26.2)
+  53  | (47.5, 4.8)     | (47.5, 26.2)
+  54  | (60.0, 4.8)     | (60.0, 26.2)
+  55  | (72.5, 4.8)     | (72.5, 26.2)
+  56  | (85.0, 4.8)     | (85.0, 26.2)
+  57  | (97.5, 4.8)     | (97.5, 26.2)
+  58  | (110.0, 4.8)    | (110.0, 26.2)
+  59  | (122.5, 4.8)    | (122.5, 26.2)
+  60  | (135.0, 4.8)    | (135.0, 26.2)
+  61  | (147.5, 4.8)    | (147.5, 26.2)
+  62  | (160.0, 4.8)    | (160.0, 26.2)
+  63  | (172.5, 4.8)    | (172.5, 26.2)
+  64  | (185.0, 4.8)    | (185.0, 26.2)
+  65  | (197.5, 4.8)    | (197.5, 26.2)
+  66  | (210.0, 4.8)    | (210.0, 26.2)
+  67  | (222.5, 4.8)    | (222.5, 26.2)
+  68  | (235.0, 4.8)    | (235.0, 26.2)
+  69  | (247.5, 4.8)    | (247.5, 26.2)
+  70  | (260.0, 4.8)    | (260.0, 26.2)
+  71  | (272.5, 4.8)    | (272.5, 26.2)
+  72  | (285.0, 4.8)    | (285.0, 26.2)
+  73  | (297.5, 4.8)    | (297.5, 26.2)
+  74  | (310.0, 4.8)    | (310.0, 26.2)
+  75  | (310.0, 15.4)   | (310.0, 36.9)
+  76  | (297.5, 15.4)   | (297.5, 36.9)
+  77  | (285.0, 15.4)   | (285.0, 36.9)
+  78  | (272.5, 15.4)   | (272.5, 36.9)
+  79  | (260.0, 15.4)   | (260.0, 36.9)
+  80  | (247.5, 15.4)   | (247.5, 36.9)
+  81  | (235.0, 15.4)   | (235.0, 36.9)
+  82  | (222.5, 15.4)   | (222.5, 36.9)
+  83  | (210.0, 15.4)   | (210.0, 36.9)
+  84  | (197.5, 15.4)   | (197.5, 36.9)
+  85  | (185.0, 15.4)   | (185.0, 36.9)
+  86  | (172.5, 15.4)   | (172.5, 36.9)
+  87  | (160.0, 15.4)   | (160.0, 36.9)
+  88  | (147.5, 15.4)   | (147.5, 36.9)
+  89  | (135.0, 15.4)   | (135.0, 36.9)
+  90  | (122.5, 15.4)   | (122.5, 36.9)
+  91  | (110.0, 15.4)   | (110.0, 36.9)
+  92  | (97.5, 15.4)    | (97.5, 36.9)
+  93  | (85.0, 15.4)    | (85.0, 36.9)
+  94  | (72.5, 15.4)    | (72.5, 36.9)
+  95  | (60.0, 15.4)    | (60.0, 36.9)
+  96  | (47.5, 15.4)    | (47.5, 36.9)
+  97  | (35.0, 15.4)    | (35.0, 36.9)
+  98  | (22.5, 15.4)    | (22.5, 36.9)
+  99  | (10.0, 15.4)    | (10.0, 36.9)
+  100 | (10.0, 26.0)    | (10.0, 47.5)
+  101 | (22.5, 26.0)    | (22.5, 47.5)
+  102 | (35.0, 26.0)    | (35.0, 47.5)
+  103 | (47.5, 26.0)    | (47.5, 47.5)
+  104 | (60.0, 26.0)    | (60.0, 47.5)
+  105 | (72.5, 26.0)    | (72.5, 47.5)
+  106 | (85.0, 26.0)    | (85.0, 47.5)
+  107 | (97.5, 26.0)    | (97.5, 47.5)
+  108 | (110.0, 26.0)   | (110.0, 47.5)
+  109 | (122.5, 26.0)   | (122.5, 47.5)
+  110 | (135.0, 26.0)   | (135.0, 47.5)
+  111 | (147.5, 26.0)   | (147.5, 47.5)
+  112 | (160.0, 26.0)   | (160.0, 47.5)
+  113 | (172.5, 26.0)   | (172.5, 47.5)
+  114 | (185.0, 26.0)   | (185.0, 47.5)
+  115 | (197.5, 26.0)   | (197.5, 47.5)
+  116 | (210.0, 26.0)   | (210.0, 47.5)
+  117 | (222.5, 26.0)   | (222.5, 47.5)
+  118 | (235.0, 26.0)   | (235.0, 47.5)
+  119 | (247.5, 26.0)   | (247.5, 47.5)
+  120 | (260.0, 26.0)   | (260.0, 47.5)
+  121 | (272.5, 26.0)   | (272.5, 47.5)
+  122 | (285.0, 26.0)   | (285.0, 47.5)
+  123 | (297.5, 26.0)   | (297.5, 47.5)
+  124 | (310.0, 26.0)   | (310.0, 47.5)
+  125 | (310.0, 36.7)   | (310.0, 58.1)
+  126 | (297.5, 36.7)   | (297.5, 58.1)
+  127 | (285.0, 36.7)   | (285.0, 58.1)
+  128 | (272.5, 36.7)   | (272.5, 58.1)
+  129 | (260.0, 36.7)   | (260.0, 58.1)
+  130 | (247.5, 36.7)   | (247.5, 58.1)
+  131 | (235.0, 36.7)   | (235.0, 58.1)
+  132 | (222.5, 36.7)   | (222.5, 58.1)
+  133 | (210.0, 36.7)   | (210.0, 58.1)
+  134 | (197.5, 36.7)   | (197.5, 58.1)
+  135 | (185.0, 36.7)   | (185.0, 58.1)
+  136 | (172.5, 36.7)   | (172.5, 58.1)
+  137 | (160.0, 36.7)   | (160.0, 58.1)
+  138 | (147.5, 36.7)   | (147.5, 58.1)
+  139 | (135.0, 36.7)   | (135.0, 58.1)
+  140 | (122.5, 36.7)   | (122.5, 58.1)
+  141 | (110.0, 36.7)   | (110.0, 58.1)
+  142 | (97.5, 36.7)    | (97.5, 58.1)
+  143 | (85.0, 36.7)    | (85.0, 58.1)
+  144 | (72.5, 36.7)    | (72.5, 58.1)
+  145 | (60.0, 36.7)    | (60.0, 58.1)
+  146 | (47.5, 36.7)    | (47.5, 58.1)
+  147 | (35.0, 36.7)    | (35.0, 58.1)
+  148 | (22.5, 36.7)    | (22.5, 58.1)
+  149 | (10.0, 36.7)    | (10.0, 58.1)
+  150 | (10.0, 47.3)    | (10.0, 68.7)
+  151 | (22.5, 47.3)    | (22.5, 68.7)
+  152 | (35.0, 47.3)    | (35.0, 68.7)
+  153 | (47.5, 47.3)    | (47.5, 68.7)
+  154 | (60.0, 47.3)    | (60.0, 68.7)
+  155 | (72.5, 47.3)    | (72.5, 68.7)
+  156 | (85.0, 47.3)    | (85.0, 68.7)
+  157 | (97.5, 47.3)    | (97.5, 68.7)
+  158 | (110.0, 47.3)   | (110.0, 68.7)
+  159 | (122.5, 47.3)   | (122.5, 68.7)
+  160 | (135.0, 47.3)   | (135.0, 68.7)
+  161 | (147.5, 47.3)   | (147.5, 68.7)
+  162 | (160.0, 47.3)   | (160.0, 68.7)
+  163 | (172.5, 47.3)   | (172.5, 68.7)
+  164 | (185.0, 47.3)   | (185.0, 68.7)
+  165 | (197.5, 47.3)   | (197.5, 68.7)
+  166 | (210.0, 47.3)   | (210.0, 68.7)
+  167 | (222.5, 47.3)   | (222.5, 68.7)
+  168 | (235.0, 47.3)   | (235.0, 68.7)
+  169 | (247.5, 47.3)   | (247.5, 68.7)
+  170 | (260.0, 47.3)   | (260.0, 68.7)
+  171 | (272.5, 47.3)   | (272.5, 68.7)
+  172 | (285.0, 47.3)   | (285.0, 68.7)
+  173 | (297.5, 47.3)   | (297.5, 68.7)
+  174 | (310.0, 47.3)   | (310.0, 68.7)
+  175 | (310.0, 57.9)   | (310.0, 79.3)
+  176 | (297.5, 57.9)   | (297.5, 79.3)
+  177 | (285.0, 57.9)   | (285.0, 79.3)
+  178 | (272.5, 57.9)   | (272.5, 79.3)
+  179 | (260.0, 57.9)   | (260.0, 79.3)
+  180 | (247.5, 57.9)   | (247.5, 79.3)
+  181 | (235.0, 57.9)   | (235.0, 79.3)
+  182 | (222.5, 57.9)   | (222.5, 79.3)
+  183 | (210.0, 57.9)   | (210.0, 79.3)
+  184 | (197.5, 57.9)   | (197.5, 79.3)
+  185 | (185.0, 57.9)   | (185.0, 79.3)
+  186 | (172.5, 57.9)   | (172.5, 79.3)
+  187 | (160.0, 57.9)   | (160.0, 79.3)
+  188 | (147.5, 57.9)   | (147.5, 79.3)
+  189 | (135.0, 57.9)   | (135.0, 79.3)
+  190 | (122.5, 57.9)   | (122.5, 79.3)
+  191 | (110.0, 57.9)   | (110.0, 79.3)
+  192 | (97.5, 57.9)    | (97.5, 79.3)
+  193 | (85.0, 57.9)    | (85.0, 79.3)
+  194 | (72.5, 57.9)    | (72.5, 79.3)
+  195 | (60.0, 57.9)    | (60.0, 79.3)
+  196 | (47.5, 57.9)    | (47.5, 79.3)
+  197 | (35.0, 57.9)    | (35.0, 79.3)
+  198 | (22.5, 57.9)    | (22.5, 79.3)
+  199 | (10.0, 57.9)    | (10.0, 79.3)
+  200 | (10.0, 68.5)    | (10.0, 90.0)
+  201 | (22.5, 68.5)    | (22.5, 90.0)
+  202 | (35.0, 68.5)    | (35.0, 90.0)
+  203 | (47.5, 68.5)    | (47.5, 90.0)
+  204 | (60.0, 68.5)    | (60.0, 90.0)
+  205 | (72.5, 68.5)    | (72.5, 90.0)
+  206 | (85.0, 68.5)    | (85.0, 90.0)
+  207 | (97.5, 68.5)    | (97.5, 90.0)
+  208 | (110.0, 68.5)   | (110.0, 90.0)
+  209 | (122.5, 68.5)   | (122.5, 90.0)
+  210 | (135.0, 68.5)   | (135.0, 90.0)
+  211 | (147.5, 68.5)   | (147.5, 90.0)
+  212 | (160.0, 68.5)   | (160.0, 90.0)
+  213 | (172.5, 68.5)   | (172.5, 90.0)
+  214 | (185.0, 68.5)   | (185.0, 90.0)
+  215 | (197.5, 68.5)   | (197.5, 90.0)
+  216 | (210.0, 68.5)   | (210.0, 90.0)
+  217 | (222.5, 68.5)   | (222.5, 90.0)
+  218 | (235.0, 68.5)   | (235.0, 90.0)
+  219 | (247.5, 68.5)   | (247.5, 90.0)
+  220 | (260.0, 68.5)   | (260.0, 90.0)
+  221 | (272.5, 68.5)   | (272.5, 90.0)
+  222 | (285.0, 68.5)   | (285.0, 90.0)
+  223 | (297.5, 68.5)   | (297.5, 90.0)
+  224 | (310.0, 68.5)   | (310.0, 90.0)
+  225 | (310.0, 79.2)   | (310.0, 100.6)
+  226 | (297.5, 79.2)   | (297.5, 100.6)
+  227 | (285.0, 79.2)   | (285.0, 100.6)
+  228 | (272.5, 79.2)   | (272.5, 100.6)
+  229 | (260.0, 79.2)   | (260.0, 100.6)
+  230 | (247.5, 79.2)   | (247.5, 100.6)
+  231 | (235.0, 79.2)   | (235.0, 100.6)
+  232 | (222.5, 79.2)   | (222.5, 100.6)
+  233 | (210.0, 79.2)   | (210.0, 100.6)
+  234 | (197.5, 79.2)   | (197.5, 100.6)
+  235 | (185.0, 79.2)   | (185.0, 100.6)
+  236 | (172.5, 79.2)   | (172.5, 100.6)
+  237 | (160.0, 79.2)   | (160.0, 100.6)
+  238 | (147.5, 79.2)   | (147.5, 100.6)
+  239 | (135.0, 79.2)   | (135.0, 100.6)
+  240 | (122.5, 79.2)   | (122.5, 100.6)
+  241 | (110.0, 79.2)   | (110.0, 100.6)
+  242 | (97.5, 79.2)    | (97.5, 100.6)
+  243 | (85.0, 79.2)    | (85.0, 100.6)
+  244 | (72.5, 79.2)    | (72.5, 100.6)
+  245 | (60.0, 79.2)    | (60.0, 100.6)
+  246 | (47.5, 79.2)    | (47.5, 100.6)
+  247 | (35.0, 79.2)    | (35.0, 100.6)
+  248 | (22.5, 79.2)    | (22.5, 100.6)
+  249 | (10.0, 79.2)    | (10.0, 100.6)
+  250 | (10.0, 89.8)    | (10.0, 111.2)
+  251 | (22.5, 89.8)    | (22.5, 111.2)
+  252 | (35.0, 89.8)    | (35.0, 111.2)
+  253 | (47.5, 89.8)    | (47.5, 111.2)
+  254 | (60.0, 89.8)    | (60.0, 111.2)
+  255 | (72.5, 89.8)    | (72.5, 111.2)
+  256 | (85.0, 89.8)    | (85.0, 111.2)
+  257 | (97.5, 89.8)    | (97.5, 111.2)
+  258 | (110.0, 89.8)   | (110.0, 111.2)
+  259 | (122.5, 89.8)   | (122.5, 111.2)
+  260 | (135.0, 89.8)   | (135.0, 111.2)
+  261 | (147.5, 89.8)   | (147.5, 111.2)
+  262 | (160.0, 89.8)   | (160.0, 111.2)
+  263 | (172.5, 89.8)   | (172.5, 111.2)
+  264 | (185.0, 89.8)   | (185.0, 111.2)
+  265 | (197.5, 89.8)   | (197.5, 111.2)
+  266 | (210.0, 89.8)   | (210.0, 111.2)
+  267 | (222.5, 89.8)   | (222.5, 111.2)
+  268 | (235.0, 89.8)   | (235.0, 111.2)
+  269 | (247.5, 89.8)   | (247.5, 111.2)
+  270 | (260.0, 89.8)   | (260.0, 111.2)
+  271 | (272.5, 89.8)   | (272.5, 111.2)
+  272 | (285.0, 89.8)   | (285.0, 111.2)
+  273 | (297.5, 89.8)   | (297.5, 111.2)
+  274 | (310.0, 89.8)   | (310.0, 111.2)
+  275 | (310.0, 100.4)  | (310.0, 121.8)
+  276 | (297.5, 100.4)  | (297.5, 121.8)
+  277 | (285.0, 100.4)  | (285.0, 121.8)
+  278 | (272.5, 100.4)  | (272.5, 121.8)
+  279 | (260.0, 100.4)  | (260.0, 121.8)
+  280 | (247.5, 100.4)  | (247.5, 121.8)
+  281 | (235.0, 100.4)  | (235.0, 121.8)
+  282 | (222.5, 100.4)  | (222.5, 121.8)
+  283 | (210.0, 100.4)  | (210.0, 121.8)
+  284 | (197.5, 100.4)  | (197.5, 121.8)
+  285 | (185.0, 100.4)  | (185.0, 121.8)
+  286 | (172.5, 100.4)  | (172.5, 121.8)
+  287 | (160.0, 100.4)  | (160.0, 121.8)
+  288 | (147.5, 100.4)  | (147.5, 121.8)
+  289 | (135.0, 100.4)  | (135.0, 121.8)
+  290 | (122.5, 100.4)  | (122.5, 121.8)
+  291 | (110.0, 100.4)  | (110.0, 121.8)
+  292 | (97.5, 100.4)   | (97.5, 121.8)
+  293 | (85.0, 100.4)   | (85.0, 121.8)
+  294 | (72.5, 100.4)   | (72.5, 121.8)
+  295 | (60.0, 100.4)   | (60.0, 121.8)
+  296 | (47.5, 100.4)   | (47.5, 121.8)
+  297 | (35.0, 100.4)   | (35.0, 121.8)
+  298 | (22.5, 100.4)   | (22.5, 121.8)
+  299 | (10.0, 100.4)   | (10.0, 121.8)
+  300 | (10.0, 111.0)   | (10.0, 132.4)
+  301 | (22.5, 111.0)   | (22.5, 132.4)
+  302 | (35.0, 111.0)   | (35.0, 132.4)
+  303 | (47.5, 111.0)   | (47.5, 132.4)
+  304 | (60.0, 111.0)   | (60.0, 132.4)
+  305 | (72.5, 111.0)   | (72.5, 132.4)
+  306 | (85.0, 111.0)   | (85.0, 132.4)
+  307 | (97.5, 111.0)   | (97.5, 132.4)
+  308 | (110.0, 111.0)  | (110.0, 132.4)
+  309 | (122.5, 111.0)  | (122.5, 132.4)
+  310 | (135.0, 111.0)  | (135.0, 132.4)
+  311 | (147.5, 111.0)  | (147.5, 132.4)
+  312 | (160.0, 111.0)  | (160.0, 132.4)
+  313 | (172.5, 111.0)  | (172.5, 132.4)
+  314 | (185.0, 111.0)  | (185.0, 132.4)
+  315 | (197.5, 111.0)  | (197.5, 132.4)
+  316 | (210.0, 111.0)  | (210.0, 132.4)
+  317 | (222.5, 111.0)  | (222.5, 132.4)
+  318 | (235.0, 111.0)  | (235.0, 132.4)
+  319 | (247.5, 111.0)  | (247.5, 132.4)
+  320 | (260.0, 111.0)  | (260.0, 132.4)
+  321 | (272.5, 111.0)  | (272.5, 132.4)
+  322 | (285.0, 111.0)  | (285.0, 132.4)
+  323 | (297.5, 111.0)  | (297.5, 132.4)
+  324 | (310.0, 111.0)  | (310.0, 132.4)
+  325 | (310.0, 121.6)  | (310.0, 143.1)
+  326 | (297.5, 121.6)  | (297.5, 143.1)
+  327 | (285.0, 121.6)  | (285.0, 143.1)
+  328 | (272.5, 121.6)  | (272.5, 143.1)
+  329 | (260.0, 121.6)  | (260.0, 143.1)
+  330 | (247.5, 121.6)  | (247.5, 143.1)
+  331 | (235.0, 121.6)  | (235.0, 143.1)
+  332 | (222.5, 121.6)  | (222.5, 143.1)
+  333 | (210.0, 121.6)  | (210.0, 143.1)
+  334 | (197.5, 121.6)  | (197.5, 143.1)
+  335 | (185.0, 121.6)  | (185.0, 143.1)
+  336 | (172.5, 121.6)  | (172.5, 143.1)
+  337 | (160.0, 121.6)  | (160.0, 143.1)
+  338 | (147.5, 121.6)  | (147.5, 143.1)
+  339 | (135.0, 121.6)  | (135.0, 143.1)
+  340 | (122.5, 121.6)  | (122.5, 143.1)
+  341 | (110.0, 121.6)  | (110.0, 143.1)
+  342 | (97.5, 121.6)   | (97.5, 143.1)
+  343 | (85.0, 121.6)   | (85.0, 143.1)
+  344 | (72.5, 121.6)   | (72.5, 143.1)
+  345 | (60.0, 121.6)   | (60.0, 143.1)
+  346 | (47.5, 121.6)   | (47.5, 143.1)
+  347 | (35.0, 121.6)   | (35.0, 143.1)
+  348 | (22.5, 121.6)   | (22.5, 143.1)
+  349 | (10.0, 121.6)   | (10.0, 143.1)
+  350 | (10.0, 132.3)   | (10.0, 153.7)
+  351 | (22.5, 132.3)   | (22.5, 153.7)
+  352 | (35.0, 132.3)   | (35.0, 153.7)
+  353 | (47.5, 132.3)   | (47.5, 153.7)
+  354 | (60.0, 132.3)   | (60.0, 153.7)
+  355 | (72.5, 132.3)   | (72.5, 153.7)
+  356 | (85.0, 132.3)   | (85.0, 153.7)
+  357 | (97.5, 132.3)   | (97.5, 153.7)
+  358 | (110.0, 132.3)  | (110.0, 153.7)
+  359 | (122.5, 132.3)  | (122.5, 153.7)
+  360 | (135.0, 132.3)  | (135.0, 153.7)
+  361 | (147.5, 132.3)  | (147.5, 153.7)
+  362 | (160.0, 132.3)  | (160.0, 153.7)
+  363 | (172.5, 132.3)  | (172.5, 153.7)
+  364 | (185.0, 132.3)  | (185.0, 153.7)
+  365 | (197.5, 132.3)  | (197.5, 153.7)
+  366 | (210.0, 132.3)  | (210.0, 153.7)
+  367 | (222.5, 132.3)  | (222.5, 153.7)
+  368 | (235.0, 132.3)  | (235.0, 153.7)
+  369 | (247.5, 132.3)  | (247.5, 153.7)
+  370 | (260.0, 132.3)  | (260.0, 153.7)
+  371 | (272.5, 132.3)  | (272.5, 153.7)
+  372 | (285.0, 132.3)  | (285.0, 153.7)
+  373 | (297.5, 132.3)  | (297.5, 153.7)
+  374 | (310.0, 132.3)  | (310.0, 153.7)
+  375 | (310.0, 142.9)  | (310.0, 164.3)
+  376 | (297.5, 142.9)  | (297.5, 164.3)
+  377 | (285.0, 142.9)  | (285.0, 164.3)
+  378 | (272.5, 142.9)  | (272.5, 164.3)
+  379 | (260.0, 142.9)  | (260.0, 164.3)
+  380 | (247.5, 142.9)  | (247.5, 164.3)
+  381 | (235.0, 142.9)  | (235.0, 164.3)
+  382 | (222.5, 142.9)  | (222.5, 164.3)
+  383 | (210.0, 142.9)  | (210.0, 164.3)
+  384 | (197.5, 142.9)  | (197.5, 164.3)
+  385 | (185.0, 142.9)  | (185.0, 164.3)
+  386 | (172.5, 142.9)  | (172.5, 164.3)
+  387 | (160.0, 142.9)  | (160.0, 164.3)
+  388 | (147.5, 142.9)  | (147.5, 164.3)
+  389 | (135.0, 142.9)  | (135.0, 164.3)
+  390 | (122.5, 142.9)  | (122.5, 164.3)
+  391 | (110.0, 142.9)  | (110.0, 164.3)
+  392 | (97.5, 142.9)   | (97.5, 164.3)
+  393 | (85.0, 142.9)   | (85.0, 164.3)
+  394 | (72.5, 142.9)   | (72.5, 164.3)
+  395 | (60.0, 142.9)   | (60.0, 164.3)
+  396 | (47.5, 142.9)   | (47.5, 164.3)
+  397 | (35.0, 142.9)   | (35.0, 164.3)
+  398 | (22.5, 142.9)   | (22.5, 164.3)
+  399 | (10.0, 142.9)   | (10.0, 164.3)
+  400 | (10.0, 153.5)   | (10.0, 174.9)
+  401 | (22.5, 153.5)   | (22.5, 174.9)
+  402 | (35.0, 153.5)   | (35.0, 174.9)
+  403 | (47.5, 153.5)   | (47.5, 174.9)
+  404 | (60.0, 153.5)   | (60.0, 174.9)
+  405 | (72.5, 153.5)   | (72.5, 174.9)
+  406 | (85.0, 153.5)   | (85.0, 174.9)
+  407 | (97.5, 153.5)   | (97.5, 174.9)
+  408 | (110.0, 153.5)  | (110.0, 174.9)
+  409 | (122.5, 153.5)  | (122.5, 174.9)
+  410 | (135.0, 153.5)  | (135.0, 174.9)
+  411 | (147.5, 153.5)  | (147.5, 174.9)
+  412 | (160.0, 153.5)  | (160.0, 174.9)
+  413 | (172.5, 153.5)  | (172.5, 174.9)
+  414 | (185.0, 153.5)  | (185.0, 174.9)
+  415 | (197.5, 153.5)  | (197.5, 174.9)
+  416 | (210.0, 153.5)  | (210.0, 174.9)
+  417 | (222.5, 153.5)  | (222.5, 174.9)
+  418 | (235.0, 153.5)  | (235.0, 174.9)
+  419 | (247.5, 153.5)  | (247.5, 174.9)
+  420 | (260.0, 153.5)  | (260.0, 174.9)
+  421 | (272.5, 153.5)  | (272.5, 174.9)
+  422 | (285.0, 153.5)  | (285.0, 174.9)
+  423 | (297.5, 153.5)  | (297.5, 174.9)
+  424 | (310.0, 153.5)  | (310.0, 174.9)
+  425 | (310.0, 164.1)  | (310.0, 185.5)
+  426 | (297.5, 164.1)  | (297.5, 185.5)
+  427 | (285.0, 164.1)  | (285.0, 185.5)
+  428 | (272.5, 164.1)  | (272.5, 185.5)
+  429 | (260.0, 164.1)  | (260.0, 185.5)
+  430 | (247.5, 164.1)  | (247.5, 185.5)
+  431 | (235.0, 164.1)  | (235.0, 185.5)
+  432 | (222.5, 164.1)  | (222.5, 185.5)
+  433 | (210.0, 164.1)  | (210.0, 185.5)
+  434 | (197.5, 164.1)  | (197.5, 185.5)
+  435 | (185.0, 164.1)  | (185.0, 185.5)
+  436 | (172.5, 164.1)  | (172.5, 185.5)
+  437 | (160.0, 164.1)  | (160.0, 185.5)
+  438 | (147.5, 164.1)  | (147.5, 185.5)
+  439 | (135.0, 164.1)  | (135.0, 185.5)
+  440 | (122.5, 164.1)  | (122.5, 185.5)
+  441 | (110.0, 164.1)  | (110.0, 185.5)
+  442 | (97.5, 164.1)   | (97.5, 185.5)
+  443 | (85.0, 164.1)   | (85.0, 185.5)
+  444 | (72.5, 164.1)   | (72.5, 185.5)
+  445 | (60.0, 164.1)   | (60.0, 185.5)
+  446 | (47.5, 164.1)   | (47.5, 185.5)
+  447 | (35.0, 164.1)   | (35.0, 185.5)
+  448 | (22.5, 164.1)   | (22.5, 185.5)
+  449 | (10.0, 164.1)   | (10.0, 185.5)
+  450 | (10.0, 174.7)   | (10.0, 196.2)
+  451 | (22.5, 174.7)   | (22.5, 196.2)
+  452 | (35.0, 174.7)   | (35.0, 196.2)
+  453 | (47.5, 174.7)   | (47.5, 196.2)
+  454 | (60.0, 174.7)   | (60.0, 196.2)
+  455 | (72.5, 174.7)   | (72.5, 196.2)
+  456 | (85.0, 174.7)   | (85.0, 196.2)
+  457 | (97.5, 174.7)   | (97.5, 196.2)
+  458 | (110.0, 174.7)  | (110.0, 196.2)
+  459 | (122.5, 174.7)  | (122.5, 196.2)
+  460 | (135.0, 174.7)  | (135.0, 196.2)
+  461 | (147.5, 174.7)  | (147.5, 196.2)
+  462 | (160.0, 174.7)  | (160.0, 196.2)
+  463 | (172.5, 174.7)  | (172.5, 196.2)
+  464 | (185.0, 174.7)  | (185.0, 196.2)
+  465 | (197.5, 174.7)  | (197.5, 196.2)
+  466 | (210.0, 174.7)  | (210.0, 196.2)
+  467 | (222.5, 174.7)  | (222.5, 196.2)
+  468 | (235.0, 174.7)  | (235.0, 196.2)
+  469 | (247.5, 174.7)  | (247.5, 196.2)
+  470 | (260.0, 174.7)  | (260.0, 196.2)
+  471 | (272.5, 174.7)  | (272.5, 196.2)
+  472 | (285.0, 174.7)  | (285.0, 196.2)
+  473 | (297.5, 174.7)  | (297.5, 196.2)
+  474 | (310.0, 174.7)  | (310.0, 196.2)
+  475 | (310.0, 185.4)  | (310.0, 206.8)
+  476 | (297.5, 185.4)  | (297.5, 206.8)
+  477 | (285.0, 185.4)  | (285.0, 206.8)
+  478 | (272.5, 185.4)  | (272.5, 206.8)
+  479 | (260.0, 185.4)  | (260.0, 206.8)
+  480 | (247.5, 185.4)  | (247.5, 206.8)
+  481 | (235.0, 185.4)  | (235.0, 206.8)
+  482 | (222.5, 185.4)  | (222.5, 206.8)
+  483 | (210.0, 185.4)  | (210.0, 206.8)
+  484 | (197.5, 185.4)  | (197.5, 206.8)
+  485 | (185.0, 185.4)  | (185.0, 206.8)
+  486 | (172.5, 185.4)  | (172.5, 206.8)
+  487 | (160.0, 185.4)  | (160.0, 206.8)
+  488 | (147.5, 185.4)  | (147.5, 206.8)
+  489 | (135.0, 185.4)  | (135.0, 206.8)
+  490 | (122.5, 185.4)  | (122.5, 206.8)
+  491 | (110.0, 185.4)  | (110.0, 206.8)
+  492 | (97.5, 185.4)   | (97.5, 206.8)
+  493 | (85.0, 185.4)   | (85.0, 206.8)
+  494 | (72.5, 185.4)   | (72.5, 206.8)
+  495 | (60.0, 185.4)   | (60.0, 206.8)
+  496 | (47.5, 185.4)   | (47.5, 206.8)
+  497 | (35.0, 185.4)   | (35.0, 206.8)
+  498 | (22.5, 185.4)   | (22.5, 206.8)
+  499 | (10.0, 185.4)   | (10.0, 206.8)
+  500 | (10.0, 196.0)   | (10.0, 217.4)
+  501 | (22.5, 196.0)   | (22.5, 217.4)
+  502 | (35.0, 196.0)   | (35.0, 217.4)
+  503 | (47.5, 196.0)   | (47.5, 217.4)
+  504 | (60.0, 196.0)   | (60.0, 217.4)
+  505 | (72.5, 196.0)   | (72.5, 217.4)
+  506 | (85.0, 196.0)   | (85.0, 217.4)
+  507 | (97.5, 196.0)   | (97.5, 217.4)
+  508 | (110.0, 196.0)  | (110.0, 217.4)
+  509 | (122.5, 196.0)  | (122.5, 217.4)
+  510 | (135.0, 196.0)  | (135.0, 217.4)
+  511 | (147.5, 196.0)  | (147.5, 217.4)
+  512 | (160.0, 196.0)  | (160.0, 217.4)
+  513 | (172.5, 196.0)  | (172.5, 217.4)
+  514 | (185.0, 196.0)  | (185.0, 217.4)
+  515 | (197.5, 196.0)  | (197.5, 217.4)
+  516 | (210.0, 196.0)  | (210.0, 217.4)
+  517 | (222.5, 196.0)  | (222.5, 217.4)
+  518 | (235.0, 196.0)  | (235.0, 217.4)
+  519 | (247.5, 196.0)  | (247.5, 217.4)
+  520 | (260.0, 196.0)  | (260.0, 217.4)
+  521 | (272.5, 196.0)  | (272.5, 217.4)
+  522 | (285.0, 196.0)  | (285.0, 217.4)
+  523 | (297.5, 196.0)  | (297.5, 217.4)
+  524 | (310.0, 196.0)  | (310.0, 217.4)
+  525 | (310.0, 206.6)  | (310.0, 228.0)
+  526 | (297.5, 206.6)  | (297.5, 228.0)
+  527 | (285.0, 206.6)  | (285.0, 228.0)
+  528 | (272.5, 206.6)  | (272.5, 228.0)
+  529 | (260.0, 206.6)  | (260.0, 228.0)
+  530 | (247.5, 206.6)  | (247.5, 228.0)
+  531 | (235.0, 206.6)  | (235.0, 228.0)
+  532 | (222.5, 206.6)  | (222.5, 228.0)
+  533 | (210.0, 206.6)  | (210.0, 228.0)
+  534 | (197.5, 206.6)  | (197.5, 228.0)
+  535 | (185.0, 206.6)  | (185.0, 228.0)
+  536 | (172.5, 206.6)  | (172.5, 228.0)
+  537 | (160.0, 206.6)  | (160.0, 228.0)
+  538 | (147.5, 206.6)  | (147.5, 228.0)
+  539 | (135.0, 206.6)  | (135.0, 228.0)
+  540 | (122.5, 206.6)  | (122.5, 228.0)
+  541 | (110.0, 206.6)  | (110.0, 228.0)
+  542 | (97.5, 206.6)   | (97.5, 228.0)
+  543 | (85.0, 206.6)   | (85.0, 228.0)
+  544 | (72.5, 206.6)   | (72.5, 228.0)
+  545 | (60.0, 206.6)   | (60.0, 228.0)
+  546 | (47.5, 206.6)   | (47.5, 228.0)
+  547 | (35.0, 206.6)   | (35.0, 228.0)
+  548 | (22.5, 206.6)   | (22.5, 228.0)
+  549 | (10.0, 206.6)   | (10.0, 228.0)
+  550 | (10.0, 217.2)   | (10.0, 238.6)
+  551 | (22.5, 217.2)   | (22.5, 238.6)
+  552 | (35.0, 217.2)   | (35.0, 238.6)
+  553 | (47.5, 217.2)   | (47.5, 238.6)
+  554 | (60.0, 217.2)   | (60.0, 238.6)
+  555 | (72.5, 217.2)   | (72.5, 238.6)
+  556 | (85.0, 217.2)   | (85.0, 238.6)
+  557 | (97.5, 217.2)   | (97.5, 238.6)
+  558 | (110.0, 217.2)  | (110.0, 238.6)
+  559 | (122.5, 217.2)  | (122.5, 238.6)
+  560 | (135.0, 217.2)  | (135.0, 238.6)
+  561 | (147.5, 217.2)  | (147.5, 238.6)
+  562 | (160.0, 217.2)  | (160.0, 238.6)
+  563 | (172.5, 217.2)  | (172.5, 238.6)
+  564 | (185.0, 217.2)  | (185.0, 238.6)
+  565 | (197.5, 217.2)  | (197.5, 238.6)
+  566 | (210.0, 217.2)  | (210.0, 238.6)
+  567 | (222.5, 217.2)  | (222.5, 238.6)
+  568 | (235.0, 217.2)  | (235.0, 238.6)
+  569 | (247.5, 217.2)  | (247.5, 238.6)
+  570 | (260.0, 217.2)  | (260.0, 238.6)
+  571 | (272.5, 217.2)  | (272.5, 238.6)
+  572 | (285.0, 217.2)  | (285.0, 238.6)
+  573 | (297.5, 217.2)  | (297.5, 238.6)
+  574 | (310.0, 217.2)  | (310.0, 238.6)
+  575 | (310.0, 227.8)  | (310.0, 249.3)
+  576 | (297.5, 227.8)  | (297.5, 249.3)
+  577 | (285.0, 227.8)  | (285.0, 249.3)
+  578 | (272.5, 227.8)  | (272.5, 249.3)
+  579 | (260.0, 227.8)  | (260.0, 249.3)
+  580 | (247.5, 227.8)  | (247.5, 249.3)
+  581 | (235.0, 227.8)  | (235.0, 249.3)
+  582 | (222.5, 227.8)  | (222.5, 249.3)
+  583 | (210.0, 227.8)  | (210.0, 249.3)
+  584 | (197.5, 227.8)  | (197.5, 249.3)
+  585 | (185.0, 227.8)  | (185.0, 249.3)
+  586 | (172.5, 227.8)  | (172.5, 249.3)
+  587 | (160.0, 227.8)  | (160.0, 249.3)
+  588 | (147.5, 227.8)  | (147.5, 249.3)
+  589 | (135.0, 227.8)  | (135.0, 249.3)
+  590 | (122.5, 227.8)  | (122.5, 249.3)
+  591 | (110.0, 227.8)  | (110.0, 249.3)
+  592 | (97.5, 227.8)   | (97.5, 249.3)
+  593 | (85.0, 227.8)   | (85.0, 249.3)
+  594 | (72.5, 227.8)   | (72.5, 249.3)
+  595 | (60.0, 227.8)   | (60.0, 249.3)
+  596 | (47.5, 227.8)   | (47.5, 249.3)
+  597 | (35.0, 227.8)   | (35.0, 249.3)
+  598 | (22.5, 227.8)   | (22.5, 249.3)
+  599 | (10.0, 227.8)   | (10.0, 249.3)
+  600 | (10.0, 238.5)   | (10.0, 259.9)
+  601 | (22.5, 238.5)   | (22.5, 259.9)
+  602 | (35.0, 238.5)   | (35.0, 259.9)
+  603 | (47.5, 238.5)   | (47.5, 259.9)
+  604 | (60.0, 238.5)   | (60.0, 259.9)
+  605 | (72.5, 238.5)   | (72.5, 259.9)
+  606 | (85.0, 238.5)   | (85.0, 259.9)
+  607 | (97.5, 238.5)   | (97.5, 259.9)
+  608 | (110.0, 238.5)  | (110.0, 259.9)
+  609 | (122.5, 238.5)  | (122.5, 259.9)
+  610 | (135.0, 238.5)  | (135.0, 259.9)
+  611 | (147.5, 238.5)  | (147.5, 259.9)
+  612 | (160.0, 238.5)  | (160.0, 259.9)
+  613 | (172.5, 238.5)  | (172.5, 259.9)
+  614 | (185.0, 238.5)  | (185.0, 259.9)
+  615 | (197.5, 238.5)  | (197.5, 259.9)
+  616 | (210.0, 238.5)  | (210.0, 259.9)
+  617 | (222.5, 238.5)  | (222.5, 259.9)
+  618 | (235.0, 238.5)  | (235.0, 259.9)
+  619 | (247.5, 238.5)  | (247.5, 259.9)
+  620 | (260.0, 238.5)  | (260.0, 259.9)
+  621 | (272.5, 238.5)  | (272.5, 259.9)
+  622 | (285.0, 238.5)  | (285.0, 259.9)
+  623 | (297.5, 238.5)  | (297.5, 259.9)
+  624 | (310.0, 238.5)  | (310.0, 259.9)
+bed_mesh: relative_reference_index 12 is (160.00, 5.00)
+Starting heater checks for extruder
+Stats 23.5: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3335 bytes_read=6926 bytes_retransmit=9 bytes_invalid=0 send_seq=258 receive_seq=258 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179938915  Pro: temp=0.0 CB1: temp=39.1 heater_bed: target=0 temp=0.0 pwm=0.000 sysload=2.66 cputime=0.511 memavail=3906096 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=0.0 pwm=0.000
+Stats 24.5: gcodein=0  mcu: mcu_awake=0.000 mcu_task_avg=0.000000 mcu_task_stddev=0.000000 bytes_write=3341 bytes_read=6985 bytes_retransmit=9 bytes_invalid=0 send_seq=259 receive_seq=259 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179977750  Pro: temp=21.5 CB1: temp=40.8 heater_bed: target=0 temp=19.0 pwm=0.000 sysload=2.66 cputime=0.512 memavail=3899360 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.3 pwm=0.000
+Stats 25.5: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000037 bytes_write=3347 bytes_read=7174 bytes_retransmit=9 bytes_invalid=0 send_seq=260 receive_seq=260 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180005505  Pro: temp=19.6 CB1: temp=40.8 heater_bed: target=0 temp=19.9 pwm=0.000 sysload=2.77 cputime=0.515 memavail=3895968 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 26.5: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000037 bytes_write=3353 bytes_read=7333 bytes_retransmit=9 bytes_invalid=0 send_seq=261 receive_seq=261 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180006082  Pro: temp=19.6 CB1: temp=39.7 heater_bed: target=0 temp=20.6 pwm=0.000 sysload=2.77 cputime=0.517 memavail=3891184 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.2 pwm=0.000
+Stats 27.5: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000037 bytes_write=3359 bytes_read=7478 bytes_retransmit=9 bytes_invalid=0 send_seq=262 receive_seq=262 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180005053  Pro: temp=19.7 CB1: temp=40.2 heater_bed: target=0 temp=20.8 pwm=0.000 sysload=2.77 cputime=0.519 memavail=3897632 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 28.5: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000037 bytes_write=3365 bytes_read=7652 bytes_retransmit=9 bytes_invalid=0 send_seq=263 receive_seq=263 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998028  Pro: temp=19.6 CB1: temp=42.5 heater_bed: target=0 temp=20.5 pwm=0.000 sysload=2.77 cputime=0.522 memavail=3889456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 29.5: gcodein=0  mcu: mcu_awake=0.007 mcu_task_avg=0.000008 mcu_task_stddev=0.000037 bytes_write=3371 bytes_read=7811 bytes_retransmit=9 bytes_invalid=0 send_seq=264 receive_seq=264 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179994834  Pro: temp=19.6 CB1: temp=44.1 heater_bed: target=0 temp=19.8 pwm=0.000 sysload=2.77 cputime=0.525 memavail=3886256 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 30.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3377 bytes_read=7970 bytes_retransmit=9 bytes_invalid=0 send_seq=265 receive_seq=265 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179995954  Pro: temp=19.8 CB1: temp=42.5 heater_bed: target=0 temp=19.2 pwm=0.000 sysload=2.79 cputime=0.527 memavail=3885456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 31.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3383 bytes_read=8144 bytes_retransmit=9 bytes_invalid=0 send_seq=266 receive_seq=266 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000414  Pro: temp=19.9 CB1: temp=42.5 heater_bed: target=0 temp=18.4 pwm=0.000 sysload=2.79 cputime=0.528 memavail=3876240 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+webhooks client 140733261103056: New connection
+webhooks client 140733261103056: Client info {'program': 'Moonraker', 'version': 'v0.8.0-206-g9ad8fed'}
+webhooks: registering remote method 'shutdown_machine' for connection id: 140733261103056
+webhooks: registering remote method 'reboot_machine' for connection id: 140733261103056
+webhooks: registering remote method 'pause_job_queue' for connection id: 140733261103056
+webhooks: registering remote method 'start_job_queue' for connection id: 140733261103056
+Stats 32.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3389 bytes_read=8303 bytes_retransmit=9 bytes_invalid=0 send_seq=267 receive_seq=267 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179999585  Pro: temp=19.7 CB1: temp=43.0 heater_bed: target=0 temp=18.2 pwm=0.000 sysload=2.79 cputime=0.534 memavail=3883968 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 33.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3395 bytes_read=8448 bytes_retransmit=9 bytes_invalid=0 send_seq=268 receive_seq=268 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179997784  Pro: temp=19.8 CB1: temp=42.5 heater_bed: target=0 temp=18.6 pwm=0.000 sysload=2.79 cputime=0.537 memavail=3886784 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 34.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3401 bytes_read=8622 bytes_retransmit=9 bytes_invalid=0 send_seq=269 receive_seq=269 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998344  Pro: temp=19.8 CB1: temp=41.9 heater_bed: target=0 temp=19.4 pwm=0.000 sysload=2.79 cputime=0.540 memavail=3887104 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 35.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3407 bytes_read=8795 bytes_retransmit=9 bytes_invalid=0 send_seq=270 receive_seq=270 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179997158  Pro: temp=19.8 CB1: temp=41.4 heater_bed: target=0 temp=20.1 pwm=0.000 sysload=2.72 cputime=0.542 memavail=3888208 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 36.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3413 bytes_read=8940 bytes_retransmit=9 bytes_invalid=0 send_seq=271 receive_seq=271 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179997790  Pro: temp=19.7 CB1: temp=40.8 heater_bed: target=0 temp=20.6 pwm=0.000 sysload=2.72 cputime=0.544 memavail=3888144 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.3 pwm=0.000
+Stats 37.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3419 bytes_read=9114 bytes_retransmit=9 bytes_invalid=0 send_seq=272 receive_seq=272 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179997124  Pro: temp=19.7 CB1: temp=41.9 heater_bed: target=0 temp=20.7 pwm=0.000 sysload=2.72 cputime=0.547 memavail=3889456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 38.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3425 bytes_read=9273 bytes_retransmit=9 bytes_invalid=0 send_seq=273 receive_seq=273 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998524  Pro: temp=19.9 CB1: temp=41.4 heater_bed: target=0 temp=20.4 pwm=0.000 sysload=2.72 cputime=0.549 memavail=3889872 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 39.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3431 bytes_read=9418 bytes_retransmit=9 bytes_invalid=0 send_seq=274 receive_seq=274 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=179998890  Pro: temp=19.9 CB1: temp=41.4 heater_bed: target=0 temp=19.7 pwm=0.000 sysload=2.72 cputime=0.552 memavail=3889616 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.6 pwm=0.000
+Stats 40.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3437 bytes_read=9606 bytes_retransmit=9 bytes_invalid=0 send_seq=275 receive_seq=275 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000308  Pro: temp=19.9 CB1: temp=41.4 heater_bed: target=0 temp=18.7 pwm=0.000 sysload=2.67 cputime=0.554 memavail=3890144 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 41.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3443 bytes_read=9765 bytes_retransmit=9 bytes_invalid=0 send_seq=276 receive_seq=276 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000567  Pro: temp=19.8 CB1: temp=40.2 heater_bed: target=0 temp=18.3 pwm=0.000 sysload=2.67 cputime=0.557 memavail=3889952 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 42.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3449 bytes_read=9907 bytes_retransmit=9 bytes_invalid=0 send_seq=277 receive_seq=277 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000334  Pro: temp=19.7 CB1: temp=41.9 heater_bed: target=0 temp=18.2 pwm=0.000 sysload=2.67 cputime=0.559 memavail=3890048 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 43.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3455 bytes_read=10069 bytes_retransmit=9 bytes_invalid=0 send_seq=278 receive_seq=278 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180001262  Pro: temp=19.8 CB1: temp=41.4 heater_bed: target=0 temp=18.7 pwm=0.000 sysload=2.67 cputime=0.561 memavail=3889248 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 44.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3461 bytes_read=10226 bytes_retransmit=9 bytes_invalid=0 send_seq=279 receive_seq=279 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000955  Pro: temp=19.9 CB1: temp=41.4 heater_bed: target=0 temp=19.3 pwm=0.000 sysload=2.67 cputime=0.564 memavail=3890832 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 45.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3467 bytes_read=10385 bytes_retransmit=9 bytes_invalid=0 send_seq=280 receive_seq=280 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000461  Pro: temp=19.8 CB1: temp=42.5 heater_bed: target=0 temp=20.1 pwm=0.000 sysload=2.61 cputime=0.566 memavail=3890576 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 46.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3473 bytes_read=10559 bytes_retransmit=9 bytes_invalid=0 send_seq=281 receive_seq=281 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000898  Pro: temp=19.8 CB1: temp=41.4 heater_bed: target=0 temp=20.7 pwm=0.000 sysload=2.61 cputime=0.569 memavail=3888480 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
+Stats 47.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3485 bytes_read=10734 bytes_retransmit=9 bytes_invalid=0 send_seq=283 receive_seq=283 retransmit_seq=2 srtt=0.000 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000175  Pro: temp=20.0 CB1: temp=40.8 heater_bed: target=0 temp=20.8 pwm=0.000 sysload=2.61 cputime=0.571 memavail=3889280 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 48.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3491 bytes_read=10879 bytes_retransmit=9 bytes_invalid=0 send_seq=284 receive_seq=284 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000745  Pro: temp=19.8 CB1: temp=41.4 heater_bed: target=0 temp=20.5 pwm=0.000 sysload=2.61 cputime=0.574 memavail=3892512 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 49.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3497 bytes_read=11053 bytes_retransmit=9 bytes_invalid=0 send_seq=285 receive_seq=285 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000618  Pro: temp=19.9 CB1: temp=40.2 heater_bed: target=0 temp=19.6 pwm=0.000 sysload=2.61 cputime=0.576 memavail=3893456 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 50.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3503 bytes_read=11226 bytes_retransmit=9 bytes_invalid=0 send_seq=286 receive_seq=286 retransmit_seq=2 srtt=0.000 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000400  Pro: temp=19.9 CB1: temp=41.4 heater_bed: target=0 temp=18.9 pwm=0.000 sysload=2.56 cputime=0.579 memavail=3892864 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.6 pwm=0.000
+Stats 51.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3509 bytes_read=11371 bytes_retransmit=9 bytes_invalid=0 send_seq=287 receive_seq=287 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000943  Pro: temp=20.0 CB1: temp=40.8 heater_bed: target=0 temp=18.3 pwm=0.000 sysload=2.56 cputime=0.581 memavail=3892096 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.5 pwm=0.000
+Stats 52.5: gcodein=0  mcu: mcu_awake=0.001 mcu_task_avg=0.000004 mcu_task_stddev=0.000003 bytes_write=3515 bytes_read=11545 bytes_retransmit=9 bytes_invalid=0 send_seq=288 receive_seq=288 retransmit_seq=2 srtt=0.001 rttvar=0.000 rto=0.025 ready_bytes=0 upcoming_bytes=0 freq=180000914  Pro: temp=20.0 CB1: temp=41.9 heater_bed: target=0 temp=18.3 pwm=0.000 sysload=2.56 cputime=0.583 memavail=3893200 print_time=0.000 buffer_time=0.000 print_stall=0 extruder: target=0 temp=20.4 pwm=0.000
