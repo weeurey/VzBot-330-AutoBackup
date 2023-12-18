@@ -1521,3 +1521,4 @@
 [12/18/23 16:06:13] crowsnest: Starting ustreamer with Device /dev/video0 ...
 [12/18/23 16:06:15] crowsnest:  ... Done!
 [12/18/23 16:06:15] crowsnest: WATCHDOG: Lost Device: '/dev/video0'
+[12/18/23 17:39:22] crowsnest: WATCHDOG: Device '/dev/video0' returned.
