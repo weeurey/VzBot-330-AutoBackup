@@ -447,3 +447,14 @@ CPU Temperature: 47.4
 2023-12-19 11:20:27,817 [websockets.py:open()] - Websocket Opened: ID: 140732929287824, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2023-12-19 11:20:27,830 [websockets.py:_handle_identify()] - Websocket 140732929287824 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-19 11:25:41,778 [websockets.py:on_close()] - Websocket Closed: ID: 140732929287824 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.95
+2023-12-19 11:33:27,225 [job_state.py:_status_update()] - Job Started: Upper Tube_PLA_18m11s.gcode
+2023-12-19 11:43:08,659 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.85ms
+2023-12-19 11:43:08,659 [websockets.py:open()] - Websocket Opened: ID: 140732930190928, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-19 11:43:08,678 [websockets.py:_handle_identify()] - Websocket 140732930190928 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-19 11:43:58,742 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732930190928
+2023-12-19 11:44:03,662 [websockets.py:on_close()] - Websocket Closed: ID: 140732930190928 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.99
+2023-12-19 11:53:11,873 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.79ms
+2023-12-19 11:53:11,873 [websockets.py:open()] - Websocket Opened: ID: 140732926743696, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-19 11:53:11,925 [websockets.py:_handle_identify()] - Websocket 140732926743696 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-19 11:53:13,701 [websockets.py:on_close()] - Websocket Closed: ID: 140732926743696 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.83
+2023-12-19 11:57:14,337 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
