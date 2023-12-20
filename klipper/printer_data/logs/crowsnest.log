@@ -1522,3 +1522,46 @@
 [12/18/23 16:06:15] crowsnest:  ... Done!
 [12/18/23 16:06:15] crowsnest: WATCHDOG: Lost Device: '/dev/video0'
 [12/18/23 17:39:22] crowsnest: WATCHDOG: Device '/dev/video0' returned.
+[12/20/23 00:03:31] crowsnest: Shutdown or Killed by User!
+[12/20/23 00:03:31] crowsnest: Please come again :)
+[12/20/23 00:03:31] crowsnest: Goodbye...
+[12/20/23 00:03:56] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[12/20/23 00:03:58] crowsnest: Version: v4.1.1-1-gf7ac6aa
+[12/20/23 00:03:58] crowsnest: Prepare Startup ...
+[12/20/23 00:03:58] crowsnest: INFO: Host information:
+[12/20/23 00:03:58] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[12/20/23 00:03:58] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[12/20/23 00:03:58] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[12/20/23 00:03:58] crowsnest: Host Info: Available CPU Cores: 4
+[12/20/23 00:03:58] crowsnest: Host Info: Available Memory: 4143408 kB
+[12/20/23 00:03:58] crowsnest: Host Info: Diskspace (avail. / total): 41G / 57G
+[12/20/23 00:03:58] crowsnest: INFO: Checking Dependencies
+[12/20/23 00:04:00] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[12/20/23 00:04:00] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[12/20/23 00:04:00] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[12/20/23 00:04:00] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[12/20/23 00:04:01] crowsnest: Dependency: 'camera-streamer' found in bin/camera-streamer/camera-streamer.
+[12/20/23 00:04:02] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[12/20/23 00:04:09] crowsnest: Version Control: camera-streamer new version available: (v0.2.7) (v0.2.7(e43e93c)).
+[12/20/23 00:04:09] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[12/20/23 00:04:09] crowsnest:		[crowsnest]
+[12/20/23 00:04:09] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[12/20/23 00:04:09] crowsnest:		log_level: verbose
+[12/20/23 00:04:09] crowsnest:		delete_log: false
+[12/20/23 00:04:09] crowsnest:		no_proxy: false
+[12/20/23 00:04:09] crowsnest:		
+[12/20/23 00:04:09] crowsnest:		[cam 1]
+[12/20/23 00:04:09] crowsnest:		mode: ustreamer
+[12/20/23 00:04:09] crowsnest:		
+[12/20/23 00:04:09] crowsnest:		enable_rtsp: false
+[12/20/23 00:04:09] crowsnest:		rtsp_port: 8554
+[12/20/23 00:04:09] crowsnest:		port: 8080
+[12/20/23 00:04:09] crowsnest:		device: /dev/video0
+[12/20/23 00:04:09] crowsnest:		resolution: 640x480
+[12/20/23 00:04:09] crowsnest:		max_fps: 15
+[12/20/23 00:04:09] crowsnest: INFO: Detect available Devices
+[12/20/23 00:04:10] crowsnest: Try to start configured Cams / Services...
+[12/20/23 00:04:11] crowsnest: INFO: Configuration of Section [cam 1] looks good. Continue ...
+[12/20/23 00:04:11] crowsnest: V4L2 Control: No parameters set for [cam 1]. Skipped.
+[12/20/23 00:04:11] crowsnest: Starting ustreamer with Device /dev/video0 ...
+[12/20/23 00:04:13] crowsnest:  ... Done!
