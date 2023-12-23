@@ -1501,3 +1501,15 @@ Properties:
 2023-12-23 12:22:24,569 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.93ms
 2023-12-23 12:22:24,569 [websockets.py:open()] - Websocket Opened: ID: 140734911930384, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
 2023-12-23 12:22:24,575 [websockets.py:_handle_identify()] - Websocket 140734911930384 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-23 12:24:05,986 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-23 12:24:05,986 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.19ms
+2023-12-23 12:24:05,986 [websockets.py:open()] - Websocket Opened: ID: 140734910117136, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-23 12:24:06,005 [websockets.py:_handle_identify()] - Websocket 140734910117136 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-23 12:24:08,579 [job_state.py:_status_update()] - Job Started: Snowflake1_PLA_1h9m.gcode
+2023-12-23 12:25:18,445 [websockets.py:on_close()] - Websocket Closed: ID: 140734910117136 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.12
+2023-12-23 12:29:30,734 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.05ms
+2023-12-23 12:29:30,734 [websockets.py:open()] - Websocket Opened: ID: 140734883498192, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-23 12:29:30,748 [websockets.py:_handle_identify()] - Websocket 140734883498192 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-23 12:34:17,091 [websockets.py:on_close()] - Websocket Closed: ID: 140734883498192 Close Code: None, Close Reason: None, Pong Time Elapsed: 6.34
+2023-12-23 13:27:08,805 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-23 13:32:08,805 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
