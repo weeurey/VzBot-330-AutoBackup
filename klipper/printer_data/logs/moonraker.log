@@ -1513,3 +1513,14 @@ Properties:
 2023-12-23 12:34:17,091 [websockets.py:on_close()] - Websocket Closed: ID: 140734883498192 Close Code: None, Close Reason: None, Pong Time Elapsed: 6.34
 2023-12-23 13:27:08,805 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
 2023-12-23 13:32:08,805 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2023-12-23 15:45:26,379 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-23 15:45:26,392 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------dad24432eb75c77d
+2023-12-23 15:45:26,717 [app.py:post()] - Processing Uploaded File: ercf_ezbrd_mount_tr (1)_PLA_12m42s.gcode
+2023-12-23 15:45:26,867 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-23 15:45:26,873 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'ercf_ezbrd_mount_tr (1)_PLA_12m42s.gcode' currently supports cancellation, processing aborted
+
+2023-12-23 15:45:26,939 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "ercf_ezbrd_mount_tr (1)_PLA_12m42s.gcode" --check-objects) successfully finished
+2023-12-23 15:45:26,944 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 552.22ms
+2023-12-23 15:45:27,056 [job_state.py:_status_update()] - Job Started: ercf_ezbrd_mount_tr (1)_PLA_12m42s.gcode
