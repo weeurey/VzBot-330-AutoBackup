@@ -939,3 +939,7 @@ Commits Behind Count: 8
 Diverged: False
 2023-12-26 20:02:23,259 [base_deploy.py:log_info()] - Git Repo BDsensor: Channel: dev
 2023-12-26 20:02:23,259 [base_deploy.py:log_info()] - Git Repo BDsensor: Validity check for git repo passed
+2023-12-26 20:11:05,959 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.74ms
+2023-12-26 20:11:05,959 [websockets.py:open()] - Websocket Opened: ID: 140736282680784, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-26 20:11:05,973 [websockets.py:_handle_identify()] - Websocket 140736282680784 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-26 20:12:01,806 [websockets.py:on_close()] - Websocket Closed: ID: 140736282680784 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.84
