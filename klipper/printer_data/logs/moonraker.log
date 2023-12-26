@@ -943,3 +943,13 @@ Diverged: False
 2023-12-26 20:11:05,959 [websockets.py:open()] - Websocket Opened: ID: 140736282680784, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2023-12-26 20:11:05,973 [websockets.py:_handle_identify()] - Websocket 140736282680784 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
 2023-12-26 20:12:01,806 [websockets.py:on_close()] - Websocket Closed: ID: 140736282680784 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.84
+2023-12-26 20:37:01,269 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------d3dcdcc628f2ee2e
+2023-12-26 20:37:01,313 [app.py:post()] - Processing Uploaded File: test_PLA_8m39s.gcode
+2023-12-26 20:37:01,451 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-26 20:37:01,454 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'test_PLA_8m39s.gcode' currently supports cancellation, processing aborted
+
+2023-12-26 20:37:01,516 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "test_PLA_8m39s.gcode" --check-objects) successfully finished
+2023-12-26 20:37:01,521 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 252.26ms
+2023-12-26 20:37:01,764 [job_state.py:_status_update()] - Job Started: test_PLA_8m39s.gcode
