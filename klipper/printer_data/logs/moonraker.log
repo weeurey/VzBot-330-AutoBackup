@@ -221,3 +221,23 @@ Content-Type: multipart/form-data; boundary=------------------------52bf1ec4d248
 2023-12-27 19:08:25,377 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 735.35ms
 2023-12-27 19:08:25,549 [job_state.py:_status_update()] - Job Started: Kabelkanal_2_PLA_3h54m.gcode
 2023-12-27 20:12:59,155 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2023-12-27 23:25:13,763 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2023-12-27 23:25:13,784 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------354a54aaddaf05c6
+2023-12-27 23:25:13,862 [app.py:post()] - Processing Uploaded File: Shelf_Bracket_no_gap_PLA_39m13s.gcode
+2023-12-27 23:25:13,956 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2023-12-27 23:25:13,963 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Shelf_Bracket_no_gap_PLA_39m13s.gcode' currently supports cancellation, processing aborted
+
+2023-12-27 23:25:14,012 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Shelf_Bracket_no_gap_PLA_39m13s.gcode" --check-objects) successfully finished
+2023-12-27 23:25:14,018 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 233.98ms
+2023-12-27 23:25:14,209 [job_state.py:_status_update()] - Job Started: Shelf_Bracket_no_gap_PLA_39m13s.gcode
+2023-12-27 23:32:12,331 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2023-12-27 23:32:12,331 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.70ms
+2023-12-27 23:32:12,331 [websockets.py:open()] - Websocket Opened: ID: 140736281417552, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-27 23:32:12,339 [websockets.py:_handle_identify()] - Websocket 140736281417552 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-27 23:33:41,166 [websockets.py:on_close()] - Websocket Closed: ID: 140736281417552 Close Code: None, Close Reason: None, Pong Time Elapsed: 8.83
+2023-12-27 23:34:44,044 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.77ms
+2023-12-27 23:34:44,044 [websockets.py:open()] - Websocket Opened: ID: 140736281070416, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2023-12-27 23:34:44,053 [websockets.py:_handle_identify()] - Websocket 140736281070416 Client Identified - Name: mainsail, Version: 2.8.0, Type: web
+2023-12-27 23:34:48,294 [websockets.py:on_close()] - Websocket Closed: ID: 140736281070416 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.25
