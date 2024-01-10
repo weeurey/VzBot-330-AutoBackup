@@ -1865,3 +1865,582 @@ Properties:
 2024-01-10 16:49:33,087 [job_state.py:_handle_started()] - Job state initialized: standby
 2024-01-10 16:49:33,341 [klippy_connection.py:_check_ready()] - Klippy ready
 2024-01-10 16:49:33,840 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-10 16:50:57,195 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-10 16:50:57,195 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.98ms
+2024-01-10 16:50:57,195 [websockets.py:open()] - Websocket Opened: ID: 140734178790032, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-10 16:50:57,197 [websockets.py:_handle_identify()] - Websocket 140734178790032 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-10 16:51:02,739 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------6468ff98c816672b
+2024-01-10 16:51:03,105 [app.py:post()] - Processing Uploaded File: Z upper Rod Mount-8mm_PLA_1h54m.gcode
+2024-01-10 16:51:03,498 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-10 16:51:03,503 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Z upper Rod Mount-8mm_PLA_1h54m.gcode' currently supports cancellation, processing aborted
+
+2024-01-10 16:51:03,576 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Z upper Rod Mount-8mm_PLA_1h54m.gcode" --check-objects) successfully finished
+2024-01-10 16:51:03,583 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 845.81ms
+2024-01-10 16:51:03,667 [job_state.py:_status_update()] - Job Started: Z upper Rod Mount-8mm_PLA_1h54m.gcode
+2024-01-10 16:53:55,178 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-10 16:53:55,181 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1704905605.275965, Usage: 1.3%, Memory: 49120 kB
+System Time: 1704905606.276434, Usage: 0.42%, Memory: 49120 kB
+System Time: 1704905607.277095, Usage: 0.44%, Memory: 49120 kB
+System Time: 1704905608.277902, Usage: 0.39%, Memory: 49120 kB
+System Time: 1704905609.279924, Usage: 0.38%, Memory: 49120 kB
+System Time: 1704905610.281089, Usage: 0.39%, Memory: 49120 kB
+System Time: 1704905611.282188, Usage: 0.39%, Memory: 49120 kB
+System Time: 1704905612.283120, Usage: 0.39%, Memory: 49120 kB
+System Time: 1704905613.283552, Usage: 0.57%, Memory: 49120 kB
+System Time: 1704905614.283753, Usage: 0.39%, Memory: 49120 kB
+System Time: 1704905615.284288, Usage: 0.38%, Memory: 49120 kB
+System Time: 1704905616.284620, Usage: 0.4%, Memory: 49136 kB
+System Time: 1704905617.286762, Usage: 0.43%, Memory: 49136 kB
+System Time: 1704905618.287760, Usage: 0.39%, Memory: 49136 kB
+System Time: 1704905619.288520, Usage: 0.38%, Memory: 49136 kB
+System Time: 1704905620.289238, Usage: 0.66%, Memory: 49136 kB
+System Time: 1704905621.290017, Usage: 0.38%, Memory: 49136 kB
+System Time: 1704905622.290969, Usage: 1.24%, Memory: 49136 kB
+System Time: 1704905623.292019, Usage: 0.55%, Memory: 49136 kB
+System Time: 1704905624.294066, Usage: 0.37%, Memory: 49136 kB
+System Time: 1704905625.296195, Usage: 0.36%, Memory: 49136 kB
+System Time: 1704905626.297347, Usage: 0.37%, Memory: 49136 kB
+System Time: 1704905627.298048, Usage: 0.43%, Memory: 49136 kB
+System Time: 1704905628.298305, Usage: 0.37%, Memory: 49136 kB
+System Time: 1704905629.299152, Usage: 0.37%, Memory: 49136 kB
+System Time: 1704905630.299827, Usage: 0.39%, Memory: 49136 kB
+System Time: 1704905631.300714, Usage: 0.34%, Memory: 49136 kB
+System Time: 1704905632.300869, Usage: 0.32%, Memory: 49136 kB
+System Time: 1704905633.301728, Usage: 0.5%, Memory: 49136 kB
+System Time: 1704905634.301978, Usage: 0.34%, Memory: 49136 kB
+CPU Temperature: 46.85
+2024-01-10 16:53:55,182 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-10 17:18:07,362 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-10 17:18:07,362 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.07ms
+2024-01-10 17:18:07,362 [websockets.py:open()] - Websocket Opened: ID: 140734178890640, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-10 17:18:07,437 [websockets.py:_handle_identify()] - Websocket 140734178890640 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-10 17:18:15,132 [websockets.py:on_close()] - Websocket Closed: ID: 140734178890640 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 7.77
+2024-01-10 17:18:15,397 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.74ms
+2024-01-10 17:18:15,397 [websockets.py:open()] - Websocket Opened: ID: 140734178525072, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-10 17:18:15,411 [websockets.py:_handle_identify()] - Websocket 140734178525072 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-10 17:18:25,093 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-10 17:18:25,129 [server.py:_handle_term_signal()] - Exiting with signal SIGTERM
+2024-01-10 17:18:25,231 [websockets.py:on_close()] - Websocket Closed: ID: 140734178790032 Close Code: 1001, Close Reason: Server Shutdown, Pong Time Elapsed: 8.03
+2024-01-10 17:18:25,240 [websockets.py:on_close()] - Websocket Closed: ID: 140734178525072 Close Code: 1001, Close Reason: Server Shutdown, Pong Time Elapsed: 9.84
+2024-01-10 17:18:25,367 [database.py:close()] - Database statistics:
+
+announcements:
+psize: 16384
+depth: 0
+branch_pages: 0
+leaf_pages: 0
+overflow_pages: 0
+entries: 0
+authorized_users:
+psize: 16384
+depth: 1
+branch_pages: 0
+leaf_pages: 1
+overflow_pages: 0
+entries: 1
+gcode_metadata:
+psize: 16384
+depth: 2
+branch_pages: 1
+leaf_pages: 14
+overflow_pages: 0
+entries: 168
+history:
+psize: 16384
+depth: 2
+branch_pages: 1
+leaf_pages: 22
+overflow_pages: 0
+entries: 302
+mainsail:
+psize: 16384
+depth: 1
+branch_pages: 0
+leaf_pages: 1
+overflow_pages: 0
+entries: 8
+moonraker:
+psize: 16384
+depth: 1
+branch_pages: 0
+leaf_pages: 1
+overflow_pages: 0
+entries: 7
+update_manager:
+psize: 16384
+depth: 2
+branch_pages: 1
+leaf_pages: 3
+overflow_pages: 0
+entries: 9
+webcams:
+psize: 16384
+depth: 1
+branch_pages: 0
+leaf_pages: 1
+overflow_pages: 0
+entries: 1
+2024-01-10 17:18:25,389 [server.py:main()] - Server Shutdown
+-------------------- Log Start | Wed Jan 10 17:18:46 2024 --------------------
+data_path: /home/pi/printer_data
+is_default_data_path: False
+config_file: /home/pi/printer_data/config/moonraker.conf
+startup_warnings: []
+verbose: False
+debug: False
+asyncio_debug: False
+is_backup_config: False
+is_python_package: False
+instance_uuid: 44e42bf3b1aa4a6390e0ef0b153be3c4
+unix_socket_path: /home/pi/printer_data/comms/moonraker.sock
+software_version: v0.8.0-244-g6e6388d
+git_branch: master
+git_remote: origin
+git_repo_url: https://github.com/Arksine/moonraker.git
+modified_files: []
+unofficial_components: []
+log_file: /home/pi/printer_data/logs/moonraker.log
+python_version: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+launch_args: /home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/moonraker.py -d /home/pi/printer_data
+msgspec_enabled: False
+uvloop_enabled: False
+2024-01-10 17:18:46,276 [confighelper.py:read_file()] - Configuration File '/home/pi/printer_data/config/moonraker.conf' parsed, total size: 1835 B
+2024-01-10 17:18:46,276 [server.py:add_log_rollover_item()] - 
+#################### Moonraker Configuration ####################
+
+[server]
+host = 0.0.0.0
+port = 7125
+klippy_uds_address = /home/pi/printer_data/comms/klippy.sock
+
+[authorization]
+trusted_clients = 
+	127.0.0.1
+	10.0.0.0/8
+	127.0.0.0/8
+	169.254.0.0/16
+	172.16.0.0/12
+	192.168.0.0/16
+	FE80::/10
+	::1/128
+cors_domains = 
+	*.lan
+	*.local
+	*://localhost
+	*://localhost:*
+	*://my.mainsail.xyz
+	*://app.fluidd.xyz
+
+[octoprint_compat]
+
+[history]
+
+[update_manager]
+channel = dev
+refresh_interval = 168
+
+[update_manager KlipperScreen]
+type = git_repo
+path = ~/KlipperScreen
+origin = https://github.com/KlipperScreen/KlipperScreen.git
+virtualenv = ~/.KlipperScreen-env
+requirements = scripts/KlipperScreen-requirements.txt
+system_dependencies = scripts/system-dependencies.json
+managed_services = KlipperScreen
+
+[update_manager mainsail-config]
+type = git_repo
+primary_branch = master
+path = ~/mainsail-config
+origin = https://github.com/mainsail-crew/mainsail-config.git
+managed_services = klipper
+
+[update_manager mainsail]
+type = web
+channel = stable
+repo = mainsail-crew/mainsail
+path = ~/mainsail
+
+[file_manager]
+enable_object_processing = True
+
+[update_manager Klipper-Adaptive-Meshing-Purging]
+type = git_repo
+channel = dev
+path = ~/Klipper-Adaptive-Meshing-Purging
+origin = https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
+managed_services = klipper
+primary_branch = main
+
+[update_manager crowsnest]
+type = git_repo
+path = ~/crowsnest
+origin = https://github.com/mainsail-crew/crowsnest.git
+managed_services = crowsnest
+install_script = tools/pkglist.sh
+
+[update_manager BDsensor]
+type = git_repo
+primary_branch = new
+channel = dev
+path = ~/Bed_Distance_sensor
+origin = https://github.com/markniu/Bed_Distance_sensor.git
+install_script = ./klipper/install_BDsensor.sh
+is_system_service = False
+managed_services = klipper
+info_tags = 
+	desc=Bed Distance Sensor
+
+#################################################################
+All Configuration Files:
+/home/pi/printer_data/config/moonraker.conf
+#################################################################
+2024-01-10 17:18:47,741 [server.py:load_component()] - Component (dbus_manager) loaded
+2024-01-10 17:18:47,811 [server.py:add_log_rollover_item()] - 
+Database Versions: pylmdb = 1.4.1, lmdb = (0, 9, 29)
+Unsafe Shutdown Count: 72
+2024-01-10 17:18:47,847 [server.py:load_component()] - Component (database) loaded
+2024-01-10 17:18:48,283 [file_manager.py:__init__()] - Using File System Observer: inotify
+2024-01-10 17:18:48,435 [server.py:load_component()] - Component (file_manager) loaded
+2024-01-10 17:18:48,443 [server.py:load_component()] - Component (klippy_apis) loaded
+2024-01-10 17:18:49,223 [server.py:load_component()] - Component (secrets) loaded
+2024-01-10 17:18:49,243 [server.py:load_component()] - Component (template) loaded
+2024-01-10 17:18:49,538 [server.py:add_log_rollover_item()] - 
+System Info:
+
+***python***
+  version: (3, 11, 2, 'final', 0)
+  version_string: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+
+***cpu_info***
+  cpu_count: 4
+  bits: 64bit
+  processor: aarch64
+  cpu_desc: 
+  serial_number: 812c0b9b3c12713d
+  hardware_desc: BCM2835
+  model: Raspberry Pi 5 Model B Rev 1.0
+  total_memory: 4143408
+  memory_units: kB
+
+***sd_info***
+  manufacturer_id: 27
+  manufacturer: Unknown
+  oem_id: 5048
+  product_name: SD64G
+  product_revision: 6.0
+  serial_number: daaeb8db
+  manufacturer_date: 1/2023
+  capacity: 58.0 GiB
+  total_bytes: 62226694144
+
+***distribution***
+  name: Debian GNU/Linux 12 (bookworm)
+  id: debian
+  version: 12
+  version_parts: {'major': '12', 'minor': '', 'build_number': ''}
+  like: 
+  codename: bookworm
+  release_info: {}
+
+***virtualization***
+  virt_type: none
+  virt_identifier: none
+
+***network***
+
+***canbus***
+
+***Allowed Services***
+  klipper_mcu
+  webcamd
+  MoonCord
+  KlipperScreen
+  moonraker-telegram-bot
+  moonraker-obico
+  sonar
+  crowsnest
+  octoeverywhere
+  ratos-configurator
+2024-01-10 17:18:49,545 [server.py:load_component()] - Component (shell_command) loaded
+2024-01-10 17:18:49,545 [machine.py:__init__()] - Using System Provider: systemd_dbus
+2024-01-10 17:18:49,546 [server.py:load_component()] - Component (machine) loaded
+2024-01-10 17:18:49,553 [server.py:load_component()] - Component (data_store) loaded
+2024-01-10 17:18:49,577 [proc_stats.py:__init__()] - Detected 'vcgencmd', throttle checking enabled
+2024-01-10 17:18:49,578 [server.py:load_component()] - Component (proc_stats) loaded
+2024-01-10 17:18:49,586 [server.py:load_component()] - Component (job_state) loaded
+2024-01-10 17:18:49,597 [server.py:load_component()] - Component (job_queue) loaded
+2024-01-10 17:18:49,633 [server.py:load_component()] - Component (http_client) loaded
+2024-01-10 17:18:49,641 [server.py:load_component()] - Component (announcements) loaded
+2024-01-10 17:18:49,647 [server.py:load_component()] - Component (webcam) loaded
+2024-01-10 17:18:49,653 [server.py:load_component()] - Component (extensions) loaded
+2024-01-10 17:18:49,714 [authorization.py:__init__()] - Authorization Configuration Loaded
+Trusted Clients:
+127.0.0.1
+10.0.0.0/8
+127.0.0.0/8
+169.254.0.0/16
+172.16.0.0/12
+192.168.0.0/16
+fe80::/10
+::1/128
+CORS Domains:
+.*\.lan
+.*\.local
+.*://localhost
+.*://localhost:.*
+.*://my\.mainsail\.xyz
+.*://app\.fluidd\.xyz
+2024-01-10 17:18:49,715 [server.py:load_component()] - Component (authorization) loaded
+2024-01-10 17:18:49,723 [server.py:load_component()] - Component (octoprint_compat) loaded
+2024-01-10 17:18:49,832 [base_deploy.py:log_info()] - Git Repo moonraker: Detected virtualenv: /home/pi/moonraker-env
+2024-01-10 17:18:49,834 [base_deploy.py:log_info()] - Git Repo klipper: Detected virtualenv: /home/pi/klippy-env
+2024-01-10 17:18:49,855 [base_deploy.py:log_info()] - Git Repo KlipperScreen: Detected virtualenv: /home/pi/.KlipperScreen-env
+2024-01-10 17:18:49,891 [server.py:load_component()] - Component (update_manager) loaded
+2024-01-10 17:18:49,899 [server.py:load_component()] - Component (history) loaded
+2024-01-10 17:18:49,903 [server.py:_initialize_component()] - Performing Component Post Init: [dbus_manager]
+2024-01-10 17:18:50,093 [server.py:_initialize_component()] - Performing Component Post Init: [file_manager]
+2024-01-10 17:18:51,364 [server.py:_initialize_component()] - Performing Component Post Init: [machine]
+2024-01-10 17:18:51,364 [machine.py:validation_init()] - Installation version in database up to date
+2024-01-10 17:18:52,222 [machine.py:check_virt_status()] - No Virtualization Detected
+2024-01-10 17:18:52,236 [machine.py:_find_public_ip()] - Detected Local IP: 192.168.1.244
+2024-01-10 17:18:52,237 [webcam.py:_set_default_host_ip()] - Default public webcam address set: http://192.168.1.244
+2024-01-10 17:18:52,252 [server.py:add_log_rollover_item()] - 
+Systemd unit moonraker.service:
+unit_name: moonraker.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['network-online.target', '-.mount', 'sysinit.target', 'system.slice']
+**After=['sysinit.target', '-.mount', 'basic.target', 'system.slice', 'network-online.target', 'systemd-journald.socket']
+**SupplementaryGroups=['moonraker-admin']
+**EnvironmentFiles=/home/pi/printer_data/systemd/moonraker.env
+**ExecStart=/home/pi/moonraker-env/bin/python $MOONRAKER_ARGS
+**WorkingDirectory=/home/pi/moonraker
+**FragmentPath=/etc/systemd/system/moonraker.service
+**Description=API Server for Klipper SV1
+**User=pi
+2024-01-10 17:18:52,252 [server.py:_initialize_component()] - Performing Component Post Init: [proc_stats]
+2024-01-10 17:18:52,252 [server.py:_initialize_component()] - Performing Component Post Init: [announcements]
+2024-01-10 17:18:52,253 [server.py:_initialize_component()] - Performing Component Post Init: [webcam]
+2024-01-10 17:18:52,253 [webcam.py:_set_default_host_ip()] - Default public webcam address set: http://192.168.1.244
+2024-01-10 17:18:52,253 [server.py:_initialize_component()] - Performing Component Post Init: [klippy_connection]
+2024-01-10 17:18:52,253 [server.py:add_log_rollover_item()] - 
+Systemd unit klipper.service:
+unit_name: klipper.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['sysinit.target', '-.mount', 'system.slice']
+**After=['-.mount', 'network-online.target', 'basic.target', 'sysinit.target', 'system.slice', 'systemd-journald.socket']
+**SupplementaryGroups=[]
+**EnvironmentFiles=/home/pi/printer_data/systemd/klipper.env
+**ExecStart=/home/pi/klippy-env/bin/python $KLIPPER_ARGS
+**WorkingDirectory=/home/pi/klipper
+**FragmentPath=/etc/systemd/system/klipper.service
+**Description=Klipper 3D Printer Firmware SV1
+**User=pi
+2024-01-10 17:18:52,253 [server.py:_initialize_component()] - Performing Component Post Init: [authorization]
+2024-01-10 17:18:52,253 [server.py:_initialize_component()] - Performing Component Post Init: [update_manager]
+2024-01-10 17:18:52,253 [server.py:_initialize_component()] - Performing Component Post Init: [history]
+2024-01-10 17:18:54,978 [base_deploy.py:log_info()] - PackageDeploy: PackageKit Provider Configured
+2024-01-10 17:18:54,978 [base_deploy.py:log_info()] - Git Repo moonraker: Stored pip version: 23.3.1
+2024-01-10 17:18:56,921 [git_deploy.py:log_repo_info()] - Git Repo moonraker Detected:
+Owner: Arksine
+Repository Name: moonraker
+Path: /home/pi/moonraker
+Remote: origin
+Branch: master
+Remote URL: https://github.com/Arksine/moonraker.git
+Recovery URL: https://github.com/Arksine/moonraker.git
+Current Commit SHA: 6e6388d673d471f629e1313851adde133f145874
+Upstream Commit SHA: 6e6388d673d471f629e1313851adde133f145874
+Current Version: v0.8.0-244-g6e6388d6
+Upstream Version: v0.8.0-244-g6e6388d6
+Rollback Commit: 9ad8fed81ea4f81d308e68a301a5ccb84f77f192
+Rollback Branch: master
+Rollback Version: v0.8.0-206-g9ad8fed8
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-01-10 17:18:57,428 [git_deploy.py:log_repo_info()] - Git Repo klipper Detected:
+Owner: Klipper3d
+Repository Name: klipper
+Path: /home/pi/klipper
+Remote: origin
+Branch: master
+Remote URL: https://github.com/Klipper3d/klipper
+Recovery URL: https://github.com/Klipper3d/klipper
+Current Commit SHA: 0665dc89766bd85c095f18ba84028dc47def2f19
+Upstream Commit SHA: 0665dc89766bd85c095f18ba84028dc47def2f19
+Current Version: v0.12.0-60-g0665dc89
+Upstream Version: v0.12.0-60-g0665dc89
+Rollback Commit: 2c2bb720fae54422cf10a71569ce40476e909c09
+Rollback Branch: master
+Rollback Version: v0.12.0-30-g2c2bb720
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+Repo Warnings:
+  Repo has untracked source files: ['klippy/extras/gcode_shell_command.py']
+2024-01-10 17:18:57,428 [base_deploy.py:log_info()] - Git Repo KlipperScreen: Stored pip version: 23.0.1
+2024-01-10 17:19:44,124 [git_deploy.py:log_repo_info()] - Git Repo KlipperScreen Detected:
+Owner: KlipperScreen
+Repository Name: KlipperScreen
+Path: /home/pi/KlipperScreen
+Remote: origin
+Branch: master
+Remote URL: https://github.com/KlipperScreen/KlipperScreen.git
+Recovery URL: https://github.com/KlipperScreen/KlipperScreen.git
+Current Commit SHA: 0a38b56aaa3b349abfd21cd48e066a97e39d8197
+Upstream Commit SHA: 0a38b56aaa3b349abfd21cd48e066a97e39d8197
+Current Version: v0.3.8-35-g0a38b56a
+Upstream Version: v0.3.8-35-g0a38b56a
+Rollback Commit: dd3b255e27ae05da3316b8e856317a5d9871dab4
+Rollback Branch: master
+Rollback Version: v0.3.7-10-gdd3b255e
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-01-10 17:19:46,767 [git_deploy.py:log_repo_info()] - Git Repo mainsail-config Detected:
+Owner: mainsail-crew
+Repository Name: mainsail-config
+Path: /home/pi/mainsail-config
+Remote: origin
+Branch: master
+Remote URL: https://github.com/mainsail-crew/mainsail-config.git
+Recovery URL: https://github.com/mainsail-crew/mainsail-config.git
+Current Commit SHA: e57810d51b5c634aadaca4db923bfcba269ae4b3
+Upstream Commit SHA: e57810d51b5c634aadaca4db923bfcba269ae4b3
+Current Version: v1.2.1-0-ge57810d5
+Upstream Version: v1.2.1-0-ge57810d5
+Rollback Commit: 76a9999986b03abb3aed272dc0a818f13a18ea7e
+Rollback Branch: master
+Rollback Version: v1.1.0-1-g76a99999
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-01-10 17:19:46,779 [web_deploy.py:_log_client_info()] - Web Client mainsail Detected:
+Repo: mainsail-crew/mainsail
+Channel: stable
+Path: /home/pi/mainsail
+Local Version: v2.9.1
+Remote Version: v2.9.1
+Valid: True
+Fallback Client Detected: False
+Pre-release: False
+Download Url: https://github.com/mainsail-crew/mainsail/releases/download/v2.9.1/mainsail.zip
+Download Size: 2071443
+Content Type: application/zip
+Rollback Version: v2.8.0
+Rollback Repo: mainsail-crew/mainsail
+2024-01-10 17:19:47,330 [git_deploy.py:log_repo_info()] - Git Repo Klipper-Adaptive-Meshing-Purging Detected:
+Owner: kyleisah
+Repository Name: Klipper-Adaptive-Meshing-Purging
+Path: /home/pi/Klipper-Adaptive-Meshing-Purging
+Remote: origin
+Branch: main
+Remote URL: https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
+Recovery URL: https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
+Current Commit SHA: 3eca87b784895ec7d8679f5dae56f1ffa975552b
+Upstream Commit SHA: 3eca87b784895ec7d8679f5dae56f1ffa975552b
+Current Version: v1.1.2-7-g3eca87b7
+Upstream Version: v1.1.2-7-g3eca87b7
+Rollback Commit: 128142b533095e68e95f8be7751e1869eea9e520
+Rollback Branch: main
+Rollback Version: v1.1.2-5-g128142b5
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-01-10 17:19:47,838 [git_deploy.py:log_repo_info()] - Git Repo crowsnest Detected:
+Owner: mainsail-crew
+Repository Name: crowsnest
+Path: /home/pi/crowsnest
+Remote: origin
+Branch: master
+Remote URL: https://github.com/mainsail-crew/crowsnest.git
+Recovery URL: https://github.com/mainsail-crew/crowsnest.git
+Current Commit SHA: f7ac6aa298143f0019eae9b2b2be8039196ebeda
+Upstream Commit SHA: f7ac6aa298143f0019eae9b2b2be8039196ebeda
+Current Version: v4.1.1-1-gf7ac6aa2
+Upstream Version: v4.1.1-1-gf7ac6aa2
+Rollback Commit: 380c1776207bc8d69f18daa651413e01fb879c74
+Rollback Branch: master
+Rollback Version: v4.1.0-1-g380c1776
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-01-10 17:19:49,026 [git_deploy.py:log_repo_info()] - Git Repo BDsensor Detected:
+Owner: markniu
+Repository Name: Bed_Distance_sensor
+Path: /home/pi/Bed_Distance_sensor
+Remote: origin
+Branch: new
+Remote URL: https://github.com/markniu/Bed_Distance_sensor.git
+Recovery URL: https://github.com/markniu/Bed_Distance_sensor.git
+Current Commit SHA: 92f04e62d79841c2b59501263fd915fadee5959a
+Upstream Commit SHA: 92f04e62d79841c2b59501263fd915fadee5959a
+Current Version: 20230524-172-g92f04e62
+Upstream Version: 20230524-172-g92f04e62
+Rollback Commit: f65bf80151598991ae576b9778364a6a89b03d4f
+Rollback Branch: new
+Rollback Version: 20230524-150-gf65bf801
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - PackageKit: Next refresh in: 1 Day, 21 Hours, 42 Minutes, 55 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo moonraker: Next refresh in: 4 Days, 17 Hours, 52 Minutes, 25 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo klipper: Next refresh in: 2 Days, 4 Hours, 35 Minutes, 14 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo KlipperScreen: Next refresh in: 4 Days, 17 Hours, 53 Minutes, 2 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo mainsail-config: Next refresh in: 4 Days, 17 Hours, 52 Minutes, 36 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Web Client mainsail: Next refresh in: 4 Days, 17 Hours, 52 Minutes, 44 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo Klipper-Adaptive-Meshing-Purging: Next refresh in: 1 Day, 21 Hours, 43 Minutes, 15 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo crowsnest: Next refresh in: 1 Day, 21 Hours, 43 Minutes, 15 Seconds
+2024-01-10 17:19:49,026 [base_deploy.py:log_info()] - Git Repo BDsensor: Next refresh in: 4 Days, 17 Hours, 53 Minutes, 9 Seconds
+2024-01-10 17:19:49,027 [extensions.py:start_unix_server()] - Creating Unix Domain Socket at '/home/pi/printer_data/comms/moonraker.sock'
+2024-01-10 17:19:49,028 [server.py:start_server()] - Starting Moonraker on (0.0.0.0, 7125), Hostname: raspberrypi
+2024-01-10 17:19:49,028 [app.py:listen()] - SSL Certificate/Key not configured, aborting HTTPS Server startup
+2024-01-10 17:19:49,280 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-10 17:19:49,303 [server.py:add_log_rollover_item()] - 
+Systemd unit klipper.service:
+unit_name: klipper.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['system.slice', '-.mount', 'sysinit.target']
+**After=['basic.target', 'systemd-journald.socket', 'network-online.target', 'system.slice', '-.mount', 'sysinit.target']
+**SupplementaryGroups=[]
+**EnvironmentFiles=/home/pi/printer_data/systemd/klipper.env
+**ExecStart=/home/pi/klippy-env/bin/python $KLIPPER_ARGS
+**WorkingDirectory=/home/pi/klipper
+**FragmentPath=/etc/systemd/system/klipper.service
+**Description=Klipper 3D Printer Firmware SV1
+**User=pi
+2024-01-10 17:19:49,555 [server.py:add_log_rollover_item()] - Klipper Version: v0.12.0-61-gb50d6669-dirty
+2024-01-10 17:19:49,560 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-10 17:19:49,560 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-10 17:19:49,613 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-10 17:19:49,613 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.20ms
+2024-01-10 17:19:49,613 [websockets.py:open()] - Websocket Opened: ID: 140733043411920, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-10 17:19:49,637 [websockets.py:_handle_identify()] - Websocket 140733043411920 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-10 17:19:49,810 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-10 17:19:50,066 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-10 17:19:50,562 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
