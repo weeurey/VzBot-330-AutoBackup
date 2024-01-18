@@ -533,3 +533,118 @@ Diverged: False
 2024-01-18 18:38:30,023 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor status --porcelain -b) successfully finished
 2024-01-18 18:38:30,028 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor branch --list --no-color) successfully finished
 2024-01-18 18:38:30,032 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor remote get-url origin) successfully finished
+2024-01-18 18:38:32,891 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor fetch origin --prune --progress) successfully finished
+2024-01-18 18:38:32,894 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor merge-base --is-ancestor HEAD origin/new) successfully finished
+2024-01-18 18:38:32,897 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor rev-parse HEAD) successfully finished
+2024-01-18 18:38:32,903 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor describe --always --tags --long --dirty --abbrev=8) successfully finished
+2024-01-18 18:38:32,906 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor rev-parse origin/new) successfully finished
+2024-01-18 18:38:32,912 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor describe origin/new --always --tags --long --abbrev=8) successfully finished
+2024-01-18 18:38:32,915 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor rev-list HEAD..1162b66bbcd1a6d5913d71707875a5dc4532baaf --count) successfully finished
+2024-01-18 18:38:32,918 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor log 92f04e62d79841c2b59501263fd915fadee5959a..origin/new --format="sha:%H%x1Dauthor:%an%x1Ddate:%ct%x1Dsubject:%s%x1Dmessage:%b%x1E" --max-count=100) successfully finished
+2024-01-18 18:38:32,924 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/Bed_Distance_sensor for-each-ref --count=100 --sort='-creatordate' --contains=HEAD --merged=origin/new --format='%(if)%(*objecttype)%(then)%(*objecttype) %(*objectname)%(else)%(objecttype) %(objectname)%(end) %(refname)' 'refs/tags') successfully finished
+2024-01-18 18:38:32,924 [git_deploy.py:log_repo_info()] - Git Repo BDsensor Detected:
+Owner: markniu
+Repository Name: Bed_Distance_sensor
+Path: /home/pi/Bed_Distance_sensor
+Remote: origin
+Branch: new
+Remote URL: https://github.com/markniu/Bed_Distance_sensor.git
+Recovery URL: https://github.com/markniu/Bed_Distance_sensor.git
+Current Commit SHA: 92f04e62d79841c2b59501263fd915fadee5959a
+Upstream Commit SHA: 1162b66bbcd1a6d5913d71707875a5dc4532baaf
+Current Version: 20230524-172-g92f04e62
+Upstream Version: 20230524-173-g1162b66b
+Rollback Commit: f65bf80151598991ae576b9778364a6a89b03d4f
+Rollback Branch: new
+Rollback Version: 20230524-150-gf65bf801
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 1
+Diverged: False
+2024-01-18 18:38:32,924 [base_deploy.py:log_info()] - Git Repo BDsensor: Channel: dev
+2024-01-18 18:38:32,924 [base_deploy.py:log_info()] - Git Repo BDsensor: Validity check for git repo passed
+2024-01-18 18:44:27,597 [websockets.py:on_close()] - Websocket Closed: ID: 140732891219728 Close Code: None, Close Reason: None, Pong Time Elapsed: 7.83
+2024-01-18 18:47:05,670 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-18 18:47:05,670 [app.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.03ms
+2024-01-18 18:47:05,671 [websockets.py:open()] - Websocket Opened: ID: 140732864595856, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-18 18:47:05,706 [websockets.py:_handle_identify()] - Websocket 140732864595856 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-18 18:48:20,546 [app.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------2c3340a9db705ebb
+2024-01-18 18:48:20,660 [app.py:post()] - Processing Uploaded File: TRStandodd_PLA_25m18s.gcode
+2024-01-18 18:48:20,797 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-18 18:48:20,803 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'TRStandodd_PLA_25m18s.gcode' currently supports cancellation, processing aborted
+
+2024-01-18 18:48:20,864 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "TRStandodd_PLA_25m18s.gcode" --check-objects) successfully finished
+2024-01-18 18:48:20,869 [app.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 323.36ms
+2024-01-18 18:48:21,050 [job_state.py:_status_update()] - Job Started: TRStandodd_PLA_25m18s.gcode
+2024-01-18 18:48:42,017 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.82ms
+2024-01-18 18:48:42,017 [websockets.py:open()] - Websocket Opened: ID: 140732864533904, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-18 18:48:42,040 [websockets.py:_handle_identify()] - Websocket 140732864533904 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-18 18:50:01,191 [websockets.py:on_close()] - Websocket Closed: ID: 140732864533904 Close Code: None, Close Reason: None, Pong Time Elapsed: 18.86
+2024-01-18 18:54:54,060 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.95ms
+2024-01-18 18:54:54,061 [websockets.py:open()] - Websocket Opened: ID: 140732892644496, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-18 18:54:54,099 [websockets.py:_handle_identify()] - Websocket 140732892644496 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-18 18:56:47,272 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.80ms
+2024-01-18 18:56:47,272 [websockets.py:open()] - Websocket Opened: ID: 140732919244688, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-18 18:56:47,343 [websockets.py:_handle_identify()] - Websocket 140732919244688 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-18 18:56:54,422 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-18 18:56:54,425 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1705604184.426889, Usage: 1.41%, Memory: 50608 kB
+System Time: 1705604185.428464, Usage: 0.47%, Memory: 50608 kB
+System Time: 1705604186.430347, Usage: 0.52%, Memory: 50608 kB
+System Time: 1705604187.431118, Usage: 0.51%, Memory: 50608 kB
+System Time: 1705604188.432164, Usage: 0.43%, Memory: 50608 kB
+System Time: 1705604189.432617, Usage: 0.42%, Memory: 50608 kB
+System Time: 1705604190.433509, Usage: 0.42%, Memory: 50608 kB
+System Time: 1705604191.434116, Usage: 0.58%, Memory: 50608 kB
+System Time: 1705604192.435164, Usage: 0.41%, Memory: 50608 kB
+System Time: 1705604193.436355, Usage: 0.4%, Memory: 50608 kB
+System Time: 1705604194.436807, Usage: 0.46%, Memory: 50608 kB
+System Time: 1705604195.437663, Usage: 0.4%, Memory: 50608 kB
+System Time: 1705604196.438039, Usage: 0.45%, Memory: 50608 kB
+System Time: 1705604197.438742, Usage: 0.41%, Memory: 50608 kB
+System Time: 1705604198.439008, Usage: 0.44%, Memory: 50608 kB
+System Time: 1705604199.439218, Usage: 0.7%, Memory: 50608 kB
+System Time: 1705604200.439494, Usage: 1.4%, Memory: 50608 kB
+System Time: 1705604201.439974, Usage: 0.68%, Memory: 50608 kB
+System Time: 1705604202.440808, Usage: 0.47%, Memory: 50608 kB
+System Time: 1705604203.441077, Usage: 0.46%, Memory: 50608 kB
+System Time: 1705604204.441961, Usage: 0.52%, Memory: 50608 kB
+System Time: 1705604205.442149, Usage: 0.45%, Memory: 50608 kB
+System Time: 1705604206.442726, Usage: 0.48%, Memory: 50608 kB
+System Time: 1705604207.558968, Usage: 16.24%, Memory: 50608 kB
+System Time: 1705604208.557658, Usage: 17.15%, Memory: 50752 kB
+System Time: 1705604209.558517, Usage: 0.72%, Memory: 50752 kB
+System Time: 1705604210.558950, Usage: 0.38%, Memory: 50752 kB
+System Time: 1705604211.560292, Usage: 0.51%, Memory: 50752 kB
+System Time: 1705604212.561186, Usage: 0.38%, Memory: 50752 kB
+System Time: 1705604213.561858, Usage: 0.51%, Memory: 50752 kB
+CPU Temperature: 49.05
+2024-01-18 18:56:54,427 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-18 18:56:55,717 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-18 18:56:56,973 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-18 18:56:57,741 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-18 18:56:57,742 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-18 18:56:57,993 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-18 18:56:58,247 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-18 18:56:59,249 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-18 18:57:11,538 [websockets.py:on_close()] - Websocket Closed: ID: 140732919244688 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.17
+2024-01-18 18:58:06,940 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2024-01-18 18:59:06,942 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2024-01-18 19:00:06,942 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 180.00 seconds
+2024-01-18 19:01:06,943 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 240.00 seconds
+2024-01-18 19:01:24,139 [websockets.py:write_to_socket()] - Websocket closed while writing: 140732892644496
+2024-01-18 19:01:24,184 [websockets.py:on_close()] - Websocket Closed: ID: 140732892644496 Close Code: None, Close Reason: None, Pong Time Elapsed: 40.12
+2024-01-18 19:02:06,944 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 300.01 seconds
+2024-01-18 19:02:25,441 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.85ms
+2024-01-18 19:02:25,441 [websockets.py:open()] - Websocket Opened: ID: 140732865136400, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-18 19:02:25,489 [websockets.py:_handle_identify()] - Websocket 140732865136400 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-18 19:02:40,380 [job_state.py:_status_update()] - Job Started: TRStandodd_PLA_25m18s.gcode
+2024-01-18 19:03:31,652 [websockets.py:on_close()] - Websocket Closed: ID: 140732865136400 Close Code: None, Close Reason: None, Pong Time Elapsed: 6.19
+2024-01-18 19:26:26,403 [app.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.67ms
+2024-01-18 19:26:26,403 [websockets.py:open()] - Websocket Opened: ID: 140732864760400, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-18 19:26:26,418 [websockets.py:_handle_identify()] - Websocket 140732864760400 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-18 19:26:38,584 [websockets.py:on_close()] - Websocket Closed: ID: 140732864760400 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.09
