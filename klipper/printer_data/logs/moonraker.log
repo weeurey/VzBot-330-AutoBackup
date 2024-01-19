@@ -2490,3 +2490,204 @@ Properties:
 2024-01-19 12:59:38,510 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.39ms
 2024-01-19 12:59:38,510 [websockets.py:open()] - Websocket Opened: ID: 140735600250832, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
 2024-01-19 12:59:38,512 [websockets.py:_handle_identify()] - Websocket 140735600250832 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 13:37:28,940 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.87ms
+2024-01-19 13:37:28,940 [websockets.py:open()] - Websocket Opened: ID: 140735599753808, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 13:37:29,000 [websockets.py:_handle_identify()] - Websocket 140735599753808 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 13:37:42,780 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryAAlOeccfHG2zWgYl
+2024-01-19 13:37:43,328 [application.py:post()] - Processing Uploaded File: MobaXterm.exe
+2024-01-19 13:37:43,330 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 550.51ms
+2024-01-19 13:38:23,113 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryrbm32VB1ND2yeHqp
+2024-01-19 13:38:23,122 [application.py:post()] - Processing Uploaded File: klipper.uf2
+2024-01-19 13:38:23,124 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 10.98ms
+2024-01-19 13:40:52,392 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-01-19 13:40:52,392 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.86ms
+2024-01-19 13:40:52,392 [websockets.py:open()] - Websocket Opened: ID: 140735599031696, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 13:40:52,471 [websockets.py:_handle_identify()] - Websocket 140735599031696 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 13:40:55,157 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.49ms
+2024-01-19 13:40:55,157 [websockets.py:open()] - Websocket Opened: ID: 140735572061648, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 13:40:55,228 [websockets.py:_handle_identify()] - Websocket 140735572061648 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 13:40:57,004 [websockets.py:on_close()] - Websocket Closed: ID: 140735599753808 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 8.06
+2024-01-19 13:40:57,302 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.48ms
+2024-01-19 13:40:57,302 [websockets.py:open()] - Websocket Opened: ID: 140735600189328, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 13:40:57,316 [websockets.py:_handle_identify()] - Websocket 140735600189328 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 13:46:49,911 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-19 13:46:49,914 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1705671980.472388, Usage: 0.41%, Memory: 50688 kB
+System Time: 1705671981.473203, Usage: 0.39%, Memory: 50688 kB
+System Time: 1705671982.473763, Usage: 0.42%, Memory: 50688 kB
+System Time: 1705671983.473983, Usage: 0.41%, Memory: 50688 kB
+System Time: 1705671984.474965, Usage: 0.4%, Memory: 50688 kB
+System Time: 1705671985.475879, Usage: 0.44%, Memory: 50688 kB
+System Time: 1705671986.477666, Usage: 0.39%, Memory: 50688 kB
+System Time: 1705671987.478113, Usage: 0.77%, Memory: 50688 kB
+System Time: 1705671988.479078, Usage: 1.53%, Memory: 50688 kB
+System Time: 1705671989.480108, Usage: 0.77%, Memory: 50688 kB
+System Time: 1705671990.480894, Usage: 0.51%, Memory: 50688 kB
+System Time: 1705671991.481801, Usage: 0.51%, Memory: 50688 kB
+System Time: 1705671992.482779, Usage: 0.55%, Memory: 50688 kB
+System Time: 1705671993.484591, Usage: 0.51%, Memory: 50688 kB
+System Time: 1705671994.486446, Usage: 0.5%, Memory: 50688 kB
+System Time: 1705671995.487336, Usage: 0.54%, Memory: 50688 kB
+System Time: 1705671996.488201, Usage: 0.49%, Memory: 50688 kB
+System Time: 1705671997.489012, Usage: 0.54%, Memory: 50688 kB
+System Time: 1705671998.489889, Usage: 0.49%, Memory: 50688 kB
+System Time: 1705671999.490841, Usage: 0.7%, Memory: 50688 kB
+System Time: 1705672000.491526, Usage: 0.46%, Memory: 50688 kB
+System Time: 1705672001.492289, Usage: 0.46%, Memory: 50688 kB
+System Time: 1705672002.493187, Usage: 0.48%, Memory: 50688 kB
+System Time: 1705672003.493959, Usage: 0.81%, Memory: 50688 kB
+System Time: 1705672004.494487, Usage: 1.48%, Memory: 50688 kB
+System Time: 1705672005.495116, Usage: 0.51%, Memory: 50688 kB
+System Time: 1705672006.495831, Usage: 0.43%, Memory: 50688 kB
+System Time: 1705672007.496852, Usage: 0.47%, Memory: 50688 kB
+System Time: 1705672008.497068, Usage: 0.53%, Memory: 50688 kB
+System Time: 1705672009.497290, Usage: 0.77%, Memory: 50688 kB
+CPU Temperature: 49.6
+2024-01-19 13:46:49,915 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-19 14:45:26,037 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-01-19 14:45:26,037 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-19 15:09:08,444 [websockets.py:on_close()] - Websocket Closed: ID: 140735572061648 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.28
+2024-01-19 15:09:08,445 [websockets.py:on_close()] - Websocket Closed: ID: 140735599031696 Close Code: None, Close Reason: None, Pong Time Elapsed: 6.05
+2024-01-19 15:24:18,144 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-01-19 15:24:18,145 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.85ms
+2024-01-19 15:24:18,145 [websockets.py:open()] - Websocket Opened: ID: 140735572060368, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 15:24:18,157 [websockets.py:_handle_identify()] - Websocket 140735572060368 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 15:24:21,638 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.66ms
+2024-01-19 15:24:21,638 [websockets.py:open()] - Websocket Opened: ID: 140735598604048, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 15:24:21,650 [websockets.py:_handle_identify()] - Websocket 140735598604048 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 16:04:11,952 [websockets.py:on_close()] - Websocket Closed: ID: 140735600250832 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 3.44
+2024-01-19 16:18:40,369 [websockets.py:on_close()] - Websocket Closed: ID: 140735572060368 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.11
+2024-01-19 16:18:40,369 [websockets.py:on_close()] - Websocket Closed: ID: 140735598604048 Close Code: None, Close Reason: None, Pong Time Elapsed: 8.67
+2024-01-19 16:25:26,051 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-19 19:15:43,655 [websockets.py:on_close()] - Websocket Closed: ID: 140735600189328 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 6.35
+2024-01-19 19:20:34,849 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-19 19:20:34,855 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------72ca05f274c624da
+2024-01-19 19:20:35,003 [application.py:post()] - Processing Uploaded File: VzLight Mount x2-x3_PLA_21m3s.gcode
+2024-01-19 19:20:35,144 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-19 19:20:35,150 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'VzLight Mount x2-x3_PLA_21m3s.gcode' currently supports cancellation, processing aborted
+
+2024-01-19 19:20:35,223 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "VzLight Mount x2-x3_PLA_21m3s.gcode" --check-objects) successfully finished
+2024-01-19 19:20:35,227 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 372.53ms
+2024-01-19 19:20:38,015 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.52ms
+2024-01-19 19:20:38,015 [websockets.py:open()] - Websocket Opened: ID: 140735600455952, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-19 19:20:38,016 [websockets.py:_handle_identify()] - Websocket 140735600455952 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 19:20:40,999 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:20:42,254 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:20:43,022 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:20:43,023 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:20:43,023 [klippy_connection.py:_check_ready()] - 
+Failed automated reset of MCU 'mcu'
+Once the underlying issue is corrected, use the
+"FIRMWARE_RESTART" command to reset the firmware, reload the
+config, and restart the host software.
+Error configuring printer
+
+2024-01-19 19:20:48,263 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:20:49,518 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:20:50,538 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:20:50,539 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:20:50,790 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-19 19:20:51,044 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-19 19:20:51,546 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-19 19:27:25,392 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryHo7TDa9vvKGDvfol
+2024-01-19 19:27:25,397 [application.py:post()] - Processing Uploaded File: led.cfg
+2024-01-19 19:27:25,399 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.95ms
+2024-01-19 19:28:58,144 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarykbXemCDfNTR48wph
+2024-01-19 19:28:58,147 [application.py:post()] - Processing Uploaded File: led.cfg
+2024-01-19 19:28:58,150 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.01ms
+2024-01-19 19:29:12,154 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryE5ivVg4vaLam0cq3
+2024-01-19 19:29:12,159 [application.py:post()] - Processing Uploaded File: printer.cfg
+2024-01-19 19:29:12,162 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 8.08ms
+2024-01-19 19:29:13,188 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:29:14,442 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:29:15,211 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:29:15,211 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:29:15,211 [klippy_connection.py:_check_ready()] - 
+Pin 'pf11' is not a valid pin name on mcu 'mcu'
+
+Once the underlying issue is corrected, use the "RESTART"
+command to reload the config and restart the host software.
+Printer is halted
+
+2024-01-19 19:29:31,710 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryhLu30uRVPDzfLQVX
+2024-01-19 19:29:31,714 [application.py:post()] - Processing Uploaded File: led.cfg
+2024-01-19 19:29:31,717 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.70ms
+2024-01-19 19:29:31,738 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:29:32,992 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:29:34,012 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:29:34,012 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:29:34,263 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-19 19:29:34,517 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-19 19:29:35,019 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-19 19:35:09,027 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryPW85y6zmVBOtmuSz
+2024-01-19 19:35:09,031 [application.py:post()] - Processing Uploaded File: led.cfg
+2024-01-19 19:35:09,033 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.77ms
+2024-01-19 19:35:10,060 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:35:11,315 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:35:12,335 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:35:12,336 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:35:12,586 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-19 19:35:12,841 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-19 19:35:13,342 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-19 19:35:23,097 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary67BgXl3cyHZ9Yx1x
+2024-01-19 19:35:23,102 [application.py:post()] - Processing Uploaded File: led.cfg
+2024-01-19 19:35:23,104 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.62ms
+2024-01-19 19:35:24,131 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:35:25,385 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:35:26,404 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:35:26,404 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:35:26,655 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-19 19:35:26,909 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-19 19:35:27,411 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-19 19:36:54,530 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-19 19:36:54,531 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.91ms
+2024-01-19 19:36:54,531 [websockets.py:open()] - Websocket Opened: ID: 140735600256784, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 19:36:54,574 [websockets.py:_handle_identify()] - Websocket 140735600256784 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 19:40:21,077 [websockets.py:on_close()] - Websocket Closed: ID: 140735600256784 Close Code: None, Close Reason: None, Pong Time Elapsed: 6.16
+2024-01-19 19:40:38,107 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.68ms
+2024-01-19 19:40:38,107 [websockets.py:open()] - Websocket Opened: ID: 140735599613200, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 19:40:38,159 [websockets.py:_handle_identify()] - Websocket 140735599613200 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 19:42:33,342 [websockets.py:on_close()] - Websocket Closed: ID: 140735599613200 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.09
+2024-01-19 19:48:29,458 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.68ms
+2024-01-19 19:48:29,458 [websockets.py:open()] - Websocket Opened: ID: 140735598932880, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 19:48:29,517 [websockets.py:_handle_identify()] - Websocket 140735598932880 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 19:48:52,999 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryvZB2Aogm9OYvVpPF
+2024-01-19 19:48:53,004 [application.py:post()] - Processing Uploaded File: led.cfg
+2024-01-19 19:48:53,006 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.69ms
+2024-01-19 19:48:54,034 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-19 19:48:55,288 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-19 19:48:56,308 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-19 19:48:56,309 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-19 19:48:56,559 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-19 19:48:56,813 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-19 19:48:57,565 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-19 19:49:00,755 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.65ms
+2024-01-19 19:49:00,755 [websockets.py:open()] - Websocket Opened: ID: 140735599013328, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 19:49:00,955 [websockets.py:_handle_identify()] - Websocket 140735599013328 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 19:49:27,649 [websockets.py:on_close()] - Websocket Closed: ID: 140735599013328 Close Code: None, Close Reason: None, Pong Time Elapsed: 6.89
+2024-01-19 19:52:27,415 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------11b98c1e06881112
+2024-01-19 19:52:27,556 [application.py:post()] - Processing Uploaded File: VzLight Mount x2-x3_PLA_21m3s.gcode
+2024-01-19 19:52:27,622 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-19 19:52:27,627 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'VzLight Mount x2-x3_PLA_21m3s.gcode' currently supports cancellation, processing aborted
+
+2024-01-19 19:52:27,680 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "VzLight Mount x2-x3_PLA_21m3s.gcode" --check-objects) successfully finished
+2024-01-19 19:52:27,686 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 271.44ms
+2024-01-19 19:52:27,900 [job_state.py:_status_update()] - Job Started: VzLight Mount x2-x3_PLA_21m3s.gcode
+2024-01-19 20:06:14,838 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.65ms
+2024-01-19 20:06:14,838 [websockets.py:open()] - Websocket Opened: ID: 140735598968528, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-19 20:06:14,847 [websockets.py:_handle_identify()] - Websocket 140735598968528 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-19 20:06:19,986 [websockets.py:on_close()] - Websocket Closed: ID: 140735598968528 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 5.15
