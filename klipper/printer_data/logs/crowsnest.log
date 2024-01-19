@@ -3347,3 +3347,343 @@
 [01/19/24 12:05:00] crowsnest:		max_fps: 15
 [01/19/24 12:05:00] crowsnest: INFO: Detect available Devices
 [01/19/24 12:05:01] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 12:05:06] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 12:05:06] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 12:05:06] crowsnest: Prepare Startup ...
+[01/19/24 12:05:06] crowsnest: INFO: Host information:
+[01/19/24 12:05:06] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 12:05:06] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 12:05:06] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 12:05:06] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 12:05:06] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 12:05:06] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 12:05:06] crowsnest: INFO: Checking Dependencies
+[01/19/24 12:05:06] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 12:05:06] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 12:05:06] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 12:05:06] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 12:05:06] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 12:05:06] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 12:05:06] crowsnest:		[crowsnest]
+[01/19/24 12:05:06] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 12:05:06] crowsnest:		log_level: verbose
+[01/19/24 12:05:06] crowsnest:		delete_log: false
+[01/19/24 12:05:06] crowsnest:		no_proxy: false
+[01/19/24 12:05:06] crowsnest:		
+[01/19/24 12:05:06] crowsnest:		[cam 1]
+[01/19/24 12:05:06] crowsnest:		mode: ustreamer
+[01/19/24 12:05:06] crowsnest:		
+[01/19/24 12:05:06] crowsnest:		enable_rtsp: false
+[01/19/24 12:05:06] crowsnest:		rtsp_port: 8554
+[01/19/24 12:05:06] crowsnest:		port: 8080
+[01/19/24 12:05:06] crowsnest:		device: /dev/video0
+[01/19/24 12:05:06] crowsnest:		resolution: 640x480
+[01/19/24 12:05:06] crowsnest:		max_fps: 15
+[01/19/24 12:05:06] crowsnest: INFO: Detect available Devices
+[01/19/24 12:05:06] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 12:05:11] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 12:05:11] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 12:05:11] crowsnest: Prepare Startup ...
+[01/19/24 12:05:11] crowsnest: INFO: Host information:
+[01/19/24 12:05:11] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 12:05:11] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 12:05:11] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 12:05:11] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 12:05:11] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 12:05:11] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 12:05:11] crowsnest: INFO: Checking Dependencies
+[01/19/24 12:05:11] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 12:05:11] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 12:05:11] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 12:05:11] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 12:05:11] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 12:05:11] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 12:05:11] crowsnest:		[crowsnest]
+[01/19/24 12:05:11] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 12:05:11] crowsnest:		log_level: verbose
+[01/19/24 12:05:11] crowsnest:		delete_log: false
+[01/19/24 12:05:11] crowsnest:		no_proxy: false
+[01/19/24 12:05:11] crowsnest:		
+[01/19/24 12:05:11] crowsnest:		[cam 1]
+[01/19/24 12:05:11] crowsnest:		mode: ustreamer
+[01/19/24 12:05:11] crowsnest:		
+[01/19/24 12:05:11] crowsnest:		enable_rtsp: false
+[01/19/24 12:05:11] crowsnest:		rtsp_port: 8554
+[01/19/24 12:05:11] crowsnest:		port: 8080
+[01/19/24 12:05:11] crowsnest:		device: /dev/video0
+[01/19/24 12:05:11] crowsnest:		resolution: 640x480
+[01/19/24 12:05:11] crowsnest:		max_fps: 15
+[01/19/24 12:05:11] crowsnest: INFO: Detect available Devices
+[01/19/24 12:05:11] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 12:05:17] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 12:05:17] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 12:05:17] crowsnest: Prepare Startup ...
+[01/19/24 12:05:17] crowsnest: INFO: Host information:
+[01/19/24 12:05:17] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 12:05:17] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 12:05:17] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 12:05:17] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 12:05:17] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 12:05:17] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 12:05:17] crowsnest: INFO: Checking Dependencies
+[01/19/24 12:05:17] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 12:05:17] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 12:05:17] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 12:05:17] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 12:05:17] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 12:05:17] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 12:05:17] crowsnest:		[crowsnest]
+[01/19/24 12:05:17] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 12:05:17] crowsnest:		log_level: verbose
+[01/19/24 12:05:17] crowsnest:		delete_log: false
+[01/19/24 12:05:17] crowsnest:		no_proxy: false
+[01/19/24 12:05:17] crowsnest:		
+[01/19/24 12:05:17] crowsnest:		[cam 1]
+[01/19/24 12:05:17] crowsnest:		mode: ustreamer
+[01/19/24 12:05:17] crowsnest:		
+[01/19/24 12:05:17] crowsnest:		enable_rtsp: false
+[01/19/24 12:05:17] crowsnest:		rtsp_port: 8554
+[01/19/24 12:05:17] crowsnest:		port: 8080
+[01/19/24 12:05:17] crowsnest:		device: /dev/video0
+[01/19/24 12:05:17] crowsnest:		resolution: 640x480
+[01/19/24 12:05:17] crowsnest:		max_fps: 15
+[01/19/24 12:05:17] crowsnest: INFO: Detect available Devices
+[01/19/24 12:05:17] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 12:59:20] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 12:59:22] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 12:59:22] crowsnest: Prepare Startup ...
+[01/19/24 12:59:22] crowsnest: INFO: Host information:
+[01/19/24 12:59:22] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 12:59:22] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 12:59:22] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 12:59:22] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 12:59:22] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 12:59:22] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 12:59:22] crowsnest: INFO: Checking Dependencies
+[01/19/24 12:59:25] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 12:59:25] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 12:59:25] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 12:59:25] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 12:59:26] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 12:59:26] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 12:59:26] crowsnest:		[crowsnest]
+[01/19/24 12:59:26] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 12:59:26] crowsnest:		log_level: verbose
+[01/19/24 12:59:26] crowsnest:		delete_log: false
+[01/19/24 12:59:26] crowsnest:		no_proxy: false
+[01/19/24 12:59:26] crowsnest:		
+[01/19/24 12:59:26] crowsnest:		[cam 1]
+[01/19/24 12:59:26] crowsnest:		mode: ustreamer
+[01/19/24 12:59:26] crowsnest:		
+[01/19/24 12:59:26] crowsnest:		enable_rtsp: false
+[01/19/24 12:59:26] crowsnest:		rtsp_port: 8554
+[01/19/24 12:59:26] crowsnest:		port: 8080
+[01/19/24 12:59:26] crowsnest:		device: /dev/video0
+[01/19/24 12:59:26] crowsnest:		resolution: 640x480
+[01/19/24 12:59:26] crowsnest:		max_fps: 15
+[01/19/24 12:59:26] crowsnest: INFO: Detect available Devices
+[01/19/24 12:59:28] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 12:59:33] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 12:59:33] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 12:59:33] crowsnest: Prepare Startup ...
+[01/19/24 12:59:33] crowsnest: INFO: Host information:
+[01/19/24 12:59:33] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 12:59:33] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 12:59:33] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 12:59:33] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 12:59:33] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 12:59:33] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 12:59:33] crowsnest: INFO: Checking Dependencies
+[01/19/24 12:59:33] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 12:59:33] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 12:59:33] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 12:59:33] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 12:59:33] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 12:59:33] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 12:59:33] crowsnest:		[crowsnest]
+[01/19/24 12:59:33] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 12:59:33] crowsnest:		log_level: verbose
+[01/19/24 12:59:33] crowsnest:		delete_log: false
+[01/19/24 12:59:33] crowsnest:		no_proxy: false
+[01/19/24 12:59:33] crowsnest:		
+[01/19/24 12:59:33] crowsnest:		[cam 1]
+[01/19/24 12:59:33] crowsnest:		mode: ustreamer
+[01/19/24 12:59:33] crowsnest:		
+[01/19/24 12:59:33] crowsnest:		enable_rtsp: false
+[01/19/24 12:59:33] crowsnest:		rtsp_port: 8554
+[01/19/24 12:59:33] crowsnest:		port: 8080
+[01/19/24 12:59:33] crowsnest:		device: /dev/video0
+[01/19/24 12:59:33] crowsnest:		resolution: 640x480
+[01/19/24 12:59:33] crowsnest:		max_fps: 15
+[01/19/24 12:59:33] crowsnest: INFO: Detect available Devices
+[01/19/24 12:59:34] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 12:59:39] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 12:59:39] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 12:59:39] crowsnest: Prepare Startup ...
+[01/19/24 12:59:39] crowsnest: INFO: Host information:
+[01/19/24 12:59:39] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 12:59:39] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 12:59:39] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 12:59:39] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 12:59:39] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 12:59:39] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 12:59:39] crowsnest: INFO: Checking Dependencies
+[01/19/24 12:59:39] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 12:59:39] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 12:59:39] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 12:59:39] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 12:59:39] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 12:59:39] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 12:59:39] crowsnest:		[crowsnest]
+[01/19/24 12:59:39] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 12:59:39] crowsnest:		log_level: verbose
+[01/19/24 12:59:39] crowsnest:		delete_log: false
+[01/19/24 12:59:39] crowsnest:		no_proxy: false
+[01/19/24 12:59:39] crowsnest:		
+[01/19/24 12:59:39] crowsnest:		[cam 1]
+[01/19/24 12:59:39] crowsnest:		mode: ustreamer
+[01/19/24 12:59:39] crowsnest:		
+[01/19/24 12:59:39] crowsnest:		enable_rtsp: false
+[01/19/24 12:59:39] crowsnest:		rtsp_port: 8554
+[01/19/24 12:59:39] crowsnest:		port: 8080
+[01/19/24 12:59:39] crowsnest:		device: /dev/video0
+[01/19/24 12:59:39] crowsnest:		resolution: 640x480
+[01/19/24 12:59:39] crowsnest:		max_fps: 15
+[01/19/24 12:59:39] crowsnest: INFO: Detect available Devices
+[01/19/24 12:59:39] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 13:00:36] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 13:00:36] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 13:00:36] crowsnest: Prepare Startup ...
+[01/19/24 13:00:36] crowsnest: INFO: Host information:
+[01/19/24 13:00:36] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 13:00:36] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 13:00:36] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 13:00:36] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 13:00:36] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 13:00:36] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 13:00:36] crowsnest: INFO: Checking Dependencies
+[01/19/24 13:00:36] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 13:00:36] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 13:00:36] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 13:00:36] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 13:00:36] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 13:00:36] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 13:00:36] crowsnest:		[crowsnest]
+[01/19/24 13:00:36] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 13:00:36] crowsnest:		log_level: verbose
+[01/19/24 13:00:36] crowsnest:		delete_log: false
+[01/19/24 13:00:36] crowsnest:		no_proxy: false
+[01/19/24 13:00:36] crowsnest:		
+[01/19/24 13:00:36] crowsnest:		[cam 1]
+[01/19/24 13:00:36] crowsnest:		mode: ustreamer
+[01/19/24 13:00:36] crowsnest:		
+[01/19/24 13:00:36] crowsnest:		enable_rtsp: false
+[01/19/24 13:00:36] crowsnest:		rtsp_port: 8554
+[01/19/24 13:00:36] crowsnest:		port: 8080
+[01/19/24 13:00:36] crowsnest:		device: /dev/video0
+[01/19/24 13:00:36] crowsnest:		resolution: 640x480
+[01/19/24 13:00:36] crowsnest:		max_fps: 15
+[01/19/24 13:00:36] crowsnest: INFO: Detect available Devices
+[01/19/24 13:00:36] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 13:00:42] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 13:00:42] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 13:00:42] crowsnest: Prepare Startup ...
+[01/19/24 13:00:42] crowsnest: INFO: Host information:
+[01/19/24 13:00:42] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 13:00:42] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 13:00:42] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 13:00:42] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 13:00:42] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 13:00:42] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 13:00:42] crowsnest: INFO: Checking Dependencies
+[01/19/24 13:00:42] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 13:00:42] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 13:00:42] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 13:00:42] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 13:00:42] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 13:00:42] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 13:00:42] crowsnest:		[crowsnest]
+[01/19/24 13:00:42] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 13:00:42] crowsnest:		log_level: verbose
+[01/19/24 13:00:42] crowsnest:		delete_log: false
+[01/19/24 13:00:42] crowsnest:		no_proxy: false
+[01/19/24 13:00:42] crowsnest:		
+[01/19/24 13:00:42] crowsnest:		[cam 1]
+[01/19/24 13:00:42] crowsnest:		mode: ustreamer
+[01/19/24 13:00:42] crowsnest:		
+[01/19/24 13:00:42] crowsnest:		enable_rtsp: false
+[01/19/24 13:00:42] crowsnest:		rtsp_port: 8554
+[01/19/24 13:00:42] crowsnest:		port: 8080
+[01/19/24 13:00:42] crowsnest:		device: /dev/video0
+[01/19/24 13:00:42] crowsnest:		resolution: 640x480
+[01/19/24 13:00:42] crowsnest:		max_fps: 15
+[01/19/24 13:00:42] crowsnest: INFO: Detect available Devices
+[01/19/24 13:00:42] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 13:00:47] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 13:00:47] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 13:00:47] crowsnest: Prepare Startup ...
+[01/19/24 13:00:47] crowsnest: INFO: Host information:
+[01/19/24 13:00:47] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 13:00:47] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 13:00:47] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 13:00:47] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 13:00:47] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 13:00:47] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 13:00:47] crowsnest: INFO: Checking Dependencies
+[01/19/24 13:00:47] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 13:00:47] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 13:00:47] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 13:00:47] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 13:00:47] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 13:00:47] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 13:00:47] crowsnest:		[crowsnest]
+[01/19/24 13:00:47] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 13:00:47] crowsnest:		log_level: verbose
+[01/19/24 13:00:47] crowsnest:		delete_log: false
+[01/19/24 13:00:47] crowsnest:		no_proxy: false
+[01/19/24 13:00:47] crowsnest:		
+[01/19/24 13:00:47] crowsnest:		[cam 1]
+[01/19/24 13:00:47] crowsnest:		mode: ustreamer
+[01/19/24 13:00:47] crowsnest:		
+[01/19/24 13:00:47] crowsnest:		enable_rtsp: false
+[01/19/24 13:00:47] crowsnest:		rtsp_port: 8554
+[01/19/24 13:00:47] crowsnest:		port: 8080
+[01/19/24 13:00:47] crowsnest:		device: /dev/video0
+[01/19/24 13:00:47] crowsnest:		resolution: 640x480
+[01/19/24 13:00:47] crowsnest:		max_fps: 15
+[01/19/24 13:00:47] crowsnest: INFO: Detect available Devices
+[01/19/24 13:00:47] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
+[01/19/24 13:00:53] crowsnest: crowsnest - A webcam Service for multiple Cams and Stream Services.
+[01/19/24 13:00:53] crowsnest: Version: v4.1.3-1-gc0c9c41
+[01/19/24 13:00:53] crowsnest: Prepare Startup ...
+[01/19/24 13:00:53] crowsnest: INFO: Host information:
+[01/19/24 13:00:53] crowsnest: Host Info: Distribution: Debian GNU/Linux 12 (bookworm)
+[01/19/24 13:00:53] crowsnest: Host Info: Kernel: Linux 6.1.0-rpi4-rpi-2712 aarch64
+[01/19/24 13:00:53] crowsnest: Host Info: Model:  Raspberry Pi 5 Model B Rev 1.0
+[01/19/24 13:00:53] crowsnest: Host Info: Available CPU Cores: 4
+[01/19/24 13:00:53] crowsnest: Host Info: Available Memory: 4143408 kB
+[01/19/24 13:00:53] crowsnest: Host Info: Diskspace (avail. / total): 39G / 57G
+[01/19/24 13:00:53] crowsnest: INFO: Checking Dependencies
+[01/19/24 13:00:53] crowsnest: Dependency: 'crudini' found in /usr/bin/crudini.
+[01/19/24 13:00:53] crowsnest: Dependency: 'find' found in /usr/bin/find.
+[01/19/24 13:00:53] crowsnest: Dependency: 'xargs' found in /usr/bin/xargs.
+[01/19/24 13:00:53] crowsnest: Dependency: 'ustreamer' found in bin/ustreamer/ustreamer.
+[01/19/24 13:00:53] crowsnest: Version Control: ustreamer new version available: 8175681 (v5.45).
+[01/19/24 13:00:53] crowsnest: INFO: Print Configfile: '/home/pi/printer_data/config/crowsnest.conf'
+[01/19/24 13:00:53] crowsnest:		[crowsnest]
+[01/19/24 13:00:53] crowsnest:		log_path: /home/pi/printer_data/logs/crowsnest.log
+[01/19/24 13:00:53] crowsnest:		log_level: verbose
+[01/19/24 13:00:53] crowsnest:		delete_log: false
+[01/19/24 13:00:53] crowsnest:		no_proxy: false
+[01/19/24 13:00:53] crowsnest:		
+[01/19/24 13:00:53] crowsnest:		[cam 1]
+[01/19/24 13:00:53] crowsnest:		mode: ustreamer
+[01/19/24 13:00:53] crowsnest:		
+[01/19/24 13:00:53] crowsnest:		enable_rtsp: false
+[01/19/24 13:00:53] crowsnest:		rtsp_port: 8554
+[01/19/24 13:00:53] crowsnest:		port: 8080
+[01/19/24 13:00:53] crowsnest:		device: /dev/video0
+[01/19/24 13:00:53] crowsnest:		resolution: 640x480
+[01/19/24 13:00:53] crowsnest:		max_fps: 15
+[01/19/24 13:00:53] crowsnest: INFO: Detect available Devices
+[01/19/24 13:00:53] crowsnest: ERROR: No usable Devices Found. Stopping crowsnest.
