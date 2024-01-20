@@ -264,3 +264,18 @@ Content-Type: multipart/form-data; boundary=------------------------cb8c6d8940d5
 2024-01-20 18:03:33,981 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 246.57ms
 2024-01-20 18:03:34,053 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
 2024-01-20 18:20:26,275 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-20 19:05:26,280 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-01-20 19:10:35,098 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-20 19:10:35,104 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------acb8965bb2d36142
+2024-01-20 19:10:35,215 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 19:10:35,289 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 19:10:35,294 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 19:10:35,349 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 19:10:35,355 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 251.42ms
+2024-01-20 19:10:35,376 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 19:10:39,041 [websockets.py:on_close()] - Websocket Closed: ID: 140735598932880 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 9.58
+2024-01-20 19:16:48,097 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735600455952
+2024-01-20 19:16:53,017 [websockets.py:on_close()] - Websocket Closed: ID: 140735600455952 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.87
