@@ -253,3 +253,14 @@ Content-Type: multipart/form-data; boundary=------------------------ad90bed446b6
 2024-01-20 17:16:51,079 [websockets.py:open()] - Websocket Opened: ID: 140735598695632, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2024-01-20 17:16:51,096 [websockets.py:_handle_identify()] - Websocket 140735598695632 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
 2024-01-20 17:16:59,425 [websockets.py:on_close()] - Websocket Closed: ID: 140735598695632 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 8.35
+2024-01-20 18:03:33,735 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------cb8c6d8940d56180
+2024-01-20 18:03:33,840 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 18:03:33,916 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 18:03:33,921 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 18:03:33,975 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 18:03:33,981 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 246.57ms
+2024-01-20 18:03:34,053 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 18:20:26,275 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
