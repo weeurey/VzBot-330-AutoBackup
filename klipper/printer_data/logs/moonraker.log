@@ -279,3 +279,13 @@ Content-Type: multipart/form-data; boundary=------------------------acb8965bb2d3
 2024-01-20 19:10:39,041 [websockets.py:on_close()] - Websocket Closed: ID: 140735598932880 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 9.58
 2024-01-20 19:16:48,097 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735600455952
 2024-01-20 19:16:53,017 [websockets.py:on_close()] - Websocket Closed: ID: 140735600455952 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.87
+2024-01-20 20:09:10,415 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------bf41f6cbb7f5d70f
+2024-01-20 20:09:10,521 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 20:09:10,614 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 20:09:10,619 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 20:09:10,674 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 20:09:10,680 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 264.72ms
+2024-01-20 20:09:10,861 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
