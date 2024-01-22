@@ -1,0 +1,292 @@
+-------------------- Log Start | Sat Jan 20 16:06:21 2024 --------------------
+data_path: /home/pi/printer_data
+is_default_data_path: False
+config_file: /home/pi/printer_data/config/moonraker.conf
+startup_warnings: []
+verbose: False
+debug: False
+asyncio_debug: False
+is_backup_config: False
+is_python_package: False
+instance_uuid: 44e42bf3b1aa4a6390e0ef0b153be3c4
+unix_socket_path: /home/pi/printer_data/comms/moonraker.sock
+software_version: v0.8.0-267-g66de18f
+git_branch: master
+git_remote: origin
+git_repo_url: https://github.com/Arksine/moonraker.git
+modified_files: []
+unofficial_components: []
+log_file: /home/pi/printer_data/logs/moonraker.log
+python_version: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+launch_args: /home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/moonraker.py -d /home/pi/printer_data
+msgspec_enabled: False
+uvloop_enabled: False
+
+#################### Moonraker Configuration ####################
+
+[server]
+host = 0.0.0.0
+port = 7125
+klippy_uds_address = /home/pi/printer_data/comms/klippy.sock
+
+[authorization]
+trusted_clients = 
+	127.0.0.1
+	10.0.0.0/8
+	127.0.0.0/8
+	169.254.0.0/16
+	172.16.0.0/12
+	192.168.0.0/16
+	FE80::/10
+	::1/128
+cors_domains = 
+	*.lan
+	*.local
+	*://localhost
+	*://localhost:*
+	*://my.mainsail.xyz
+	*://app.fluidd.xyz
+
+[octoprint_compat]
+
+[history]
+
+[update_manager]
+channel = dev
+refresh_interval = 168
+
+[update_manager trad_rack]
+type = git_repo
+path = ~/trad_rack_klippy_module
+origin = https://github.com/Annex-Engineering/TradRack.git
+primary_branch = main
+managed_services = klipper
+
+[update_manager KlipperScreen]
+type = git_repo
+path = ~/KlipperScreen
+origin = https://github.com/KlipperScreen/KlipperScreen.git
+virtualenv = ~/.KlipperScreen-env
+requirements = scripts/KlipperScreen-requirements.txt
+system_dependencies = scripts/system-dependencies.json
+managed_services = KlipperScreen
+
+[update_manager mainsail-config]
+type = git_repo
+primary_branch = master
+path = ~/mainsail-config
+origin = https://github.com/mainsail-crew/mainsail-config.git
+managed_services = klipper
+
+[update_manager mainsail]
+type = web
+channel = stable
+repo = mainsail-crew/mainsail
+path = ~/mainsail
+
+[file_manager]
+enable_object_processing = True
+
+[update_manager Klipper-Adaptive-Meshing-Purging]
+type = git_repo
+channel = dev
+path = ~/Klipper-Adaptive-Meshing-Purging
+origin = https://github.com/kyleisah/Klipper-Adaptive-Meshing-Purging.git
+managed_services = klipper
+primary_branch = main
+
+[update_manager crowsnest]
+type = git_repo
+path = ~/crowsnest
+origin = https://github.com/mainsail-crew/crowsnest.git
+managed_services = crowsnest
+install_script = tools/pkglist.sh
+
+[update_manager BDsensor]
+type = git_repo
+primary_branch = new
+channel = dev
+path = ~/Bed_Distance_sensor
+origin = https://github.com/markniu/Bed_Distance_sensor.git
+install_script = ./klipper/install_BDsensor.sh
+is_system_service = False
+managed_services = klipper
+info_tags = 
+	desc=Bed Distance Sensor
+
+#################################################################
+All Configuration Files:
+/home/pi/printer_data/config/moonraker.conf
+#################################################################
+
+Database Versions: pylmdb = 1.4.1, lmdb = (0, 9, 29)
+Unsafe Shutdown Count: 82
+
+System Info:
+
+***python***
+  version: (3, 11, 2, 'final', 0)
+  version_string: 3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]
+
+***cpu_info***
+  cpu_count: 4
+  bits: 64bit
+  processor: aarch64
+  cpu_desc: 
+  serial_number: 812c0b9b3c12713d
+  hardware_desc: BCM2835
+  model: Raspberry Pi 5 Model B Rev 1.0
+  total_memory: 4143408
+  memory_units: kB
+
+***sd_info***
+  manufacturer_id: 27
+  manufacturer: Unknown
+  oem_id: 5048
+  product_name: SD64G
+  product_revision: 6.0
+  serial_number: daaeb8db
+  manufacturer_date: 1/2023
+  capacity: 58.0 GiB
+  total_bytes: 62226694144
+
+***distribution***
+  name: Debian GNU/Linux 12 (bookworm)
+  id: debian
+  version: 12
+  version_parts: {'major': '12', 'minor': '', 'build_number': ''}
+  like: 
+  codename: bookworm
+  release_info: {}
+
+***virtualization***
+  virt_type: none
+  virt_identifier: none
+
+***network***
+
+***canbus***
+
+***Allowed Services***
+  klipper_mcu
+  webcamd
+  MoonCord
+  KlipperScreen
+  moonraker-telegram-bot
+  moonraker-obico
+  sonar
+  crowsnest
+  octoeverywhere
+  ratos-configurator
+
+Systemd unit moonraker.service:
+unit_name: moonraker.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['-.mount', 'sysinit.target', 'network-online.target', 'system.slice']
+**After=['system.slice', '-.mount', 'sysinit.target', 'systemd-journald.socket', 'network-online.target', 'basic.target']
+**SupplementaryGroups=['moonraker-admin']
+**EnvironmentFiles=/home/pi/printer_data/systemd/moonraker.env
+**ExecStart=/home/pi/moonraker-env/bin/python $MOONRAKER_ARGS
+**WorkingDirectory=/home/pi/moonraker
+**FragmentPath=/etc/systemd/system/moonraker.service
+**Description=API Server for Klipper SV1
+**User=pi
+
+Systemd unit klipper.service:
+unit_name: klipper.service
+is_default: True
+manager: systemd
+Properties:
+**Requires=['system.slice', '-.mount', 'sysinit.target']
+**After=['system.slice', '-.mount', 'basic.target', 'network-online.target', 'sysinit.target', 'systemd-journald.socket']
+**SupplementaryGroups=[]
+**EnvironmentFiles=/home/pi/printer_data/systemd/klipper.env
+**ExecStart=/home/pi/klippy-env/bin/python $KLIPPER_ARGS
+**WorkingDirectory=/home/pi/klipper
+**FragmentPath=/etc/systemd/system/klipper.service
+**Description=Klipper 3D Printer Firmware SV1
+**User=pi
+Git Repo moonraker: No warnings detected
+Git Repo klipper: Warnings detected:
+  Repo is dirty.  Detected the following modifed files: ['scripts/buildcommands.py', 'src/Makefile']
+  Repo has untracked source files: ['klippy/extras/gcode_shell_command.py']
+Git Repo trad_rack: No warnings detected
+Git Repo KlipperScreen: No warnings detected
+Git Repo mainsail-config: No warnings detected
+Git Repo Klipper-Adaptive-Meshing-Purging: No warnings detected
+Git Repo crowsnest: No warnings detected
+Git Repo BDsensor: No warnings detected
+Klipper Version: v0.12.0-75-g94719fe3-dirty
+2024-01-20 16:06:21,042 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-20 16:06:21,043 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.74ms
+2024-01-20 16:06:21,043 [websockets.py:open()] - Websocket Opened: ID: 140735598955920, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-20 16:06:21,088 [websockets.py:_handle_identify()] - Websocket 140735598955920 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-20 16:07:16,493 [job_state.py:_status_update()] - Job Started: VzLight Mount x2-x3_PLA_21m3s.gcode
+2024-01-20 16:10:59,501 [websockets.py:on_close()] - Websocket Closed: ID: 140735598955920 Close Code: None, Close Reason: None, Pong Time Elapsed: 18.45
+2024-01-20 16:18:21,701 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.63ms
+2024-01-20 16:18:21,701 [websockets.py:open()] - Websocket Opened: ID: 140735599546256, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-20 16:18:21,712 [websockets.py:_handle_identify()] - Websocket 140735599546256 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-20 16:18:26,499 [websockets.py:on_close()] - Websocket Closed: ID: 140735599546256 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.80
+2024-01-20 16:25:03,343 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.67ms
+2024-01-20 16:25:03,343 [websockets.py:open()] - Websocket Opened: ID: 140735572364624, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-20 16:25:03,362 [websockets.py:_handle_identify()] - Websocket 140735572364624 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-20 16:26:33,455 [websockets.py:on_close()] - Websocket Closed: ID: 140735572364624 Close Code: None, Close Reason: None, Pong Time Elapsed: 20.01
+2024-01-20 16:28:47,014 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.79ms
+2024-01-20 16:28:47,014 [websockets.py:open()] - Websocket Opened: ID: 140735878668176, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-20 16:28:47,038 [websockets.py:_handle_identify()] - Websocket 140735878668176 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-20 16:31:57,120 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735878668176
+2024-01-20 16:32:02,015 [websockets.py:on_close()] - Websocket Closed: ID: 140735878668176 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-20 17:13:12,734 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-20 17:13:12,758 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------ad90bed446b6f1fc
+2024-01-20 17:13:12,860 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 17:13:12,926 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 17:13:12,931 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 17:13:12,985 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 17:13:12,991 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 234.15ms
+2024-01-20 17:13:13,094 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 17:16:51,079 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.76ms
+2024-01-20 17:16:51,079 [websockets.py:open()] - Websocket Opened: ID: 140735598695632, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-20 17:16:51,096 [websockets.py:_handle_identify()] - Websocket 140735598695632 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-20 17:16:59,425 [websockets.py:on_close()] - Websocket Closed: ID: 140735598695632 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 8.35
+2024-01-20 18:03:33,735 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------cb8c6d8940d56180
+2024-01-20 18:03:33,840 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 18:03:33,916 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 18:03:33,921 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 18:03:33,975 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 18:03:33,981 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 246.57ms
+2024-01-20 18:03:34,053 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 18:20:26,275 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-20 19:05:26,280 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-01-20 19:10:35,098 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-20 19:10:35,104 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------acb8965bb2d36142
+2024-01-20 19:10:35,215 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 19:10:35,289 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 19:10:35,294 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 19:10:35,349 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 19:10:35,355 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 251.42ms
+2024-01-20 19:10:35,376 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 19:10:39,041 [websockets.py:on_close()] - Websocket Closed: ID: 140735598932880 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 9.58
+2024-01-20 19:16:48,097 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735600455952
+2024-01-20 19:16:53,017 [websockets.py:on_close()] - Websocket Closed: ID: 140735600455952 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.87
+2024-01-20 20:09:10,415 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------bf41f6cbb7f5d70f
+2024-01-20 20:09:10,521 [application.py:post()] - Processing Uploaded File: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 20:09:10,614 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-20 20:09:10,619 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode' currently supports cancellation, processing aborted
+
+2024-01-20 20:09:10,674 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode" --check-objects) successfully finished
+2024-01-20 20:09:10,680 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 264.72ms
+2024-01-20 20:09:10,861 [job_state.py:_status_update()] - Job Started: Mk18_AMS_Conversion_Ring_-_Lid_Open_PLA_22m30s.gcode
+2024-01-20 21:10:26,297 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
