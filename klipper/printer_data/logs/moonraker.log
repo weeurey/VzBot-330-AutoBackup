@@ -251,3 +251,25 @@ Content-Type: multipart/form-data; boundary=------------------------3557e2c2c927
 
 2024-01-22 16:01:41,622 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "ElectronicsCover_PLA_1h38m.gcode" --check-objects) successfully finished
 2024-01-22 16:01:41,623 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 334.73ms
+2024-01-22 16:05:43,167 [job_state.py:_status_update()] - Job Started: ElectronicsCover_PLA_1h38m.gcode
+2024-01-22 16:30:39,250 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.66ms
+2024-01-22 16:30:39,251 [websockets.py:open()] - Websocket Opened: ID: 140735599116240, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-22 16:30:39,299 [websockets.py:_handle_identify()] - Websocket 140735599116240 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-22 16:30:48,693 [websockets.py:on_close()] - Websocket Closed: ID: 140735599116240 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 9.44
+2024-01-22 16:59:03,204 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.65ms
+2024-01-22 16:59:03,204 [websockets.py:open()] - Websocket Opened: ID: 140735598745488, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-22 16:59:03,230 [websockets.py:_handle_identify()] - Websocket 140735598745488 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-22 17:01:07,958 [websockets.py:on_close()] - Websocket Closed: ID: 140735598745488 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 4.74
+2024-01-22 17:02:53,126 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.65ms
+2024-01-22 17:02:53,126 [websockets.py:open()] - Websocket Opened: ID: 140735598963280, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-22 17:02:53,161 [websockets.py:_handle_identify()] - Websocket 140735598963280 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-22 17:02:54,955 [websockets.py:on_close()] - Websocket Closed: ID: 140735598963280 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.83
+2024-01-22 17:10:26,708 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-01-22 17:20:40,835 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.69ms
+2024-01-22 17:20:40,835 [websockets.py:open()] - Websocket Opened: ID: 140735572118928, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-22 17:20:40,877 [websockets.py:_handle_identify()] - Websocket 140735572118928 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-22 17:23:08,174 [websockets.py:on_close()] - Websocket Closed: ID: 140735572118928 Close Code: None, Close Reason: None, Pong Time Elapsed: 17.16
+2024-01-22 17:23:43,887 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.66ms
+2024-01-22 17:23:43,887 [websockets.py:open()] - Websocket Opened: ID: 140735598598352, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-22 17:23:43,908 [websockets.py:_handle_identify()] - Websocket 140735598598352 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-22 17:23:59,051 [websockets.py:on_close()] - Websocket Closed: ID: 140735598598352 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 5.16
