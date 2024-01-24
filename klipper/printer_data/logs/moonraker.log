@@ -2751,3 +2751,49 @@ Content-Type: multipart/form-data; boundary=------------------------7f54162fb25d
 2024-01-24 20:12:15,960 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.76ms
 2024-01-24 20:12:15,960 [websockets.py:open()] - Websocket Opened: ID: 140735075917712, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
 2024-01-24 20:12:15,966 [websockets.py:_handle_identify()] - Websocket 140735075917712 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 20:24:03,907 [websockets.py:on_close()] - Websocket Closed: ID: 140735112136208 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.93
+2024-01-24 20:24:03,908 [websockets.py:on_close()] - Websocket Closed: ID: 140735075917712 Close Code: None, Close Reason: None, Pong Time Elapsed: 7.94
+2024-01-24 20:50:02,297 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.62ms
+2024-01-24 20:50:02,297 [websockets.py:open()] - Websocket Opened: ID: 140735075894992, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-24 20:50:02,299 [websockets.py:_handle_identify()] - Websocket 140735075894992 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 20:50:14,788 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryYU0NiNqBXUfJGZv7
+2024-01-24 20:50:14,793 [application.py:post()] - Processing Uploaded File: printer.cfg
+2024-01-24 20:50:14,795 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 7.61ms
+2024-01-24 20:50:15,841 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-24 20:50:17,098 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-24 20:50:18,872 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-24 20:50:18,873 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-24 20:50:19,123 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-24 20:50:19,377 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-24 20:50:20,130 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-24 20:50:43,198 [job_state.py:_status_update()] - Job Started: [a]_ecas-to-magnet-end_xN (1)_PLA_10m15s.gcode
+2024-01-24 20:54:52,365 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735075894992
+2024-01-24 20:54:54,046 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735110685904
+2024-01-24 20:54:57,039 [websockets.py:on_close()] - Websocket Closed: ID: 140735075894992 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.05
+2024-01-24 20:54:59,008 [websockets.py:on_close()] - Websocket Closed: ID: 140735110685904 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-24 20:55:15,060 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.68ms
+2024-01-24 20:55:15,060 [websockets.py:open()] - Websocket Opened: ID: 140735110771728, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 20:55:15,063 [websockets.py:_handle_identify()] - Websocket 140735110771728 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 21:03:25,736 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.51ms
+2024-01-24 21:03:25,736 [websockets.py:open()] - Websocket Opened: ID: 140735111338384, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 21:03:25,935 [websockets.py:_handle_identify()] - Websocket 140735111338384 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 21:05:17,812 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.66ms
+2024-01-24 21:05:17,812 [websockets.py:open()] - Websocket Opened: ID: 140735075427280, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 21:05:17,842 [websockets.py:_handle_identify()] - Websocket 140735075427280 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 21:07:08,248 [job_state.py:_status_update()] - Job Started: [a]_ecas-to-magnet-end_xN (1)_PLA_10m15s.gcode
+2024-01-24 21:13:17,932 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735075427280
+2024-01-24 21:13:22,813 [websockets.py:on_close()] - Websocket Closed: ID: 140735075427280 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-24 21:13:25,304 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735110771728
+2024-01-24 21:13:25,806 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735111338384
+2024-01-24 21:13:30,062 [websockets.py:on_close()] - Websocket Closed: ID: 140735110771728 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-24 21:13:30,738 [websockets.py:on_close()] - Websocket Closed: ID: 140735111338384 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.99
+2024-01-24 21:13:41,084 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.66ms
+2024-01-24 21:13:41,084 [websockets.py:open()] - Websocket Opened: ID: 140735110313168, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 21:13:41,086 [websockets.py:_handle_identify()] - Websocket 140735110313168 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 21:14:35,056 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.63ms
+2024-01-24 21:14:35,056 [websockets.py:open()] - Websocket Opened: ID: 140735110280144, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 21:14:35,061 [websockets.py:_handle_identify()] - Websocket 140735110280144 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 21:15:01,048 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.74ms
+2024-01-24 21:15:01,048 [websockets.py:open()] - Websocket Opened: ID: 140735110728464, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 21:15:01,061 [websockets.py:_handle_identify()] - Websocket 140735110728464 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
