@@ -2659,3 +2659,37 @@ Properties:
 2024-01-24 17:09:32,592 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.07ms
 2024-01-24 17:09:32,592 [websockets.py:open()] - Websocket Opened: ID: 140735110244368, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2024-01-24 17:09:32,622 [websockets.py:_handle_identify()] - Websocket 140735110244368 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 17:13:14,210 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------02bfd4c91a9e3cc7
+2024-01-24 17:13:14,763 [application.py:post()] - Processing Uploaded File: [a]_ecas-to-magnet-end_xN (1)_PLA_11m19s.gcode
+2024-01-24 17:13:14,911 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-24 17:13:14,916 [shell_command.py:pipe_data_received()] - INFO:metadata:File '[a]_ecas-to-magnet-end_xN (1)_PLA_11m19s.gcode' currently supports cancellation, processing aborted
+
+2024-01-24 17:13:14,991 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "[a]_ecas-to-magnet-end_xN (1)_PLA_11m19s.gcode" --check-objects) successfully finished
+2024-01-24 17:13:14,997 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 787.32ms
+2024-01-24 17:13:15,035 [job_state.py:_status_update()] - Job Started: [a]_ecas-to-magnet-end_xN (1)_PLA_11m19s.gcode
+2024-01-24 17:13:24,540 [websockets.py:on_close()] - Websocket Closed: ID: 140735110244368 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.94
+2024-01-24 17:17:22,309 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735111741264
+2024-01-24 17:17:22,309 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735113455952
+2024-01-24 17:17:23,742 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.69ms
+2024-01-24 17:17:23,742 [websockets.py:open()] - Websocket Opened: ID: 140735075423120, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 17:17:23,755 [websockets.py:_handle_identify()] - Websocket 140735075423120 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 17:17:27,145 [websockets.py:on_close()] - Websocket Closed: ID: 140735111741264 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.96
+2024-01-24 17:17:27,162 [websockets.py:on_close()] - Websocket Closed: ID: 140735113455952 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.98
+2024-01-24 17:17:36,006 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.70ms
+2024-01-24 17:17:36,006 [websockets.py:open()] - Websocket Opened: ID: 140735075431824, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 17:17:36,068 [websockets.py:_handle_identify()] - Websocket 140735075431824 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 17:18:25,251 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.67ms
+2024-01-24 17:18:25,251 [websockets.py:open()] - Websocket Opened: ID: 140735075164816, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 17:18:25,256 [websockets.py:_handle_identify()] - Websocket 140735075164816 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 17:19:32,648 [application.py:prepare()] - Upload Request Received from 192.168.1.177
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryjsblkGfojyWQchBl
+2024-01-24 17:19:32,652 [application.py:post()] - Processing Uploaded File: printer.cfg
+2024-01-24 17:19:32,653 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.177) [_TRUSTED_USER_] 5.89ms
+2024-01-24 17:19:32,678 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: machine.services.restart, Code: 400, Message: Service '{'isTrusted': True}' not allowed
+2024-01-24 17:23:12,482 [websockets.py:on_close()] - Websocket Closed: ID: 140735075423120 Close Code: None, Close Reason: None, Pong Time Elapsed: 8.73
+2024-01-24 17:27:02,968 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.53ms
+2024-01-24 17:27:02,968 [websockets.py:open()] - Websocket Opened: ID: 140735111632976, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 17:27:02,998 [websockets.py:_handle_identify()] - Websocket 140735111632976 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 17:27:08,826 [websockets.py:on_close()] - Websocket Closed: ID: 140735111632976 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 5.86
