@@ -1926,3 +1926,146 @@ Once the underlying issue is corrected, use the
 config, and restart the host software.
 Error configuring printer
 
+2024-01-24 15:15:39,192 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-24 15:15:39,193 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.04ms
+2024-01-24 15:15:39,193 [websockets.py:open()] - Websocket Opened: ID: 140734036664656, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 15:15:39,212 [websockets.py:_handle_identify()] - Websocket 140734036664656 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 15:15:43,337 [klippy_connection.py:close()] - Error closing Klippy Unix Socket
+Traceback (most recent call last):
+  File "/home/pi/moonraker/moonraker/components/klippy_connection.py", line 757, in close
+    await self.writer.wait_closed()
+  File "/usr/lib/python3.11/asyncio/streams.py", line 350, in wait_closed
+    await self._protocol._get_close_waiter(self)
+  File "/usr/lib/python3.11/asyncio/selector_events.py", line 995, in _read_ready__data_received
+    data = self._sock.recv(self.max_size)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2024-01-24 15:15:43,337 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-24 15:15:43,338 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.info, Code: 503, Message: Klippy Disconnected
+2024-01-24 15:15:44,593 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-24 15:15:46,364 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-24 15:15:46,365 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-24 15:15:46,614 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-24 15:15:46,869 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-24 15:15:47,372 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-24 15:16:43,148 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Cannot home with filament in selector
+2024-01-24 15:19:48,375 [websockets.py:on_close()] - Websocket Closed: ID: 140734036664656 Close Code: None, Close Reason: None, Pong Time Elapsed: 8.96
+2024-01-24 15:23:17,228 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.79ms
+2024-01-24 15:23:17,228 [websockets.py:open()] - Websocket Opened: ID: 140734036259920, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 15:23:17,249 [websockets.py:_handle_identify()] - Websocket 140734036259920 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 15:23:28,742 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-24 15:23:28,742 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.08ms
+2024-01-24 15:23:28,743 [websockets.py:open()] - Websocket Opened: ID: 140734037759312, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-24 15:23:28,745 [websockets.py:_handle_identify()] - Websocket 140734037759312 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 15:24:31,771 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-01-24 15:24:31,772 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.95ms
+2024-01-24 15:24:31,772 [websockets.py:open()] - Websocket Opened: ID: 140734037708816, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 15:24:31,776 [websockets.py:_handle_identify()] - Websocket 140734037708816 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 15:24:36,080 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.74ms
+2024-01-24 15:24:36,080 [websockets.py:open()] - Websocket Opened: ID: 140734038084688, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 15:24:36,084 [websockets.py:_handle_identify()] - Websocket 140734038084688 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 15:24:37,095 [websockets.py:on_close()] - Websocket Closed: ID: 140734037708816 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 5.32
+2024-01-24 15:24:46,241 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Must home selector first
+2024-01-24 15:25:10,933 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Failed to load filament into selector. No trigger on selector sensor after full movement
+2024-01-24 15:31:08,083 [job_state.py:_status_update()] - Job Started: [a]_ecas-to-magnet-end_xN (1)_PLA_12m43s.gcode
+2024-01-24 15:35:42,337 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-24 15:35:42,340 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1706110512.981670, Usage: 0.48%, Memory: 50896 kB
+System Time: 1706110513.982376, Usage: 0.52%, Memory: 50896 kB
+System Time: 1706110514.983633, Usage: 0.48%, Memory: 50896 kB
+System Time: 1706110515.984015, Usage: 0.47%, Memory: 50896 kB
+System Time: 1706110516.984878, Usage: 0.51%, Memory: 50896 kB
+System Time: 1706110517.985273, Usage: 0.55%, Memory: 50896 kB
+System Time: 1706110518.986123, Usage: 0.58%, Memory: 50896 kB
+System Time: 1706110519.987073, Usage: 0.51%, Memory: 50896 kB
+System Time: 1706110520.987576, Usage: 0.99%, Memory: 50912 kB
+System Time: 1706110521.989005, Usage: 1.36%, Memory: 50912 kB
+System Time: 1706110522.990123, Usage: 0.47%, Memory: 50912 kB
+System Time: 1706110523.990739, Usage: 0.47%, Memory: 50912 kB
+System Time: 1706110524.991046, Usage: 0.45%, Memory: 50912 kB
+System Time: 1706110525.992171, Usage: 0.44%, Memory: 50912 kB
+System Time: 1706110526.993330, Usage: 0.49%, Memory: 50912 kB
+System Time: 1706110527.994352, Usage: 0.49%, Memory: 50912 kB
+System Time: 1706110528.994668, Usage: 0.52%, Memory: 50912 kB
+System Time: 1706110529.995468, Usage: 0.47%, Memory: 50912 kB
+System Time: 1706110530.997103, Usage: 0.65%, Memory: 50912 kB
+System Time: 1706110531.997559, Usage: 0.55%, Memory: 50912 kB
+System Time: 1706110532.998436, Usage: 0.47%, Memory: 50912 kB
+System Time: 1706110533.999640, Usage: 0.47%, Memory: 50928 kB
+System Time: 1706110535.000856, Usage: 0.47%, Memory: 50928 kB
+System Time: 1706110536.002091, Usage: 0.48%, Memory: 50928 kB
+System Time: 1706110537.002866, Usage: 0.79%, Memory: 50928 kB
+System Time: 1706110538.003271, Usage: 0.54%, Memory: 50928 kB
+System Time: 1706110539.004589, Usage: 1.47%, Memory: 50928 kB
+System Time: 1706110540.005913, Usage: 0.49%, Memory: 50928 kB
+System Time: 1706110541.006215, Usage: 0.66%, Memory: 50928 kB
+System Time: 1706110542.007191, Usage: 0.47%, Memory: 50928 kB
+CPU Temperature: 45.2
+2024-01-24 15:35:42,342 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-24 15:35:44,538 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-24 15:35:45,793 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-24 15:35:47,567 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-24 15:35:47,567 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-24 15:35:47,817 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-24 15:35:48,072 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-24 15:35:49,075 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-24 15:38:49,395 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2024-01-24 15:40:07,377 [job_state.py:_status_update()] - Job Started: [a]_ecas-to-magnet-end_xN (1)_PLA_12m43s.gcode
+2024-01-24 15:44:37,699 [application.py:prepare()] - Upload Request Received from 192.168.1.73
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryELKsaMOlDAXhwnzw
+2024-01-24 15:44:37,704 [application.py:post()] - Processing Uploaded File: steppers.cfg
+2024-01-24 15:44:37,707 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.73) [_TRUSTED_USER_] 8.89ms
+2024-01-24 15:44:44,055 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-24 15:44:44,058 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1706111054.469714, Usage: 0.44%, Memory: 51104 kB
+System Time: 1706111055.470578, Usage: 0.45%, Memory: 51104 kB
+System Time: 1706111056.471457, Usage: 0.85%, Memory: 51104 kB
+System Time: 1706111057.472662, Usage: 0.82%, Memory: 51104 kB
+System Time: 1706111058.474170, Usage: 1.39%, Memory: 51104 kB
+System Time: 1706111059.474976, Usage: 0.57%, Memory: 51104 kB
+System Time: 1706111060.476217, Usage: 0.49%, Memory: 51104 kB
+System Time: 1706111061.477332, Usage: 0.69%, Memory: 51104 kB
+System Time: 1706111062.478420, Usage: 0.48%, Memory: 51104 kB
+System Time: 1706111063.479355, Usage: 0.49%, Memory: 51104 kB
+System Time: 1706111064.479701, Usage: 0.48%, Memory: 51104 kB
+System Time: 1706111065.480190, Usage: 0.47%, Memory: 51104 kB
+System Time: 1706111066.481183, Usage: 0.53%, Memory: 51104 kB
+System Time: 1706111067.482054, Usage: 0.54%, Memory: 51104 kB
+System Time: 1706111068.482799, Usage: 0.49%, Memory: 51104 kB
+System Time: 1706111069.483989, Usage: 0.53%, Memory: 51104 kB
+System Time: 1706111070.484417, Usage: 0.49%, Memory: 51104 kB
+System Time: 1706111071.485403, Usage: 0.68%, Memory: 51104 kB
+System Time: 1706111072.486383, Usage: 0.48%, Memory: 51104 kB
+System Time: 1706111073.487006, Usage: 0.93%, Memory: 51104 kB
+System Time: 1706111074.487987, Usage: 1.41%, Memory: 51104 kB
+System Time: 1706111075.490162, Usage: 0.48%, Memory: 51104 kB
+System Time: 1706111076.491844, Usage: 0.56%, Memory: 51104 kB
+System Time: 1706111077.493633, Usage: 0.58%, Memory: 51104 kB
+System Time: 1706111078.494071, Usage: 1.5%, Memory: 51120 kB
+System Time: 1706111079.495117, Usage: 0.53%, Memory: 51120 kB
+System Time: 1706111080.495649, Usage: 0.46%, Memory: 51120 kB
+System Time: 1706111081.496262, Usage: 0.67%, Memory: 51120 kB
+System Time: 1706111082.497279, Usage: 0.47%, Memory: 51120 kB
+System Time: 1706111083.498085, Usage: 0.47%, Memory: 51120 kB
+CPU Temperature: 46.3
+2024-01-24 15:44:44,059 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-24 15:44:46,482 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-24 15:44:47,739 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-24 15:44:49,763 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-24 15:44:49,763 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-24 15:44:50,014 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-24 15:44:50,269 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-24 15:44:51,272 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-24 15:44:57,796 [job_state.py:_status_update()] - Job Started: [a]_ecas-to-magnet-end_xN (1)_PLA_12m43s.gcode
+2024-01-24 15:46:42,563 [websockets.py:on_close()] - Websocket Closed: ID: 140734036259920 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.33
+2024-01-24 15:49:36,092 [websockets.py:write_to_socket()] - Websocket closed while writing: 140734038084688
+2024-01-24 15:49:41,083 [websockets.py:on_close()] - Websocket Closed: ID: 140734038084688 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-24 15:50:40,143 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.74ms
+2024-01-24 15:50:40,143 [websockets.py:open()] - Websocket Opened: ID: 140734036185936, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 15:50:40,149 [websockets.py:_handle_identify()] - Websocket 140734036185936 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-24 16:04:07,719 [websockets.py:on_close()] - Websocket Closed: ID: 140734036185936 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 7.57
+2024-01-24 16:04:08,270 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.61ms
+2024-01-24 16:04:08,270 [websockets.py:open()] - Websocket Opened: ID: 140734037135632, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-24 16:04:08,324 [websockets.py:_handle_identify()] - Websocket 140734037135632 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
