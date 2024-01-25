@@ -235,3 +235,20 @@ Klipper Version: v0.12.0-75-g94719fe3-dirty
 2024-01-25 00:54:21,939 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
 2024-01-25 01:04:21,941 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
 2024-01-25 01:09:21,942 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-25 03:45:37,508 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-25 03:45:37,508 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.84ms
+2024-01-25 03:45:37,509 [websockets.py:open()] - Websocket Opened: ID: 140735111636432, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 03:45:37,547 [websockets.py:_handle_identify()] - Websocket 140735111636432 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 03:45:46,637 [job_state.py:_status_update()] - Job Started: [a]_buffer-screen-a_xN_PLA_1h6m.gcode
+2024-01-25 03:49:54,993 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735075923920
+2024-01-25 03:49:56,371 [websockets.py:on_close()] - Websocket Closed: ID: 140735075923920 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.00
+2024-01-25 03:49:57,390 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735111467152
+2024-01-25 03:50:02,383 [websockets.py:on_close()] - Websocket Closed: ID: 140735111467152 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-25 03:50:06,786 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-25 03:50:06,786 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.87ms
+2024-01-25 03:50:06,787 [websockets.py:open()] - Websocket Opened: ID: 140735111460176, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 03:50:06,789 [websockets.py:_handle_identify()] - Websocket 140735111460176 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 03:51:37,527 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735111636432
+2024-01-25 03:51:42,510 [websockets.py:on_close()] - Websocket Closed: ID: 140735111636432 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.70
+2024-01-25 04:49:21,978 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-25 04:54:21,979 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
