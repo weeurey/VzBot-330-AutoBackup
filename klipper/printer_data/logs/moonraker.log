@@ -282,3 +282,71 @@ Klipper Version: v0.12.0-75-g94719fe3-dirty
 2024-01-25 07:20:02,308 [websockets.py:on_close()] - Websocket Closed: ID: 140735111191632 Close Code: None, Close Reason: None, Pong Time Elapsed: 4.09
 2024-01-25 07:20:02,309 [websockets.py:on_close()] - Websocket Closed: ID: 140735110789392 Close Code: None, Close Reason: None, Pong Time Elapsed: 7.48
 2024-01-25 07:24:22,002 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-01-25 07:44:22,005 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-25 07:59:22,009 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-25 11:59:02,946 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-01-25 11:59:02,947 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.83ms
+2024-01-25 11:59:02,947 [websockets.py:open()] - Websocket Opened: ID: 140735110663696, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 11:59:02,974 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.61ms
+2024-01-25 11:59:02,974 [websockets.py:open()] - Websocket Opened: ID: 140735110685520, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 11:59:02,979 [websockets.py:_handle_identify()] - Websocket 140735110663696 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 11:59:03,090 [websockets.py:_handle_identify()] - Websocket 140735110685520 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 12:59:22,054 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-25 13:18:19,213 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-25 13:18:19,214 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.52ms
+2024-01-25 13:18:19,215 [websockets.py:open()] - Websocket Opened: ID: 140735075914960, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-25 13:18:19,217 [websockets.py:_handle_identify()] - Websocket 140735075914960 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 13:21:45,977 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------b170c4288dbea0e2
+2024-01-25 13:21:46,277 [application.py:post()] - Processing Uploaded File: sensor_housing_ecas04_x1_rev1 (1)_PLA_9m48s.gcode
+2024-01-25 13:21:46,375 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-25 13:21:46,382 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'sensor_housing_ecas04_x1_rev1 (1)_PLA_9m48s.gcode' currently supports cancellation, processing aborted
+
+2024-01-25 13:21:46,436 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "sensor_housing_ecas04_x1_rev1 (1)_PLA_9m48s.gcode" --check-objects) successfully finished
+2024-01-25 13:21:46,442 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 465.52ms
+2024-01-25 13:21:46,518 [job_state.py:_status_update()] - Job Started: sensor_housing_ecas04_x1_rev1 (1)_PLA_9m48s.gcode
+2024-01-25 13:21:47,647 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-01-25 13:25:51,125 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735110655120
+2024-01-25 13:25:52,950 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735110663696
+2024-01-25 13:25:53,046 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735110685520
+2024-01-25 13:25:56,053 [websockets.py:on_close()] - Websocket Closed: ID: 140735110655120 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.21
+2024-01-25 13:25:57,949 [websockets.py:on_close()] - Websocket Closed: ID: 140735110663696 Close Code: None, Close Reason: None, Pong Time Elapsed: 44.97
+2024-01-25 13:25:57,976 [websockets.py:on_close()] - Websocket Closed: ID: 140735110685520 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-25 13:26:06,758 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.70ms
+2024-01-25 13:26:06,758 [websockets.py:open()] - Websocket Opened: ID: 140735110672528, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 13:26:06,760 [websockets.py:_handle_identify()] - Websocket 140735110672528 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 13:28:34,347 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.78ms
+2024-01-25 13:28:34,347 [websockets.py:open()] - Websocket Opened: ID: 140735075426704, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 13:28:34,352 [websockets.py:_handle_identify()] - Websocket 140735075426704 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 13:28:36,344 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.68ms
+2024-01-25 13:28:36,344 [websockets.py:open()] - Websocket Opened: ID: 140735111923792, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 13:28:36,349 [websockets.py:_handle_identify()] - Websocket 140735111923792 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 13:45:28,550 [websockets.py:on_close()] - Websocket Closed: ID: 140735111923792 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.20
+2024-01-25 13:45:28,552 [websockets.py:on_close()] - Websocket Closed: ID: 140735075426704 Close Code: None, Close Reason: None, Pong Time Elapsed: 4.18
+2024-01-25 13:57:26,102 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Failed to unload filament from selector. Selector sensor still triggered after full movement
+2024-01-25 13:57:26,102 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Must home selector first
+2024-01-25 13:57:33,403 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Cannot home with filament in selector
+2024-01-25 14:09:56,498 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-25 14:09:56,499 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.84ms
+2024-01-25 14:09:56,499 [websockets.py:open()] - Websocket Opened: ID: 140735075888400, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 14:09:56,528 [websockets.py:_handle_identify()] - Websocket 140735075888400 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-25 14:10:05,928 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Must home selector first
+2024-01-25 14:11:43,781 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2024-01-25 14:13:21,590 [websockets.py:on_close()] - Websocket Closed: ID: 140735075888400 Close Code: None, Close Reason: None, Pong Time Elapsed: 25.06
+2024-01-25 14:27:07,378 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------625d4e07771354e7
+2024-01-25 14:27:07,451 [application.py:post()] - Processing Uploaded File: cover_x1_rev2 (1)_PLA_1m53s.gcode
+2024-01-25 14:27:07,547 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-25 14:27:07,549 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'cover_x1_rev2 (1)_PLA_1m53s.gcode' currently supports cancellation, processing aborted
+
+2024-01-25 14:27:07,603 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "cover_x1_rev2 (1)_PLA_1m53s.gcode" --check-objects) successfully finished
+2024-01-25 14:27:07,609 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 231.28ms
+2024-01-25 14:27:07,825 [job_state.py:_status_update()] - Job Started: cover_x1_rev2 (1)_PLA_1m53s.gcode
+2024-01-25 14:29:22,066 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-25 14:31:16,878 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735110672528
+2024-01-25 14:31:21,760 [websockets.py:on_close()] - Websocket Closed: ID: 140735110672528 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.35
+2024-01-25 14:31:28,867 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.70ms
+2024-01-25 14:31:28,868 [websockets.py:open()] - Websocket Opened: ID: 140735113559888, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-25 14:31:28,870 [websockets.py:_handle_identify()] - Websocket 140735113559888 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
