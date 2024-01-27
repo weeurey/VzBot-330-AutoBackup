@@ -1703,3 +1703,25 @@ Properties:
 2024-01-27 20:09:29,316 [websockets.py:open()] - Websocket Opened: ID: 140734914510480, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2024-01-27 20:09:29,360 [websockets.py:_handle_identify()] - Websocket 140734914510480 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
 2024-01-27 20:09:37,058 [websockets.py:on_close()] - Websocket Closed: ID: 140734914510480 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 7.74
+2024-01-27 20:48:43,703 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-01-27 20:55:39,288 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.73ms
+2024-01-27 20:55:39,288 [websockets.py:open()] - Websocket Opened: ID: 140734915025488, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-27 20:55:39,312 [websockets.py:_handle_identify()] - Websocket 140734915025488 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-27 20:59:26,991 [websockets.py:on_close()] - Websocket Closed: ID: 140734915025488 Close Code: None, Close Reason: None, Pong Time Elapsed: 7.69
+2024-01-27 21:00:07,233 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.62ms
+2024-01-27 21:00:07,234 [websockets.py:open()] - Websocket Opened: ID: 140734915948560, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-27 21:00:07,248 [websockets.py:_handle_identify()] - Websocket 140734915948560 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-27 21:01:39,985 [websockets.py:on_close()] - Websocket Closed: ID: 140734915948560 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.74
+2024-01-27 21:21:04,579 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.65ms
+2024-01-27 21:21:04,579 [websockets.py:open()] - Websocket Opened: ID: 140734915353296, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-27 21:21:04,590 [websockets.py:_handle_identify()] - Websocket 140734915353296 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-27 21:21:12,352 [job_state.py:_status_update()] - Job Started: 3DBenchy_PLA_20m15s.gcode
+2024-01-27 21:23:17,069 [websockets.py:on_close()] - Websocket Closed: ID: 140734915353296 Close Code: None, Close Reason: None, Pong Time Elapsed: 2.21
+2024-01-27 21:26:23,505 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.64ms
+2024-01-27 21:26:23,505 [websockets.py:open()] - Websocket Opened: ID: 140734914935312, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-27 21:26:23,526 [websockets.py:_handle_identify()] - Websocket 140734914935312 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-27 21:29:34,976 [websockets.py:on_close()] - Websocket Closed: ID: 140734914935312 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.47
+2024-01-27 21:29:41,536 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.74ms
+2024-01-27 21:29:41,536 [websockets.py:open()] - Websocket Opened: ID: 140734914891024, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-27 21:29:41,566 [websockets.py:_handle_identify()] - Websocket 140734914891024 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-27 21:32:52,278 [websockets.py:on_close()] - Websocket Closed: ID: 140734914891024 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.74
