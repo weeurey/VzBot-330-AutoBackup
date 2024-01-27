@@ -36,6 +36,13 @@ origin = https://github.com/Annex-Engineering/TradRack.git
 primary_branch = main
 managed_services = klipper
 
+[update_manager belay]
+type = git_repo
+path = ~/belay_klippy_module
+origin = https://github.com/Annex-Engineering/Belay.git
+primary_branch = main
+managed_services = klipper
+
 [update_manager KlipperScreen]
 type = git_repo
 path = ~/KlipperScreen
