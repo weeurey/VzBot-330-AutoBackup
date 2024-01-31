@@ -2445,3 +2445,73 @@ Content-Type: multipart/form-data; boundary=------------------------ee9071ce22b0
 2024-01-31 19:43:48,141 [websockets.py:open()] - Websocket Opened: ID: 140734309868880, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
 2024-01-31 19:43:48,151 [websockets.py:_handle_identify()] - Websocket 140734309868880 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
 2024-01-31 19:43:50,935 [websockets.py:on_close()] - Websocket Closed: ID: 140734309868880 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 2.79
+2024-01-31 20:32:55,420 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------3bc1e29819295714
+2024-01-31 20:32:56,243 [application.py:post()] - Processing Uploaded File: Goliath short with Beacon_PLA_24m26s.gcode
+2024-01-31 20:32:56,341 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-31 20:32:56,348 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Goliath short with Beacon_PLA_24m26s.gcode' currently supports cancellation, processing aborted
+
+2024-01-31 20:32:56,411 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Goliath short with Beacon_PLA_24m26s.gcode" --check-objects) successfully finished
+2024-01-31 20:32:56,417 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 998.04ms
+2024-01-31 20:32:56,442 [job_state.py:_status_update()] - Job Started: Goliath short with Beacon_PLA_24m26s.gcode
+2024-01-31 20:33:02,181 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.82ms
+2024-01-31 20:33:02,181 [websockets.py:open()] - Websocket Opened: ID: 140734309677008, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-31 20:33:02,183 [websockets.py:_handle_identify()] - Websocket 140734309677008 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-31 20:33:05,211 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-31 20:33:05,213 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1706733155.779156, Usage: 1.01%, Memory: 53088 kB
+System Time: 1706733156.779837, Usage: 0.22%, Memory: 53088 kB
+System Time: 1706733157.780381, Usage: 0.38%, Memory: 53088 kB
+System Time: 1706733158.780528, Usage: 0.2%, Memory: 53088 kB
+System Time: 1706733159.781875, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733160.783149, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733161.783379, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733162.783863, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733163.785142, Usage: 0.2%, Memory: 53088 kB
+System Time: 1706733164.785411, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733165.785762, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733166.786063, Usage: 0.18%, Memory: 53088 kB
+System Time: 1706733167.787103, Usage: 0.36%, Memory: 53088 kB
+System Time: 1706733168.787685, Usage: 0.2%, Memory: 53088 kB
+System Time: 1706733169.788998, Usage: 0.19%, Memory: 53088 kB
+System Time: 1706733170.789774, Usage: 0.42%, Memory: 53088 kB
+System Time: 1706733171.790272, Usage: 1.09%, Memory: 53088 kB
+System Time: 1706733172.790598, Usage: 0.25%, Memory: 53088 kB
+System Time: 1706733173.791137, Usage: 0.21%, Memory: 53088 kB
+System Time: 1706733174.791789, Usage: 0.21%, Memory: 53088 kB
+System Time: 1706733175.792192, Usage: 9.22%, Memory: 53104 kB
+System Time: 1706733176.792892, Usage: 12.51%, Memory: 53104 kB
+System Time: 1706733177.793668, Usage: 0.3%, Memory: 53104 kB
+System Time: 1706733178.794150, Usage: 0.17%, Memory: 53104 kB
+System Time: 1706733179.794934, Usage: 0.16%, Memory: 53104 kB
+System Time: 1706733180.795244, Usage: 0.18%, Memory: 53104 kB
+System Time: 1706733181.796175, Usage: 0.2%, Memory: 53104 kB
+System Time: 1706733182.796722, Usage: 6.03%, Memory: 53104 kB
+System Time: 1706733183.797324, Usage: 0.71%, Memory: 53104 kB
+System Time: 1706733184.797467, Usage: 0.38%, Memory: 53104 kB
+CPU Temperature: 49.05
+2024-01-31 20:33:05,214 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-31 20:33:06,458 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-31 20:33:07,712 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-31 20:33:09,534 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-31 20:33:09,534 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-31 20:33:09,784 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-31 20:33:10,040 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-31 20:33:10,542 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-31 20:33:16,340 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------41f1648604fc5fe7
+2024-01-31 20:33:17,126 [application.py:post()] - Processing Uploaded File: Goliath short with Beacon_PLA_24m26s.gcode
+2024-01-31 20:33:17,226 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-31 20:33:17,233 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'Goliath short with Beacon_PLA_24m26s.gcode' currently supports cancellation, processing aborted
+
+2024-01-31 20:33:17,296 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "Goliath short with Beacon_PLA_24m26s.gcode" --check-objects) successfully finished
+2024-01-31 20:33:17,298 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 958.37ms
+2024-01-31 20:34:10,258 [job_state.py:_status_update()] - Job Started: Goliath short with Beacon_PLA_24m26s.gcode
+2024-01-31 20:48:27,743 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-31 21:04:30,676 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-01-31 21:04:30,676 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.88ms
+2024-01-31 21:04:30,676 [websockets.py:open()] - Websocket Opened: ID: 140734308194000, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-01-31 21:04:30,781 [websockets.py:_handle_identify()] - Websocket 140734308194000 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
