@@ -1489,3 +1489,91 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryX26rYq4dvkS8Xz
 2024-01-31 12:53:24,889 [websockets.py:_handle_identify()] - Websocket 140735381899408 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
 2024-01-31 12:56:05,525 [websockets.py:on_close()] - Websocket Closed: ID: 140735381899408 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 0.66
 2024-01-31 13:01:28,077 [websockets.py:on_close()] - Websocket Closed: ID: 140735381874384 Close Code: None, Close Reason: None, Pong Time Elapsed: 5.14
+2024-01-31 13:22:27,388 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-31 13:34:34,030 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-01-31 13:34:34,030 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.96ms
+2024-01-31 13:34:34,031 [websockets.py:open()] - Websocket Opened: ID: 140735347448848, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-01-31 13:34:34,042 [websockets.py:_handle_identify()] - Websocket 140735347448848 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-31 13:57:27,393 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-01-31 14:04:55,635 [websockets.py:on_close()] - Websocket Closed: ID: 140735347448848 Close Code: None, Close Reason: None, Pong Time Elapsed: 1.60
+2024-01-31 14:37:27,398 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-01-31 16:28:26,558 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-01-31 16:28:26,558 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.90ms
+2024-01-31 16:28:26,558 [websockets.py:open()] - Websocket Opened: ID: 140735382661712, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-31 16:28:26,560 [websockets.py:_handle_identify()] - Websocket 140735382661712 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-31 16:29:31,573 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2024-01-31 16:29:31,711 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-01-31 16:29:31,712 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1706718541.807231, Usage: 0.35%, Memory: 55104 kB
+System Time: 1706718542.808120, Usage: 0.35%, Memory: 55104 kB
+System Time: 1706718543.809233, Usage: 0.33%, Memory: 55104 kB
+System Time: 1706718544.810398, Usage: 0.33%, Memory: 55104 kB
+System Time: 1706718545.811275, Usage: 0.53%, Memory: 55104 kB
+System Time: 1706718546.812254, Usage: 0.37%, Memory: 55104 kB
+System Time: 1706718547.813173, Usage: 0.32%, Memory: 55104 kB
+System Time: 1706718548.814309, Usage: 0.32%, Memory: 55104 kB
+System Time: 1706718549.815393, Usage: 0.32%, Memory: 55104 kB
+System Time: 1706718550.816502, Usage: 0.32%, Memory: 55104 kB
+System Time: 1706718551.817274, Usage: 0.31%, Memory: 55104 kB
+System Time: 1706718552.818477, Usage: 0.32%, Memory: 55104 kB
+System Time: 1706718553.819026, Usage: 0.58%, Memory: 55104 kB
+System Time: 1706718554.819847, Usage: 0.36%, Memory: 55104 kB
+System Time: 1706718555.821065, Usage: 1.48%, Memory: 55104 kB
+System Time: 1706718556.822019, Usage: 0.4%, Memory: 55104 kB
+System Time: 1706718557.824140, Usage: 0.34%, Memory: 55104 kB
+System Time: 1706718558.826116, Usage: 0.35%, Memory: 55104 kB
+System Time: 1706718559.827980, Usage: 0.35%, Memory: 55104 kB
+System Time: 1706718560.829882, Usage: 0.31%, Memory: 55104 kB
+System Time: 1706718561.832021, Usage: 0.29%, Memory: 55104 kB
+System Time: 1706718562.834059, Usage: 0.29%, Memory: 55104 kB
+System Time: 1706718563.836090, Usage: 0.3%, Memory: 55104 kB
+System Time: 1706718564.837098, Usage: 0.3%, Memory: 55104 kB
+System Time: 1706718565.838331, Usage: 0.49%, Memory: 55104 kB
+System Time: 1706718566.838520, Usage: 0.41%, Memory: 55104 kB
+System Time: 1706718567.839602, Usage: 0.34%, Memory: 55104 kB
+System Time: 1706718568.840444, Usage: 0.33%, Memory: 55104 kB
+System Time: 1706718569.841373, Usage: 0.29%, Memory: 55104 kB
+System Time: 1706718570.842494, Usage: 0.57%, Memory: 55104 kB
+CPU Temperature: 46.85
+2024-01-31 16:29:31,767 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-01-31 16:29:32,653 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: name 'logging' is not defined
+2024-01-31 16:33:35,214 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-01-31 16:33:36,473 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-01-31 16:33:38,245 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-01-31 16:33:38,246 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-01-31 16:33:38,496 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-01-31 16:33:38,751 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-01-31 16:33:39,254 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'extruder']
+2024-01-31 16:36:57,240 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 60.00 seconds
+2024-01-31 16:37:57,240 [klippy_connection.py:wait()] - Request 'gcode/script' pending: 120.00 seconds
+2024-01-31 16:42:11,532 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------5259d0b93784fd93
+2024-01-31 16:42:11,729 [application.py:post()] - Processing Uploaded File: LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode
+2024-01-31 16:42:11,867 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-31 16:42:11,872 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode' currently supports cancellation, processing aborted
+
+2024-01-31 16:42:11,942 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode" --check-objects) successfully finished
+2024-01-31 16:42:11,948 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 416.46ms
+2024-01-31 16:42:12,043 [job_state.py:_status_update()] - Job Started: LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode
+2024-01-31 16:46:06,627 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735382661712
+2024-01-31 16:46:09,852 [websockets.py:on_close()] - Websocket Closed: ID: 140735382661712 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.00
+2024-01-31 16:47:06,889 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.65ms
+2024-01-31 16:47:06,889 [websockets.py:open()] - Websocket Opened: ID: 140735347192208, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-31 16:47:06,891 [websockets.py:_handle_identify()] - Websocket 140735347192208 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-01-31 16:47:30,115 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------3641850f623db3cb
+2024-01-31 16:47:30,315 [application.py:post()] - Processing Uploaded File: LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode
+2024-01-31 16:47:30,412 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-01-31 16:47:30,417 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode' currently supports cancellation, processing aborted
+
+2024-01-31 16:47:30,471 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode" --check-objects) successfully finished
+2024-01-31 16:47:30,477 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 361.48ms
+2024-01-31 16:47:30,615 [job_state.py:_status_update()] - Job Started: LGX Lite Filament Entry Sensor Mount - Flat_PLA_8m16s.gcode
+2024-01-31 16:51:36,981 [websockets.py:write_to_socket()] - Websocket closed while writing: 140735347192208
+2024-01-31 16:51:41,891 [websockets.py:on_close()] - Websocket Closed: ID: 140735347192208 Close Code: None, Close Reason: None, Pong Time Elapsed: 45.00
+2024-01-31 16:51:45,023 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.63ms
+2024-01-31 16:51:45,023 [websockets.py:open()] - Websocket Opened: ID: 140735382093328, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-01-31 16:51:45,025 [websockets.py:_handle_identify()] - Websocket 140735382093328 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
