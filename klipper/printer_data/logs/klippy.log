@@ -16371,3 +16371,1875 @@ Last MCU build config: ADC_MAX=4095 BUS_PINS_i2c1_PB6_PB7=PB6,PB7 BUS_PINS_i2c1_
 Build file /home/pi/klipper/klippy/../out/klipper.elf(1520408): Sun Feb  4 11:56:32 2024
 webhooks client 140733521472400: New connection
 webhooks client 140733521472400: Client info {'program': 'Moonraker', 'version': 'v0.8.0-308-g71b46cc'}
+b'Got EOF when reading from device'
+Starting Klippy...
+Args: ['/home/pi/klipper/klippy/klippy.py', '/home/pi/printer_data/config/printer.cfg', '-I', '/home/pi/printer_data/comms/klippy.serial', '-l', '/home/pi/printer_data/logs/klippy.log', '-a', '/home/pi/printer_data/comms/klippy.sock']
+Git version: 'v0.12.0-102-g9f41f53c-dirty'
+Untracked files: klippy/extras/belay.py, klippy/extras/gcode_shell_command.py, klippy/extras/trad_rack.py, klippy/extras/cartographer.py, klippy/extras/idm.py
+Branch: master
+Remote: origin
+Tracked URL: https://github.com/Klipper3d/klipper
+CPU: 4 core ?
+Python: '3.11.2 (main, Mar 13 2023, 12:18:29) [GCC 12.2.0]'
+Start printer at Sun Feb  4 13:41:44 2024 (1707054104.6 20.2)
+===== Config file =====
+[virtual_sdcard]
+path = /home/pi/printer_data/gcodes
+on_error_gcode = CANCEL_PRINT
+
+[pause_resume]
+recover_velocity = 350
+
+[display_status]
+
+[respond]
+
+[gcode_macro CANCEL_PRINT]
+description = Cancel the actual running print
+rename_existing = CANCEL_PRINT_BASE
+gcode = 
+	TURN_OFF_HEATERS
+	G91
+	G1 Z10 E-2 F3600
+	G1 E-3 F3600
+	G90
+	G1 X30 Y250 F7000; home X axis
+	M106 S80
+	G4 P10000
+	M106 S0
+	M221 S100
+	CANCEL_PRINT_BASE
+	CLEAR_PAUSE
+	
+	SET_GCODE_OFFSET Z=0.0
+	RESETSPEEDS
+	M84
+	
+	BED_MESH_CLEAR
+
+[gcode_macro PAUSE]
+description = Pause the actual running print
+rename_existing = BASE_PAUSE
+gcode = 
+	
+	{% set E = printer["gcode_macro PAUSE"].extrude|float %}
+	
+	
+	{% set x_park = printer.toolhead.axis_maximum.x|float - 5.0 %}
+	{% set y_park = printer.toolhead.axis_maximum.y|float - 5.0 %}
+	
+	{% set max_z = printer.toolhead.axis_maximum.z|float %}
+	{% set act_z = printer.toolhead.position.z|float %}
+	{% if act_z < (max_z - 2.0) %}
+	{% set z_safe = 2.0 %}
+	{% else %}
+	{% set z_safe = max_z - act_z %}
+	{% endif %}
+	
+	SAVE_GCODE_STATE NAME=PAUSE_state
+	BASE_PAUSE
+	SET_IDLE_TIMEOUT TIMEOUT=7200
+	G91
+	G1 E-{1} F2100
+	G1 Z{10} F900
+	G90
+	G1 X{50} Y{0} F6000
+variable_extrude = 1.0
+
+[gcode_macro RESUME]
+description = Resume the actual running print
+rename_existing = BASE_RESUME
+variable_last_extruder_temp = {'restore': False, 'temp': 0}
+variable_restore_idle_timeout = 0
+variable_idle_state = False
+gcode = 
+	
+	{% set E = printer["gcode_macro PAUSE"].extrude|float %}
+	
+	G91
+	G1 E{1} F2100
+	RESTORE_GCODE_STATE NAME=PAUSE_state
+	BASE_RESUME
+
+[gcode_macro SET_PAUSE_NEXT_LAYER]
+description = Enable a pause if the next layer is reached
+gcode = 
+	{% set pause_next_layer = printer['gcode_macro SET_PRINT_STATS_INFO'].pause_next_layer %}
+	{% set ENABLE = params.ENABLE|default(1)|int != 0 %}
+	{% set MACRO = params.MACRO|default(pause_next_layer.call, True) %}
+	SET_GCODE_VARIABLE MACRO=SET_PRINT_STATS_INFO VARIABLE=pause_next_layer VALUE="{{ 'enable': ENABLE, 'call': MACRO }}"
+
+[gcode_macro SET_PAUSE_AT_LAYER]
+description = Enable/disable a pause if a given layer number is reached
+gcode = 
+	{% set pause_at_layer = printer['gcode_macro SET_PRINT_STATS_INFO'].pause_at_layer %}
+	{% set ENABLE = params.ENABLE|int != 0 if params.ENABLE is defined
+	else params.LAYER is defined %}
+	{% set LAYER = params.LAYER|default(pause_at_layer.layer)|int %}
+	{% set MACRO = params.MACRO|default(pause_at_layer.call, True) %}
+	SET_GCODE_VARIABLE MACRO=SET_PRINT_STATS_INFO VARIABLE=pause_at_layer VALUE="{{ 'enable': ENABLE, 'layer': LAYER, 'call': MACRO }}"
+
+[gcode_macro SET_PRINT_STATS_INFO]
+rename_existing = SET_PRINT_STATS_INFO_BASE
+description = Overwrite, to get pause_next_layer and pause_at_layer feature
+variable_pause_next_layer = { 'enable': False, 'call': "PAUSE" }
+variable_pause_at_layer = { 'enable': False, 'layer': 0, 'call': "PAUSE" }
+gcode = 
+	{% if pause_next_layer.enable %}
+	RESPOND TYPE=echo MSG='{"%s, forced by pause_next_layer" % pause_next_layer.call}'
+	{pause_next_layer.call}
+	SET_PAUSE_NEXT_LAYER ENABLE=0
+	{% elif pause_at_layer.enable and params.CURRENT_LAYER is defined and params.CURRENT_LAYER|int == pause_at_layer.layer %}
+	RESPOND TYPE=echo MSG='{"%s, forced by pause_at_layer [%d]" % (pause_at_layer.call, pause_at_layer.layer)}'
+	{pause_at_layer.call}
+	SET_PAUSE_AT_LAYER ENABLE=0
+	{% endif %}
+	SET_PRINT_STATS_INFO_BASE {rawparams}
+
+[gcode_macro _TOOLHEAD_PARK_PAUSE_CANCEL]
+description = Helper: park toolhead used in PAUSE and CANCEL_PRINT
+gcode = 
+	
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set velocity = printer.configfile.settings.pause_resume.recover_velocity %}
+	{% set use_custom     = client.use_custom_pos|default(false)|lower == 'true' %}
+	{% set custom_park_x  = client.custom_park_x|default(0.0) %}
+	{% set custom_park_y  = client.custom_park_y|default(0.0) %}
+	{% set park_dz        = client.custom_park_dz|default(2.0)|abs %}
+	{% set sp_hop         = client.speed_hop|default(15) * 60 %}
+	{% set sp_move        = client.speed_move|default(velocity) * 60 %}
+	
+	{% set origin    = printer.gcode_move.homing_origin %}
+	{% set act       = printer.gcode_move.gcode_position %}
+	{% set max       = printer.toolhead.axis_maximum %}
+	{% set cone      = printer.toolhead.cone_start_z|default(max.z) %}
+	{% set round_bed = True if printer.configfile.settings.printer.kinematics is in ['delta','polar','rotary_delta','winch']
+	else False %}
+	
+	{% set z_min = params.Z_MIN|default(0)|float %}
+	{% set z_park = [[(act.z + park_dz), z_min]|max, (max.z - origin.z)]|min %}
+	{% set x_park = params.X       if params.X is defined
+	else custom_park_x  if use_custom
+	else 0.0            if round_bed
+	else (max.x - 5.0) %}
+	{% set y_park = params.Y       if params.Y is defined
+	else custom_park_y  if use_custom
+	else (max.y - 5.0)  if round_bed and z_park < cone
+	else 0.0            if round_bed
+	else (max.y - 5.0) %}
+	
+	_CLIENT_RETRACT
+	{% if "xyz" in printer.toolhead.homed_axes %}
+	G90
+	G1 Z{z_park} F{sp_hop}
+	G1 X{x_park} Y{y_park} F{sp_move}
+	{% if not printer.gcode_move.absolute_coordinates %} G91 {% endif %}
+	{% else %}
+	RESPOND TYPE=echo MSG='Printer not homed'
+	{% endif %}
+
+[gcode_macro _CLIENT_EXTRUDE]
+description = Extrudes, if the extruder is hot enough
+gcode = 
+	
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set use_fw_retract = (client.use_fw_retract|default(false)|lower == 'true') and (printer.firmware_retraction is defined) %}
+	{% set length = params.LENGTH|default(client.unretract)|default(1.0)|float %}
+	{% set speed = params.SPEED|default(client.speed_unretract)|default(35) %}
+	{% set absolute_extrude = printer.gcode_move.absolute_extrude %}
+	
+	{% if printer.toolhead.extruder != '' %}
+	{% if printer[printer.toolhead.extruder].can_extrude %}
+	{% if use_fw_retract %}
+	{% if length < 0 %}
+	G10
+	{% else %}
+	G11
+	{% endif %}
+	{% else %}
+	M83
+	G1 E{length} F{(speed|float|abs) * 60}
+	{% if absolute_extrude %}
+	M82
+	{% endif %}
+	{% endif %}
+	{% else %}
+	RESPOND TYPE=echo MSG='{"\"%s\" not hot enough" % printer.toolhead.extruder}'
+	{% endif %}
+	{% endif %}
+
+[gcode_macro _CLIENT_RETRACT]
+description = Retracts, if the extruder is hot enough
+gcode = 
+	{% set client = printer['gcode_macro _CLIENT_VARIABLE']|default({}) %}
+	{% set length = params.LENGTH|default(client.retract)|default(1.0)|float %}
+	{% set speed = params.SPEED|default(client.speed_retract)|default(35) %}
+	
+	_CLIENT_EXTRUDE LENGTH=-{length|float|abs} SPEED={speed|float|abs}
+
+[tmc5160 extruder]
+cs_pin = PA10
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+run_current = 0.65
+sense_resistor = 0.075
+stealthchop_threshold = 0
+
+[extruder]
+rotation_distance = 5.7
+full_steps_per_rotation = 200
+sensor_type = PT1000
+min_temp = 0
+max_temp = 330
+filament_diameter = 1.750
+dir_pin = !PB6
+step_pin = PG15
+enable_pin = !PG14
+heater_pin = PF6
+sensor_pin = PB1
+microsteps = 16
+max_extrude_only_distance = 101
+max_extrude_cross_section = 100
+nozzle_diameter = 0.600
+pressure_advance = 0.015
+pressure_advance_smooth_time = 0.02
+control = pid
+pid_kp = 22.354
+pid_ki = 1.552
+pid_kd = 80.473
+
+[tmc5160 stepper_x]
+cs_pin = PD6
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+diag1_pin = PC15
+run_current = 2.00
+sense_resistor = 0.022
+stealthchop_threshold = 0
+
+[stepper_x]
+dir_pin = !PC13
+step_pin = PC14
+enable_pin = !PE6
+endstop_pin = PC15
+microsteps = 16
+rotation_distance = 40
+position_endstop = -6
+position_min = -6
+position_max = 330
+homing_speed = 20
+full_steps_per_rotation = 200
+homing_retract_dist = 0
+homing_positive_dir = false
+step_pulse_duration = 0.000001
+
+[tmc5160 stepper_x1]
+cs_pin = PD5
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+run_current = 2.00
+sense_resistor = 0.022
+stealthchop_threshold = 0
+
+[stepper_x1]
+dir_pin = !PE4
+step_pin = PE5
+enable_pin = !PE3
+microsteps = 16
+rotation_distance = 40
+full_steps_per_rotation = 200
+step_pulse_duration = 0.000001
+
+[tmc5160 stepper_y]
+cs_pin = PD4
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+run_current = 2
+sense_resistor = 0.022
+stealthchop_threshold = 0
+
+[stepper_y]
+dir_pin = !PE1
+step_pin = PE2
+enable_pin = !PE0
+endstop_pin = PF0
+microsteps = 16
+rotation_distance = 40
+position_endstop = 0
+position_min = 0
+position_max = 315
+homing_speed = 20
+full_steps_per_rotation = 200
+homing_retract_dist = 0
+homing_positive_dir = false
+step_pulse_duration = 0.000001
+
+[tmc5160 stepper_y1]
+cs_pin = PD3
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+run_current = 2
+sense_resistor = 0.022
+stealthchop_threshold = 0
+
+[stepper_y1]
+dir_pin = !PB8
+step_pin = PB9
+enable_pin = !PB7
+microsteps = 16
+rotation_distance = 40
+full_steps_per_rotation = 200
+step_pulse_duration = 0.000001
+
+[tmc5160 stepper_z]
+cs_pin = PD2
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+run_current = 1
+sense_resistor = 0.075
+stealthchop_threshold = 0
+
+[stepper_z]
+dir_pin = !PG10
+step_pin = PG9
+enable_pin = !PG13
+endstop_pin = probe:z_virtual_endstop
+microsteps = 16
+rotation_distance = 8
+position_min = -20
+position_max = 400
+full_steps_per_rotation = 200
+homing_retract_dist = 5.0
+homing_positive_dir = false
+homing_speed = 3
+second_homing_speed = 1
+step_pulse_duration = 0.000004
+
+[tmc5160 stepper_z1]
+cs_pin = PA15
+spi_software_sclk_pin = PC6
+spi_software_mosi_pin = PC8
+spi_software_miso_pin = PC7
+run_current = 1
+sense_resistor = 0.075
+stealthchop_threshold = 0
+
+[stepper_z1]
+dir_pin = !PD7
+step_pin = PG11
+enable_pin = !PG12
+microsteps = 16
+rotation_distance = 8
+
+[temperature_sensor Kraken]
+sensor_type = temperature_mcu
+min_temp = 10
+max_temp = 100
+
+[heater_fan hotend_fan]
+pin = PA0
+max_power = 1.0
+kick_start_time = 0.5
+heater = extruder
+heater_temp = 50.0
+
+[fan]
+pin = PF12
+enable_pin = PF7
+hardware_pwm = false
+max_power = 1
+cycle_time = 0.00002
+off_below = 0.012
+kick_start_time = 0.01
+
+[heater_bed]
+heater_pin = PF5
+sensor_pin = PC5
+sensor_type = NTC 100K MGB18-104F39050L32
+control = pid
+pid_kp = 34.679
+pid_ki = 1.492
+pid_kd = 201.572
+min_temp = 0
+max_temp = 120
+max_power = 1
+pwm_cycle_time = 0.0166
+
+[bed_screws]
+screw1 = 10,0
+screw2 = 10,260
+screw3 = 320,260
+screw4 = 320,0
+
+[screws_tilt_adjust]
+screw1 = 10, 0
+screw1_name = front left screw
+screw2 = 10, 260
+screw2_name = rear left screw
+screw3 = 300, 260
+screw3_name = rear right screw
+screw4 = 320, 0
+screw4_name = front right screw
+horizontal_move_z = 10.
+speed = 250
+screw_thread = CW-M3
+
+[force_move]
+enable_force_move = true
+
+[bed_mesh]
+speed = 200
+horizontal_move_z = 1
+mesh_min = 10, 22
+mesh_max = 310, 260
+mesh_pps = 3,3
+probe_count = 25,25
+algorithm = bicubic
+relative_reference_index = 12
+bicubic_tension = 0.2
+fade_start = 1
+fade_end = 10
+split_delta_z = .025
+move_check_distance = 5
+
+[neopixel my_neopixel]
+pin = PF11
+chain_count = 13
+color_order = GRB
+initial_red = 1.0
+initial_green = 1
+initial_blue = 1
+
+[gcode_macro BED_MESH]
+gcode = 
+	BED_MESH_CALIBRATE
+
+[gcode_macro PA_TUNING]
+gcode = 
+	SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=1 ACCEL=500
+	TUNING_TOWER COMMAND=SET_PRESSURE_ADVANCE PARAMETER=ADVANCE START=0 FACTOR=.005
+
+[gcode_macro HOTEND_PID]
+gcode = 
+	{% set tool_temp = params.TEMPERATURE|default(220)|int %}
+	{% set tool_name = printer.toolhead.extruder %}
+	PID_CALIBRATE HEATER={tool_name} TARGET={tool_temp}
+
+[gcode_macro BED_PID]
+gcode = 
+	{% set bed_temp = params.TEMPERATURE|default(60)|int %}
+	PID_CALIBRATE HEATER=heater_bed TARGET={bed_temp}
+
+[gcode_macro SCREWS_TILT]
+gcode = 
+	SCREWS_TILT_CALCULATE
+
+[gcode_macro DUMP_WARNINGS]
+description = Debug: Print all warning messages from klipper
+gcode = 
+	{% set parameters = ["printer.configfile.warnings:"] %}
+	{% for warning in printer.configfile.warnings %}
+	{% set parameters = parameters.append("%s -> %s -> %s\n%s" % (warning.type, warning.section, warning.option, warning.message)) %}
+	{% endfor %}
+	{action_respond_info(parameters|join("\n"))}
+
+[gcode_macro enable_stepper]
+gcode = 
+	SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_x1 ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=1
+	SET_STEPPER_ENABLE STEPPER=stepper_y1 ENABLE=1
+
+[gcode_macro disable-steppers]
+gcode = 
+	m84
+
+[gcode_macro M600]
+gcode = 
+	G4 P1500
+	{% set X = params.X|default(50)|float %}
+	{% set Y = params.Y|default(0)|float %}
+	{% set Z = params.Z|default(10)|float %}
+	
+	SAVE_GCODE_STATE NAME=M600_state
+	PAUSE
+	
+	G91
+	G1 E-{1} F2100
+	G1 Z{Z}
+	G90
+	G1 X{X} Y{Y} F4000
+	G91
+	M83
+	G1 E5 F800
+	G1 E-180 F2000
+	M82
+	RESTORE_GCODE_STATE NAME=M600_state
+
+[gcode_macro PURGE]
+gcode = 
+	M83
+	G1 E120 F250
+
+[gcode_macro _UNLOAD_FILAMENT]
+gcode = 
+	{% set e_temp = params.TEMPERATURE|default(235)|int %}
+	M118 Filament unloading!
+	M117 Filament unloading!
+	M82
+	G92 E0
+	{% if printer.extruder.can_extrude|lower != 'true' %}
+	
+	M118 Hotend heating!
+	M109 S{e_temp} T0
+	{% endif %}
+	G1 E10 F{5*60}
+	G0 E-5 F{60*60}
+	G0 E-70 F{5*60}
+	M400
+	M118 Filament unload complete!
+	M117 Filament unload complete!
+
+[gcode_macro _LOAD_FILAMENT]
+gcode = 
+	{% set e_temp = params.TEMPERATURE|default(230)|int %}
+	M109 S{e_temp}
+	M83
+	G1 E50 F300
+	G1 E-1 F100
+	M82
+	M104 S0
+
+[gcode_macro UNLOAD_PLA]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=200
+
+[gcode_macro LOAD_PLA]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=200
+
+[gcode_macro UNLOAD_ABS]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=250
+
+[gcode_macro LOAD_ABS]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=250
+
+[gcode_macro UNLOAD_PETG]
+gcode = 
+	_UNLOAD_FILAMENT TEMPERATURE=235
+
+[gcode_macro LOAD_PETG]
+gcode = 
+	_LOAD_FILAMENT TEMPERATURE=235
+
+[gcode_macro LOAD_FILAMENT]
+gcode = 
+	{% set speed = params.SPEED|default(300) %}
+	{% set max_velocity = printer.configfile.settings['extruder'].max_extrude_only_velocity %}
+	SAVE_GCODE_STATE NAME=load_state
+	M300
+	G91
+	G92 E0
+	G1 E350 F{max_velocity}
+	G1 E25 F{speed}
+	M300
+	M300
+	RESTORE_GCODE_STATE NAME=load_state
+
+[gcode_macro UNLOAD_FILAMENT]
+gcode = 
+	{% set speed = params.SPEED|default(300) %}
+	{% set max_velocity = printer.configfile.settings['extruder'].max_extrude_only_velocity %}
+	SAVE_GCODE_STATE NAME=unload_state
+	G91
+	M300
+	G92 E0
+	G1 E25 F{speed}
+	G1 E-420 F{max_velocity}
+	M300
+	M300
+	RESTORE_GCODE_STATE NAME=unload_state
+
+[gcode_macro START_PRINT]
+gcode = 
+	
+	{% set DWELL = params.DWELL|default(00)|int %}
+	{% set bedTemp = params.BED|default(70)|int %}
+	{% set hotendTemp = params.HOTEND|default(210)|int %}
+	SET_FAN_SPEED FAN=LED_Bar SPEED=0.5
+	CLEAR_PAUSE
+	RESETSPEEDS
+	G21
+	G90
+	M83
+	M140 S{bedTemp}; start heating the bed
+	M104 S100
+	SET_DISPLAY_TEXT MSG="Waiting for temperatures..."
+	HEATSOAK DWELL={DWELL}
+	G28 X Y
+	ATTACH_PROBE_LOCK
+	G28 Z
+	SET_DISPLAY_TEXT MSG="Adjusting Z Tilt"
+	Z_TILT_ADJUST
+	G28 Z
+	
+	SET_DISPLAY_TEXT MSG="Calibrating Bed Mesh"
+	BED_MESH_CLEAR
+	BED_MESH_CALIBRATE
+	BED_MESH_PROFILE LOAD=default
+	SET_DISPLAY_TEXT MSG="Heating Extruder to temp"
+	G1 X1 Y1 Z0.5 F9000
+	M109 S{hotendTemp}; wait for extruder to heat up
+	TR_UNLOAD_TOOLHEAD
+	TR_HOME
+	FIXED_PURGE_LINE
+	M83
+	SET_DISPLAY_TEXT MSG="Printing..."
+	TR_SYNC_TO_EXTRUDER
+
+[gcode_macro HEATSOAK]
+gcode = 
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion..."
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 5% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 10% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 15% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 20% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 25% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 30% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 35% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 40% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 45% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 50% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 55% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 60% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 65% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 70% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 75% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 80% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 85% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 90% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Waiting for thermal expansion 95% done"
+	G4 P{params.DWELL|int*1000/20}
+	SET_DISPLAY_TEXT MSG="Thermal expansion done"
+
+[gcode_macro _CG28]
+gcode = 
+	{% if "xyz" not in printer.toolhead.homed_axes %}
+	G28
+	{% endif %}
+
+[gcode_macro FIXED_PURGE_LINE]
+gcode = 
+	M83
+	G92 E0
+	G1 Z1 F3000
+	G1 X1 Y80 Z0.3 E10  F1200
+	G1 X1 Y120 E11  F1200
+	G1 E-0.8 F1000
+	G92 E0
+	G1 Z1 F2000
+
+[gcode_macro END_PRINT]
+gcode = 
+	TR_UNLOAD_TOOLHEAD
+	
+	TURN_OFF_HEATERS
+	G91
+	G1 Z10 E-2 F3600
+	
+	G90
+	G1 X30 Y250 F7000; home X axis
+	M106 S80
+	G4 P10000
+	M106 S0
+	M221 S100
+	CLEAR_PAUSE
+	
+	SET_GCODE_OFFSET Z=0.0
+	RESETSPEEDS
+	
+	M84
+	BED_MESH_CLEAR
+	SET_FAN_SPEED FAN=LED_Bar SPEED=0
+	TR_UNSYNC_TO_EXTRUDER
+	UPDATE_GIT
+
+[gcode_macro PARK]
+description = Park the toolhead at the front and retract some filament if the nozzle is hot
+gcode = 
+	{% set E = params.E|default(1.7)|float %}
+	
+	{% set Px, Py = printer["gcode_macro _USER_VARIABLES"].park_position_xy|map('float') %}
+	{% set park_lift_z = printer["gcode_macro _USER_VARIABLES"].park_lift_z %}
+	
+	{% set St = printer["gcode_macro _USER_VARIABLES"].travel_speed * 60 %}
+	{% set Sz = printer["gcode_macro _USER_VARIABLES"].z_drop_speed * 60 %}
+	
+	{% set max_z = printer.toolhead.axis_maximum.z|float %}
+	{% set act_z = printer.toolhead.position.z|float %}
+	
+	{% set z_safe = act_z + park_lift_z %}
+	{% if z_safe > max_z %}
+	{% set z_safe = max_z %}
+	{% endif %}
+	
+	
+	{% if printer.extruder.temperature > 185 %}
+	G10
+	{% endif %}
+	G90
+	G1 Z{z_safe} F{Sz}
+	
+	G0 X{Px} Y{Py} F{St}
+
+[gcode_macro RESETSPEEDS]
+gcode = 
+	SET_VELOCITY_LIMIT VELOCITY={printer.configfile.settings.printer.max_velocity}
+	SET_VELOCITY_LIMIT ACCEL={printer.configfile.settings.printer.max_accel}
+	SET_VELOCITY_LIMIT ACCEL_TO_DECEL={printer.configfile.settings.printer.max_accel_to_decel}
+	SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY={printer.configfile.settings.printer.square_corner_velocity}
+
+[gcode_macro DISABLEXYE]
+gcode = 
+	SET_STEPPER_ENABLE STEPPER=extruder ENABLE=0
+	SET_STEPPER_ENABLE STEPPER=stepper_x ENABLE=0
+	
+	SET_STEPPER_ENABLE STEPPER=stepper_y ENABLE=0
+	
+	SET_STEPPER_ENABLE STEPPER=stepper_z ENABLE=1
+
+[gcode_macro TEST_SPEED]
+gcode = 
+	
+	{% set speed  = params.SPEED|default(printer.configfile.settings.printer.max_velocity)|int %}
+	
+	{% set iterations = params.ITERATIONS|default(5)|int %}
+	
+	{% set accel  = params.ACCEL|default(printer.configfile.settings.printer.max_accel)|int %}
+	
+	{% set bound = params.BOUND|default(20)|int %}
+	
+	{% set smallpatternsize = SMALLPATTERNSIZE|default(20)|int %}
+	
+	
+	
+	{% set x_min = 10 + bound %}
+	{% set x_max = 300 - bound %}
+	{% set y_min = 10 + bound %}
+	{% set y_max = 300 - bound %}
+	
+	
+	
+	{% set x_center = (printer.toolhead.axis_minimum.x|float + printer.toolhead.axis_maximum.x|float ) / 2 %}
+	{% set y_center = (printer.toolhead.axis_minimum.y|float + printer.toolhead.axis_maximum.y|float ) / 2 %}
+	
+	
+	{% set x_center_min = x_center - (smallpatternsize/2) %}
+	{% set x_center_max = x_center + (smallpatternsize/2) %}
+	{% set y_center_min = y_center - (smallpatternsize/2) %}
+	{% set y_center_max = y_center + (smallpatternsize/2) %}
+	
+	
+	SAVE_GCODE_STATE NAME=TEST_SPEED
+	
+	
+	{ action_respond_info("TEST_SPEED: starting %d iterations at speed %d, accel %d" % (iterations, speed, accel)) }
+	
+	
+	M400
+	G28
+	
+	{% if printer.configfile.settings.quad_gantry_level %}
+	{% if printer.quad_gantry_level.applied == False %}
+	QUAD_GANTRY_LEVEL
+	G28 Z
+	{% endif %}
+	{% endif %}
+	
+	G90
+	G1 X{printer.toolhead.axis_maximum.x-50} Y{printer.toolhead.axis_maximum.y-50} F{30*60}
+	M400
+	G28 X Y
+	G0 X{300} Y{300} F{30*60}
+	G4 P1000
+	GET_POSITION
+	
+	
+	G0 X{x_min} Y{y_min} Z{bound + 10} F{speed*60}
+	
+	
+	SET_VELOCITY_LIMIT VELOCITY={speed} ACCEL={accel} ACCEL_TO_DECEL={accel / 2}
+	
+	{% for i in range(iterations) %}
+	
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_max} Y{y_max} F{speed*60}
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	G0 X{x_min} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	
+	
+	G0 X{x_min} Y{y_min} F{speed*60}
+	G0 X{x_min} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_max} F{speed*60}
+	G0 X{x_max} Y{y_min} F{speed*60}
+	
+	
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_max} Y{y_center_max} F{speed*60}
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	G0 X{x_center_min} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	
+	
+	G0 X{x_center_min} Y{y_center_min} F{speed*60}
+	G0 X{x_center_min} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_max} F{speed*60}
+	G0 X{x_center_max} Y{y_center_min} F{speed*60}
+	{% endfor %}
+	
+	
+	SET_VELOCITY_LIMIT VELOCITY={printer.configfile.settings.printer.max_velocity} ACCEL={printer.configfile.settings.printer.max_accel} ACCEL_TO_DECEL={printer.configfile.settings.printer.max_accel_to_decel}
+	
+	
+	M400
+	G28
+	
+	G90
+	G0 X{300} Y{300} F{30*60}
+	G4 P1000
+	GET_POSITION
+	
+	
+	RESTORE_GCODE_STATE NAME=TEST_SPEED
+
+[gcode_macro update_git]
+gcode = 
+	RUN_SHELL_COMMAND CMD=update_git_script
+
+[gcode_shell_command update_git_script]
+command = bash /home/pi/klipper-backup/script.sh
+timeout = 90.0
+verbose = True
+
+[mcu tr]
+serial = /dev/serial/by-id/usb-Klipper_stm32g0b1xx_290023000950415833323720-if00
+
+[belay my_belay]
+extruder_type = trad_rack
+sensor_pin = ^tr:PB9
+multiplier_high = 1.05
+multiplier_low = 0.8
+debug_level = 1
+
+[trad_rack]
+sync_to_extruder = true
+selector_max_velocity = 400
+selector_max_accel = 10000
+lane_count = 4
+lane_spacing = 17.26
+servo_down_angle = 0
+servo_up_angle = 130
+toolhead_unload_speed = 20
+extruder_load_speed = 2
+toolhead_sense_speed = 20
+selector_unload_length = 20
+bowden_length = 865
+extruder_load_length = 60
+hotend_load_length = 20
+toolhead_unload_length = 80
+buffer_pull_speed = 100.0
+pre_unload_gcode = 
+	SAVE_GCODE_STATE NAME=PRE_UNLOAD_state
+	{% if printer.virtual_sdcard.is_active %}
+	{% set z_max = printer.toolhead.axis_maximum.z - printer.gcode_move.homing_origin.z %}
+	{% set z_lift = printer["gcode_macro TR_Variables"].z_lift|float %}
+	{% set x_park = printer["gcode_macro TR_Variables"].x_park|float %}
+	{% set y_park = printer["gcode_macro TR_Variables"].y_park|float %}
+	{% set do_x_park = printer["gcode_macro TR_Variables"].do_x_park %}
+	{% set do_y_park = printer["gcode_macro TR_Variables"].do_y_park %}
+	{% set st = printer["gcode_macro TR_Variables"].travel_speed * 60 %}
+	{% set shape_tip = printer["gcode_macro TR_Variables"].shape_tip %}
+	{% set use_wiper = printer["gcode_macro TR_Variables"].use_wiper %}
+	{% set x = printer.gcode_move.gcode_position.x %}
+	{% set y = printer.gcode_move.gcode_position.y %}
+	{% set z = printer.gcode_move.gcode_position.z %}
+	{% set z_park = [z + z_lift, z_max]|min %}
+	
+	SET_GCODE_VARIABLE MACRO=TR_Variables VARIABLE=x VALUE={x}
+	SET_GCODE_VARIABLE MACRO=TR_Variables VARIABLE=y VALUE={y}
+	SET_GCODE_VARIABLE MACRO=TR_Variables VARIABLE=z VALUE={z}
+	SET_GCODE_VARIABLE MACRO=TR_Variables VARIABLE=saved_pos VALUE={True}
+	SET_GCODE_VARIABLE MACRO=TR_Variables VARIABLE=z_park VALUE={z_park}
+	
+	
+	G90
+	G1 Z{z_park}
+	
+	
+	{% if use_wiper %}
+	Go_To_Purge_Location
+	
+	
+	{% else %}
+	G90
+	{% if do_x_park %}
+	{% set x = x_park %}
+	{% endif %}
+	{% if do_y_park %}
+	{% set y = y_park %}
+	{% endif %}
+	G1 X{x} Y{y} F{st}
+	{% endif %}
+	
+	
+	{% if shape_tip %}
+	Shape_Tip
+	{% endif %}
+	{% else %}
+	
+	{% if use_wiper %}
+	Go_To_Purge_Location
+	{% endif %}
+	
+	
+	Shape_Tip
+	{% endif %}
+	RESTORE_GCODE_STATE NAME=PRE_UNLOAD_state
+post_load_gcode = 
+	SAVE_GCODE_STATE NAME=POST_LOAD_state
+	{% set use_wiper = printer["gcode_macro TR_Variables"].use_wiper %}
+	{% if printer.virtual_sdcard.is_active %}
+	{% set st = printer["gcode_macro TR_Variables"].travel_speed * 60 %}
+	{% set take_frame = printer["gcode_macro TR_Variables"].take_frame %}
+	{% set x = printer["gcode_macro TR_Variables"].x %}
+	{% set y = printer["gcode_macro TR_Variables"].y %}
+	{% set z = printer["gcode_macro TR_Variables"].z %}
+	{% set saved_pos = printer["gcode_macro TR_Variables"].saved_pos %}
+	{% set z_park = printer["gcode_macro TR_Variables"].z_park %}
+	
+	
+	{% if take_frame %}
+	TIMELAPSE_TAKE_FRAME
+	{% endif %}
+	
+	
+	{% if use_wiper %}
+	Home_and_Wipe_Nozzle
+	{% endif %}
+	
+	
+	{% if saved_pos %}
+	G90
+	G1 Z{z_park}
+	G1 X{x} Y{y} F{st}
+	G1 Z{z}
+	SET_GCODE_VARIABLE MACRO=TR_Variables VARIABLE=saved_pos VALUE={False}
+	{% endif %}
+	
+	Restore_Pressure_Advance
+	{% elif use_wiper %}
+	Home_and_Wipe_Nozzle
+	{% endif %}
+	RESTORE_GCODE_STATE NAME=POST_LOAD_state
+
+[stepper_tr_selector]
+step_pin = tr:PB15
+dir_pin = !tr:PB14
+enable_pin = !tr:PA8
+rotation_distance = 40
+microsteps = 16
+full_steps_per_rotation = 400
+endstop_pin = ^tr:PA3
+position_min = 0.0
+position_endstop = 0
+position_max = 158
+homing_speed = 30
+
+[stepper_tr_fil_driver]
+step_pin = tr:PD2
+dir_pin = tr:PB13
+enable_pin = !tr:PD1
+rotation_distance = 22.67895
+gear_ratio = 50:17
+microsteps = 16
+full_steps_per_rotation = 400
+endstop_pin = ^tr:PA4
+position_min = -5000
+position_endstop = 0
+position_max = 5000
+homing_positive_dir = False
+
+[tmc2209 stepper_tr_selector]
+uart_pin = tr:PA10
+interpolate = True
+run_current = 1.3
+sense_resistor = 0.110
+
+[tmc2209 stepper_tr_fil_driver]
+uart_pin = tr:PC7
+interpolate = False
+run_current = 1.3
+sense_resistor = 0.110
+
+[servo tr_servo]
+pin = tr:PA0
+maximum_servo_angle = 131
+minimum_pulse_width = 0.000700
+maximum_pulse_width = 0.002200
+
+[gcode_macro ACTIVATE_EXTRUDER]
+rename_existing = ACTIVATE_EXTRUDER.1
+gcode = 
+	{% set EXTRUDER = params.EXTRUDER|default('extruder')|lower|replace('extruder', '') %}
+	{% if EXTRUDER == '' %}
+	{% set EXTRUDER = '0' %}
+	{% endif %}
+	TR_LOAD_TOOLHEAD LANE={EXTRUDER}
+
+[gcode_macro TR_Variables]
+description = Variables for use with Trad Rack pre unload and post load gcode
+variable_z_lift = 0.1
+variable_x_park = 0.0
+variable_y_park = 175.0
+variable_do_x_park = False
+variable_do_y_park = False
+variable_travel_speed = 300
+variable_shape_tip = False
+variable_take_frame = False
+variable_use_wiper = False
+variable_x = 0
+variable_y = 0
+variable_z = 0
+variable_saved_pos = False
+variable_z_park = 0
+gcode = 
+
+[gcode_macro Shape_Tip]
+description = Perform tip-shaping, retraction, and cooling moves
+gcode = 
+	SAVE_GCODE_STATE NAME=Shape_Tip_state
+	Save_Pressure_Advance
+	
+	Slicer_Unload
+	
+	
+	Restore_Pressure_Advance
+	RESTORE_GCODE_STATE NAME=Shape_Tip_state
+
+[gcode_macro Set_Slicer_Unload_Preset]
+description = Apply a preset of values to use for the Slicer_Unload macro
+variable_asa_ss = {
+	"filament_ramming_parameters": "120 110 5.32258 5.45161 5.67742 6 6.48387 7.12903 7.90323 8.70968 9.3871 9.83871 10.0968 10.2258| 0.05 5.30967 0.45 5.50967 0.95 6.1871 1.45 7.39677 1.95 9.05484 2.45 10 2.95 10.3098 3.45 13.0839 3.95 7.6 4.45 7.6 4.95 7.6",
+	"superslicer": True}
+variable_pla_ss = {
+	"filament_ramming_parameters": "130 120 2.70968 2.93548 3.32258 3.83871 4.58065 5.54839 6.51613 7.35484 7.93548 8.16129| 0.05 2.66451 0.45 3.05805 0.95 4.05807 1.45 5.97742 1.95 7.69999 2.45 8.1936 2.95 11.342 3.45 11.4065 3.95 7.6 4.45 7.6 4.95 7.6",
+	"superslicer": True}
+variable_asa_ps = {
+	"filament_ramming_parameters": "120 110 5.32258 5.45161 5.67742 6 6.48387 7.12903 7.90323 8.70968 9.3871 9.83871 10.0968 10.2258| 0.05 5.30967 0.45 5.50967 0.95 6.1871 1.45 7.39677 1.95 9.05484 2.45 10 2.95 10.3098 3.45 13.0839 3.95 7.6 4.45 7.6 4.95 7.6",
+	"superslicer": False}
+variable_pla_ps = {
+	"filament_ramming_parameters": "130 120 2.70968 2.93548 3.32258 3.83871 4.58065 5.54839 6.51613 7.35484 7.93548 8.16129| 0.05 2.66451 0.45 3.05805 0.95 4.05807 1.45 5.97742 1.95 7.69999 2.45 8.1936 2.95 11.342 3.45 11.4065 3.95 7.6 4.45 7.6 4.95 7.6",
+	"superslicer": False}
+gcode = 
+	{% set preset_name = params.PRESET|lower %}
+	{% if preset_name in printer['gcode_macro Set_Slicer_Unload_Preset'] %}
+	{% set preset = printer['gcode_macro Set_Slicer_Unload_Preset'].preset_name %}
+	{% for key in preset %}
+	SET_GCODE_VARIABLE MACRO=Slicer_Unload VARIABLE={key} VALUE={preset[key]}
+	{% endfor %}
+	{% else %}
+	{ action_raise_error("Preset \"%s\" does not exist" % preset_name) }
+	{% endif %}
+
+[gcode_macro Slicer_Unload]
+description = Mimic ramming and unload behavior of PrusaSlicer or SuperSlicer
+variable_cooling_tube_length = 14
+variable_cooling_tube_retraction = 30
+variable_filament_cooling_final_speed = 30
+variable_filament_cooling_initial_speed = 20
+variable_filament_cooling_moves = 4
+variable_filament_diameter = 1.75
+variable_filament_unloading_speed = 90
+variable_filament_unloading_speed_start = 100
+variable_filament_toolchange_delay = 0
+variable_filament_ramming_parameters = "120 110 5.32258 5.45161 5.67742 6 6.48387 7.12903 7.90323 8.70968 9.3871 9.83871 10.0968 10.2258| 0.05 5.30967 0.45 5.50967 0.95 6.1871 1.45 7.39677 1.95 9.05484 2.45 10 2.95 10.3098 3.45 13.0839 3.95 7.6 4.45 7.6 4.95 7.6"
+variable_filament_enable_toolchange_temp = False
+variable_filament_toolchange_temp = 200
+variable_filament_use_fast_skinnydip = False
+variable_filament_enable_toolchange_part_fan = False
+variable_filament_toolchange_part_fan_speed = 50
+variable_filament_use_skinnydip = True
+variable_filament_skinnydip_distance = 24
+variable_filament_melt_zone_pause = 0
+variable_filament_cooling_zone_pause = 0
+variable_filament_dip_insertion_speed = 33
+variable_filament_dip_extraction_speed = 70
+variable_superslicer = False
+variable_do_ramming = False
+variable_do_unload = True
+gcode = 
+	{% set NEW_TEMPERATURE = params.NEW_TEMPERATURE|default(0)|float %}
+	{% set prev_temp_target = printer.extruder.target %}
+	
+	SAVE_GCODE_STATE NAME=Slicer_Unload_state
+	Save_Pressure_Advance
+	
+	M83
+	M220 S100
+	SET_PRESSURE_ADVANCE ADVANCE=0
+	
+	
+	{% if do_ramming %}
+	
+	{% set ramming_speed = (filament_ramming_parameters.split('|')[0]).split(' ') %}
+	
+	
+	{% set filament_area = 3.1415 * (filament_diameter / 2) ** 2 %}
+	
+	
+	{% for i in range(2, ramming_speed|length) %}
+	
+	{% set f = ramming_speed[i]|float / filament_area %}
+	
+	
+	{% set e = f * 0.25 %}
+	
+	
+	G1 E{e} F{f * 60}
+	{% endfor %}
+	{% endif %}
+	
+	
+	{% if do_unload %}
+	
+	{% if superslicer and filament_enable_toolchange_temp and not filament_use_fast_skinnydip %}
+	_Wait_for_Toolchange_Temp
+	{% endif %}
+	
+	
+	{% set total_retraction_distance = cooling_tube_retraction + cooling_tube_length / 2 - 15 %}
+	G1 E-15 F{filament_unloading_speed_start * 60}
+	G1 E-{0.70 * total_retraction_distance} F{1.0 * filament_unloading_speed * 60}
+	G1 E-{0.20 * total_retraction_distance} F{0.5 * filament_unloading_speed * 60}
+	G1 E-{0.10 * total_retraction_distance} F{0.3 * filament_unloading_speed * 60}
+	
+	
+	{% if not superslicer or not filament_enable_toolchange_temp %}
+	{% if NEW_TEMPERATURE != 0 and (NEW_TEMPERATURE != prev_temp_target) %}
+	M104 S{NEW_TEMPERATURE}
+	{% endif %}
+	
+	
+	{% elif superslicer and filament_enable_toolchange_temp and not filament_use_fast_skinnydip %}
+	{% if NEW_TEMPERATURE != 0 %}
+	M104 S{NEW_TEMPERATURE}
+	{% else %}
+	M104 S{prev_temp_target}
+	{% endif %}
+	{% endif %}
+	
+	
+	{% set speed_inc = (filament_cooling_final_speed - filament_cooling_initial_speed) / (2 * filament_cooling_moves - 1) %}
+	{% for i in range(filament_cooling_moves) %}
+	{% set speed = filament_cooling_initial_speed + speed_inc * 2 * i %}
+	G1 E{cooling_tube_length} F{speed * 60}
+	{% set speed = speed + speed_inc %}
+	G1 E-{cooling_tube_length} F{speed * 60}
+	{% endfor %}
+	
+	
+	{% if superslicer %}
+	
+	{% if filament_enable_toolchange_temp and filament_use_fast_skinnydip %}
+	_Wait_for_Toolchange_Temp
+	{% endif %}
+	
+	
+	{% if filament_use_skinnydip %}
+	G1 E{filament_skinnydip_distance} F{filament_dip_insertion_speed * 60}
+	G4 P{filament_melt_zone_pause}
+	G1 E-{filament_skinnydip_distance} F{filament_dip_extraction_speed * 60}
+	G4 P{filament_cooling_zone_pause}
+	{% endif %}
+	
+	
+	{% if filament_enable_toolchange_temp and filament_use_fast_skinnydip %}
+	{% if NEW_TEMPERATURE != 0 %}
+	M109 S{NEW_TEMPERATURE}
+	{% else %}
+	M109 S{prev_temp_target}
+	{% endif %}
+	{% elif filament_enable_toolchange_temp and filament_use_fast_skinnydip %}
+	{% if NEW_TEMPERATURE != 0 and (NEW_TEMPERATURE != prev_temp_target) %}
+	M109 S{NEW_TEMPERATURE}
+	{% endif %}
+	{% endif %}
+	{% endif %}
+	
+	
+	G4 P{filament_toolchange_delay}
+	
+	
+	
+	{% endif %}
+	
+	Restore_Pressure_Advance
+	RESTORE_GCODE_STATE NAME=Slicer_Unload_state
+
+[gcode_macro _Wait_for_Toolchange_Temp]
+description = Helper function for Slicer_Unload
+gcode = 
+	{% set tc_temp = printer["gcode_macro Slicer_Unload"].filament_toolchange_temp %}
+	{% set fan_on = printer["gcode_macro Slicer_Unload"].filament_enable_toolchange_part_fan %}
+	{% set fan_speed = printer["gcode_macro Slicer_Unload"].filament_toolchange_part_fan_speed %}
+	
+	{% set prev_fan_speed = printer.fan.speed %}
+	{% if fan_on %}
+	M106 S{(fan_speed / 100.0 * 255)|int}
+	{% endif %}
+	M109 S{filament_toolchange_temp}
+	{% if fan_on %}
+	M106 S{(prev_fan_speed * 255)|int}
+	{% endif %}
+
+[gcode_macro Home_and_Wipe_Nozzle]
+description = Home x and y if needed, then wipe the nozzle
+gcode = 
+	
+	{% if not 'xy' in printer.toolhead.homed_axes %}
+	G28 X Y
+	{% endif %}
+	
+	
+	Wipe_Nozzle
+
+[gcode_macro Save_Pressure_Advance]
+description = Save the current pressure advance value
+variable_pa = -1
+gcode = 
+	
+	{% set pa = printer.extruder.pressure_advance %}
+	{% if pa > 0 %}
+	SET_GCODE_VARIABLE MACRO=Save_Pressure_Advance VARIABLE=pa VALUE={pa}
+	{% endif %}
+
+[gcode_macro Restore_Pressure_Advance]
+description = Restore saved pressure advance value
+gcode = 
+	
+	{% if not (printer["gcode_macro Save_Pressure_Advance"].pa == -1) %}
+	SET_PRESSURE_ADVANCE ADVANCE={printer["gcode_macro Save_Pressure_Advance"].pa}
+	{% endif %}
+
+[safe_z_home]
+home_xy_position = 165, 165
+z_hop = 10
+
+[z_tilt]
+z_positions = 
+	-80,  -20
+	350, -20
+points = 
+	15, 150
+	275, 150
+speed = 50
+horizontal_move_z = 10
+retries = 30
+retry_tolerance = 0.1
+
+[input_shaper]
+shaper_type_x = zv
+shaper_freq_x = 120.6
+shaper_type_y = zv
+shaper_freq_y = 76.6
+
+[cartographer]
+serial = /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00
+speed = 40.
+lift_speed = 5.
+backlash_comp = 0.5
+x_offset = 0.
+y_offset = 21.1
+trigger_distance = 2.
+trigger_dive_threshold = 1.5
+trigger_hysteresis = 0.006
+cal_nozzle_z = 0.1
+cal_floor = 0.1
+cal_ceil = 5.
+cal_speed = 1.0
+cal_move_speed = 10.
+default_model_name = default
+mesh_main_direction = x
+mesh_cluster_size = 1
+mesh_runs = 2
+
+[lis2dw]
+cs_pin = cartographer:PA3
+spi_bus = spi1
+
+[resonance_tester]
+accel_chip = lis2dw
+probe_points = 
+	125, 125, 20
+
+[printer]
+kinematics = corexy
+max_velocity = 3000
+max_accel = 20000
+max_z_velocity = 20
+max_z_accel = 15
+square_corner_velocity = 10
+
+[exclude_object]
+
+[gcode_arcs]
+resolution = 0.05
+
+[idle_timeout]
+gcode = 
+	{% if not printer.pause_resume.is_paused %}
+	TURN_OFF_HEATERS
+	M84
+	{% endif %}
+
+[save_variables]
+filename = vars.cfg
+
+[mcu]
+serial = /dev/serial/by-id/usb-Klipper_stm32h723xx_4C0023001551313338343730-if00
+
+[bed_mesh default]
+version = 1
+points = 
+	-0.215000, -0.210000, -0.190000, -0.185000, -0.170000, -0.145000, -0.135000, -0.120000, -0.105000, -0.070000, -0.055000, -0.035000, 0.000000, 0.010000, 0.025000, 0.050000, 0.080000, 0.105000, 0.130000, 0.135000, 0.150000, 0.155000, 0.165000, 0.190000, 0.205000
+	-0.160000, -0.155000, -0.160000, -0.150000, -0.130000, -0.110000, -0.105000, -0.085000, -0.055000, -0.035000, -0.025000, 0.000000, 0.025000, 0.055000, 0.075000, 0.100000, 0.110000, 0.130000, 0.160000, 0.170000, 0.190000, 0.190000, 0.205000, 0.205000, 0.220000
+	-0.160000, -0.150000, -0.140000, -0.135000, -0.115000, -0.105000, -0.090000, -0.070000, -0.040000, -0.025000, -0.010000, 0.015000, 0.030000, 0.045000, 0.080000, 0.100000, 0.115000, 0.135000, 0.160000, 0.165000, 0.180000, 0.185000, 0.190000, 0.220000, 0.235000
+	-0.120000, -0.115000, -0.115000, -0.100000, -0.080000, -0.070000, -0.065000, -0.040000, -0.015000, 0.010000, 0.030000, 0.050000, 0.065000, 0.090000, 0.110000, 0.130000, 0.145000, 0.175000, 0.195000, 0.195000, 0.195000, 0.205000, 0.210000, 0.235000, 0.240000
+	-0.075000, -0.065000, -0.055000, -0.045000, -0.040000, -0.020000, -0.005000, 0.015000, 0.035000, 0.065000, 0.075000, 0.090000, 0.105000, 0.115000, 0.140000, 0.170000, 0.175000, 0.190000, 0.205000, 0.205000, 0.205000, 0.210000, 0.215000, 0.240000, 0.240000
+	-0.045000, -0.050000, -0.055000, -0.045000, -0.015000, -0.005000, -0.005000, 0.020000, 0.060000, 0.065000, 0.075000, 0.100000, 0.115000, 0.125000, 0.135000, 0.170000, 0.175000, 0.175000, 0.205000, 0.205000, 0.205000, 0.205000, 0.210000, 0.220000, 0.225000
+	-0.035000, -0.030000, -0.030000, -0.020000, 0.000000, 0.015000, 0.015000, 0.035000, 0.065000, 0.085000, 0.100000, 0.110000, 0.115000, 0.130000, 0.160000, 0.170000, 0.180000, 0.180000, 0.200000, 0.200000, 0.200000, 0.205000, 0.205000, 0.220000, 0.235000
+	0.005000, 0.010000, 0.015000, 0.025000, 0.035000, 0.040000, 0.055000, 0.085000, 0.095000, 0.110000, 0.115000, 0.125000, 0.140000, 0.160000, 0.175000, 0.180000, 0.190000, 0.190000, 0.225000, 0.225000, 0.225000, 0.225000, 0.230000, 0.235000, 0.250000
+	0.055000, 0.065000, 0.060000, 0.065000, 0.075000, 0.090000, 0.100000, 0.110000, 0.120000, 0.130000, 0.140000, 0.155000, 0.170000, 0.180000, 0.190000, 0.195000, 0.210000, 0.220000, 0.235000, 0.235000, 0.235000, 0.235000, 0.245000, 0.250000, 0.260000
+	0.100000, 0.105000, 0.110000, 0.110000, 0.120000, 0.135000, 0.145000, 0.150000, 0.155000, 0.155000, 0.170000, 0.185000, 0.190000, 0.195000, 0.195000, 0.215000, 0.230000, 0.235000, 0.245000, 0.245000, 0.245000, 0.235000, 0.245000, 0.250000, 0.260000
+	0.100000, 0.115000, 0.125000, 0.130000, 0.135000, 0.145000, 0.150000, 0.155000, 0.165000, 0.175000, 0.190000, 0.200000, 0.205000, 0.205000, 0.215000, 0.225000, 0.230000, 0.245000, 0.255000, 0.240000, 0.240000, 0.240000, 0.245000, 0.250000, 0.250000
+	0.155000, 0.150000, 0.150000, 0.150000, 0.160000, 0.165000, 0.165000, 0.175000, 0.175000, 0.195000, 0.200000, 0.215000, 0.205000, 0.210000, 0.215000, 0.225000, 0.235000, 0.240000, 0.245000, 0.240000, 0.240000, 0.235000, 0.220000, 0.235000, 0.240000
+	0.170000, 0.165000, 0.165000, 0.170000, 0.180000, 0.190000, 0.190000, 0.185000, 0.200000, 0.205000, 0.220000, 0.230000, 0.225000, 0.225000, 0.240000, 0.245000, 0.240000, 0.250000, 0.255000, 0.245000, 0.250000, 0.245000, 0.245000, 0.240000, 0.240000
+	0.210000, 0.200000, 0.195000, 0.200000, 0.210000, 0.210000, 0.210000, 0.215000, 0.215000, 0.215000, 0.235000, 0.245000, 0.235000, 0.235000, 0.245000, 0.250000, 0.240000, 0.250000, 0.250000, 0.250000, 0.255000, 0.250000, 0.235000, 0.235000, 0.240000
+	0.240000, 0.250000, 0.250000, 0.245000, 0.260000, 0.260000, 0.255000, 0.255000, 0.255000, 0.250000, 0.265000, 0.265000, 0.260000, 0.255000, 0.260000, 0.255000, 0.255000, 0.270000, 0.260000, 0.255000, 0.250000, 0.255000, 0.245000, 0.250000, 0.240000
+	0.270000, 0.260000, 0.255000, 0.265000, 0.265000, 0.265000, 0.265000, 0.260000, 0.260000, 0.255000, 0.265000, 0.265000, 0.265000, 0.255000, 0.255000, 0.250000, 0.255000, 0.250000, 0.250000, 0.245000, 0.245000, 0.235000, 0.230000, 0.235000, 0.240000
+	0.275000, 0.280000, 0.275000, 0.275000, 0.275000, 0.275000, 0.275000, 0.275000, 0.280000, 0.280000, 0.280000, 0.270000, 0.270000, 0.270000, 0.265000, 0.265000, 0.265000, 0.270000, 0.260000, 0.255000, 0.235000, 0.235000, 0.235000, 0.240000, 0.235000
+	0.335000, 0.315000, 0.305000, 0.310000, 0.305000, 0.300000, 0.295000, 0.290000, 0.300000, 0.295000, 0.290000, 0.290000, 0.280000, 0.270000, 0.270000, 0.275000, 0.275000, 0.265000, 0.250000, 0.245000, 0.235000, 0.225000, 0.225000, 0.230000, 0.235000
+	0.355000, 0.350000, 0.345000, 0.325000, 0.330000, 0.325000, 0.325000, 0.325000, 0.315000, 0.310000, 0.300000, 0.290000, 0.285000, 0.290000, 0.275000, 0.275000, 0.265000, 0.265000, 0.250000, 0.245000, 0.235000, 0.225000, 0.230000, 0.225000, 0.215000
+	0.395000, 0.385000, 0.380000, 0.370000, 0.365000, 0.370000, 0.360000, 0.355000, 0.345000, 0.340000, 0.330000, 0.320000, 0.310000, 0.305000, 0.300000, 0.290000, 0.275000, 0.260000, 0.255000, 0.255000, 0.250000, 0.235000, 0.230000, 0.230000, 0.230000
+	0.395000, 0.390000, 0.375000, 0.375000, 0.375000, 0.370000, 0.365000, 0.360000, 0.355000, 0.335000, 0.325000, 0.315000, 0.315000, 0.300000, 0.295000, 0.280000, 0.255000, 0.260000, 0.250000, 0.240000, 0.230000, 0.235000, 0.230000, 0.205000, 0.195000
+	0.405000, 0.395000, 0.395000, 0.390000, 0.380000, 0.375000, 0.370000, 0.360000, 0.355000, 0.345000, 0.325000, 0.325000, 0.310000, 0.295000, 0.290000, 0.270000, 0.250000, 0.240000, 0.235000, 0.235000, 0.230000, 0.205000, 0.195000, 0.195000, 0.195000
+	0.405000, 0.395000, 0.380000, 0.375000, 0.375000, 0.370000, 0.360000, 0.345000, 0.340000, 0.330000, 0.305000, 0.300000, 0.285000, 0.270000, 0.250000, 0.235000, 0.220000, 0.215000, 0.220000, 0.205000, 0.195000, 0.175000, 0.175000, 0.170000, 0.165000
+	0.405000, 0.390000, 0.395000, 0.385000, 0.365000, 0.350000, 0.345000, 0.330000, 0.320000, 0.305000, 0.290000, 0.265000, 0.260000, 0.240000, 0.225000, 0.215000, 0.205000, 0.190000, 0.180000, 0.185000, 0.165000, 0.150000, 0.145000, 0.145000, 0.145000
+	0.430000, 0.425000, 0.400000, 0.395000, 0.385000, 0.370000, 0.365000, 0.340000, 0.320000, 0.305000, 0.295000, 0.270000, 0.250000, 0.235000, 0.215000, 0.215000, 0.200000, 0.190000, 0.185000, 0.165000, 0.155000, 0.145000, 0.135000, 0.130000, 0.135000
+x_count = 25
+y_count = 25
+mesh_x_pps = 3
+mesh_y_pps = 3
+algo = bicubic
+tension = 0.2
+min_x = 10.0
+max_x = 310.0
+min_y = 26.43
+max_y = 281.31
+=======================
+Extruder max_extrude_ratio=41.575169
+mcu 'mcu': Starting serial connect
+mcu 'mcu': got {'oid': 20, 'next_clock': 916737024, 'value': 6035, '#name': 'analog_in_state', '#sent_time': 27.63192678, '#receive_time': 27.635769761}
+mcu 'mcu': got {'oid': 24, 'next_clock': 932737024, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 27.63192678, '#receive_time': 27.675830613}
+mcu 'mcu': got {'oid': 32, 'next_clock': 964737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 27.734420409, '#receive_time': 27.755787243}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1036737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 27.887154094, '#receive_time': 27.935817946}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1052737024, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 27.938124687, '#receive_time': 27.975807279}
+Loaded MCU 'mcu' 117 commands (v0.12.0-61-gb50d6669 / gcc: (15:12.2.rel1-1) 12.2.1 20221205 binutils: (2.40-2+18+b1) 2.40)
+MCU 'mcu' config: ADC_MAX=4095 BUS_PINS_i2c1_PB6_PB7=PB6,PB7 BUS_PINS_i2c1_PB8_PB9=PB8,PB9 BUS_PINS_i2c2_PB10_PB11=PB10,PB11 BUS_PINS_spi1=PA6,PA7,PA5 BUS_PINS_spi1a=PB4,PB5,PB3 BUS_PINS_spi2=PB14,PB15,PB13 BUS_PINS_spi2a=PC2,PC3,PB10 BUS_PINS_spi3a=PC11,PC12,PC10 BUS_PINS_spi4=PE13,PE14,PE12 BUS_PINS_spi5=PF8,PF9,PF7 BUS_PINS_spi5a=PH7,PF11,PH6 BUS_PINS_spi6=PG12,PG14,PG13 CLOCK_FREQ=400000000 MCU=stm32h723xx PWM_MAX=255 RESERVE_PINS_USB=PA11,PA12 RESERVE_PINS_crystal=PH0,PH1 STATS_SUMSQ_BASE=256 STEPPER_BOTH_EDGE=1
+mcu 'tr': Starting serial connect
+mcu 'mcu': got {'oid': 32, 'next_clock': 1084737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.055785335}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1156737024, 'value': 6035, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.235801113}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1172737024, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.275793742}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1204737024, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.355797076}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1276737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.535797668}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1292737024, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.575798594}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1324737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 28.045868705, '#receive_time': 28.655797686}
+Loaded MCU 'tr' 106 commands (v0.12.0-102-g9f41f53c / gcc: (15:12.2.rel1-1) 12.2.1 20221205 binutils: (2.40-2+18+b1) 2.40)
+MCU 'tr' config: ADC_MAX=4095 BUS_PINS_i2c1_PA9_PA10=PA9,PA10 BUS_PINS_i2c1_PB6_PB7=PB6,PB7 BUS_PINS_i2c1_PB8_PB9=PB8,PB9 BUS_PINS_i2c2_PB10_PB11=PB10,PB11 BUS_PINS_i2c2_PB13_PB14=PB13,PB14 BUS_PINS_i2c3_PB3_PB4=PB3,PB4 BUS_PINS_spi1=PA6,PA7,PA5 BUS_PINS_spi1a=PB4,PB5,PB3 BUS_PINS_spi2=PB14,PB15,PB13 BUS_PINS_spi2a=PC2,PC3,PB10 BUS_PINS_spi3=PB4,PB5,PB3 CLOCK_FREQ=64000000 MCU=stm32g0b1xx PWM_MAX=255 RESERVE_PINS_USB=PA11,PA12 RESERVE_PINS_crystal=PF0,PF1 STATS_SUMSQ_BASE=256 STEPPER_BOTH_EDGE=1
+mcu_temperature 'mcu' nominal base=-274.819277 slope=1644.578313
+mcu 'cartographer': Starting serial connect
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 20, 'next_clock': 1396737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 28.787969779, '#receive_time': 28.83581302}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1412737024, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 28.787969779, '#receive_time': 28.875813464}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1444737024, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 28.787969779, '#receive_time': 28.95581576}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1516737024, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.135860205}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1532737024, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.175863242}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1564737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.255829649}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1636737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.435871612}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1652737024, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.475895353}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1684737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.555856593}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1756737024, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.735884352}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1772737024, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.775888945}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1804737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 29.030633816, '#receive_time': 29.855944445}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1876737024, 'value': 6033, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.035858186}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1892737024, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.075860537}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1924737024, 'value': 6068, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.155896167}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1996737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.33589126}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2012737024, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.375902019}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2044737024, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.455891796}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2116737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.635951778}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2132737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.675926037}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2164737024, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.755939852}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2236737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.935932167}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2252737024, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 30.015630945, '#receive_time': 30.975931241}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2284737024, 'value': 6066, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.056035741}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2356737024, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.235955722}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2372737024, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.275950463}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2404737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.355950555}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2476737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.53596624}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2492737024, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.575968277}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2524737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.655984203}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2596737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.83595224}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2612737024, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.875953962}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2644737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 31.000769537, '#receive_time': 31.955952666}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2716737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.135990925}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2732737024, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.175967944}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2764737024, 'value': 6066, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.255966555}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2836737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.435979425}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2852737024, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.475977221}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2884737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.556022832000004}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2956737024, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.735989203}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2972737024, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.775987721}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3004737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 31.985900462, '#receive_time': 32.856011499}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3076737024, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.036030351}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3092737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.07600998}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3124737024, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.156047721}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3196737024, 'value': 6034, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.336040684}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3212737024, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.376031332}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3244737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.456039424}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3316737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.636092498000004}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3332737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.676084091}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3364737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.756074757}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 20, 'next_clock': 3436737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 32.971035851, '#receive_time': 33.936070868}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3452737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 33.976055128}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3484737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.056054405}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3556737024, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.236096387}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3572737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.276069294}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3604737024, 'value': 6066, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.356078461}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3676737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.536087998}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3692737024, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.576097461}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3724737024, 'value': 6067, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.656096164}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3796737024, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.836138405}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3812737024, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 33.955563128, '#receive_time': 34.876124849}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3844737024, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 34.956119479}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3916737024, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.136179312}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3932737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.17613772}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3964737024, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.256144275}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4036737024, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.436163349}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4052737024, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.476156534}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4084737024, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.556143016}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4156737024, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.736176145}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4172737024, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.776167423}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4204737024, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 34.940718998, '#receive_time': 35.856181997}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4276737024, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.036198386}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4292737024, 'value': 31711, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.076184108}
+mcu 'mcu': got {'oid': 32, 'next_clock': 29769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.156164349}
+mcu 'mcu': got {'oid': 20, 'next_clock': 101769728, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.336188886}
+mcu 'mcu': got {'oid': 24, 'next_clock': 117769728, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.376164774}
+mcu 'mcu': got {'oid': 32, 'next_clock': 149769728, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.456179534}
+webhooks client 140733886924816: New connection
+mcu 'mcu': got {'oid': 20, 'next_clock': 221769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.636216719}
+mcu 'mcu': got {'oid': 24, 'next_clock': 237769728, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.676184108}
+mcu 'mcu': got {'oid': 32, 'next_clock': 269769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 35.925899164, '#receive_time': 36.756217441}
+webhooks client 140733886924816: Client info {'program': 'Moonraker', 'version': 'v0.8.0-308-g71b46cc'}
+mcu 'mcu': got {'oid': 20, 'next_clock': 341769728, 'value': 6042, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 36.936200515}
+mcu 'mcu': got {'oid': 24, 'next_clock': 357769728, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 36.976212811}
+mcu 'mcu': got {'oid': 32, 'next_clock': 389769728, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.056241811}
+mcu 'mcu': got {'oid': 20, 'next_clock': 461769728, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.236238996}
+mcu 'mcu': got {'oid': 24, 'next_clock': 477769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.2762102}
+mcu 'mcu': got {'oid': 32, 'next_clock': 509769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.35625407}
+mcu 'mcu': got {'oid': 20, 'next_clock': 581769728, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.536252477}
+mcu 'mcu': got {'oid': 24, 'next_clock': 597769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.57625394}
+mcu 'mcu': got {'oid': 32, 'next_clock': 629769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.65622807}
+mcu 'mcu': got {'oid': 20, 'next_clock': 701769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.836258125}
+mcu 'mcu': got {'oid': 24, 'next_clock': 717769728, 'value': 31712, '#name': 'analog_in_state', '#sent_time': 36.910705089, '#receive_time': 37.876242477}
+mcu 'mcu': got {'oid': 32, 'next_clock': 749769728, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 37.956250385}
+mcu 'mcu': got {'oid': 20, 'next_clock': 821769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.136308755}
+mcu 'mcu': got {'oid': 24, 'next_clock': 837769728, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.176291514}
+mcu 'mcu': got {'oid': 32, 'next_clock': 869769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.256292255}
+mcu 'mcu': got {'oid': 20, 'next_clock': 941769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.436303421}
+mcu 'mcu': got {'oid': 24, 'next_clock': 957769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.476283607}
+mcu 'mcu': got {'oid': 32, 'next_clock': 989769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.556288588}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1061769728, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.736290699}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1077769728, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.776284292}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 32, 'next_clock': 1109769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 37.901901496, '#receive_time': 38.856292495}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1181769728, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.036314162}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1197769728, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.076311902}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1229769728, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.156302569}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1301769728, 'value': 6035, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.336324402}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1317769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.376317087}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1349769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.456314754}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1421769728, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.636335087}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1437769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.676324235}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1469769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 38.888694958, '#receive_time': 39.756358476}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1541769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 39.936346032}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1557769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 39.976349606}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1589769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.056355106}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1661769728, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.236372772}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1677769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.276370642}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1709769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.356366957}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1781769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.536379013}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1797769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.576379457}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1829769728, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.656380383}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1901769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 39.876326828, '#receive_time': 40.836427346}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1917769728, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 40.87640592}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1949769728, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 40.956443846}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2021769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.13643092}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2037769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.17640029}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2069769728, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.256399531}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2141769728, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.436418753}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2157769728, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.476412123}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2189769728, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.55642079}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2261769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.736423382}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2277769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 40.862632198, '#receive_time': 41.776432086}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2309769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 41.856436882}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2381769728, 'value': 6042, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.036475178}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2397769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.076468864}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2429769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.156477993}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2501769728, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.336493401}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2517769728, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.376486493}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2549769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.456478752}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2621769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.636464252}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2637769728, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.676471956}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2669769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 41.848303067, '#receive_time': 42.756473826}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2741769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 42.936486493}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2757769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 42.976482974}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2789769728, 'value': 6066, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.056488326}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2861769728, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.236499826}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2877769728, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.276498252}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2909769728, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.356518548}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2981769728, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.536548085}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2997769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.576538233}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3029769728, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 42.833693771, '#receive_time': 43.656522974}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 20, 'next_clock': 3101769728, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 43.836527733}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3117769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 43.876536103}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3149769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 43.956551363}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3221769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.136538474}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3237769728, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.176549048}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3269769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.256562751}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3341769728, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.43657564}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3357769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.476559547}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3389769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.55655927}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3461769728, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.736591584}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3477769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 43.817939418, '#receive_time': 44.776572473}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3509769728, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 44.856582806}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3581769728, 'value': 6042, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.036614843}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3597769728, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.076615269}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3629769728, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.156620084}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3701769728, 'value': 6043, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.33662801}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3717769728, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.376607825}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3749769728, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.456614343}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3821769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.636612176}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3837769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.676616287}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3869769728, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 44.805586529, '#receive_time': 45.756617713}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3941769728, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 45.936664435}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3957769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 45.976659213}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3989769728, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.056660102}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4061769728, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.236672213}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4077769728, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.276689102}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4109769728, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.356691009}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4181769728, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.536720102}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4197769728, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.576700583}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4229769728, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 45.792204991, '#receive_time': 46.656710657}
+mcu 'mcu': got {'oid': 20, 'next_clock': 6802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 46.83671099}
+mcu 'mcu': got {'oid': 24, 'next_clock': 22802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 46.87669675}
+mcu 'mcu': got {'oid': 32, 'next_clock': 54802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 46.95670762}
+mcu 'mcu': got {'oid': 20, 'next_clock': 126802432, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.136712027}
+mcu 'mcu': got {'oid': 24, 'next_clock': 142802432, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.176695268}
+mcu 'mcu': got {'oid': 32, 'next_clock': 174802432, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.256708342}
+mcu 'mcu': got {'oid': 20, 'next_clock': 246802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.436714046}
+mcu 'mcu': got {'oid': 24, 'next_clock': 262802432, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.47673462}
+mcu 'mcu': got {'oid': 32, 'next_clock': 294802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.556711897}
+mcu 'mcu': got {'oid': 20, 'next_clock': 366802432, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 46.778528398, '#receive_time': 47.736751601}
+mcu 'mcu': got {'oid': 24, 'next_clock': 382802432, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 47.776718749}
+mcu 'mcu': got {'oid': 32, 'next_clock': 414802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 47.856730527}
+mcu 'mcu': got {'oid': 20, 'next_clock': 486802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.036771508}
+mcu 'mcu': got {'oid': 24, 'next_clock': 502802432, 'value': 31712, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.07677986}
+mcu 'mcu': got {'oid': 32, 'next_clock': 534802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.156769656}
+mcu 'mcu': got {'oid': 20, 'next_clock': 606802432, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.336750823}
+mcu 'mcu': got {'oid': 24, 'next_clock': 622802432, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.376763267}
+mcu 'mcu': got {'oid': 32, 'next_clock': 654802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.456790675}
+mcu 'mcu': got {'oid': 20, 'next_clock': 726802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.636787452}
+mcu 'mcu': got {'oid': 24, 'next_clock': 742802432, 'value': 31711, '#name': 'analog_in_state', '#sent_time': 47.764314805, '#receive_time': 48.676770878}
+mcu 'mcu': got {'oid': 32, 'next_clock': 774802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 48.756780323}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 20, 'next_clock': 846802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 48.936806378}
+mcu 'mcu': got {'oid': 24, 'next_clock': 862802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 48.976788971}
+mcu 'mcu': got {'oid': 32, 'next_clock': 894802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.056809526}
+mcu 'mcu': got {'oid': 20, 'next_clock': 966802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.236820804}
+mcu 'mcu': got {'oid': 24, 'next_clock': 982802432, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.276835804}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1014802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.356832748}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1086802432, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.536807174}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1102802432, 'value': 31711, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.576821896}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1134802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 48.750115026, '#receive_time': 49.655879378}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1206802432, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 49.835872359}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1222802432, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 49.875873118}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1254802432, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 49.955870859}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1326802432, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 50.135872303}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1342802432, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 50.175874433}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1374802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 50.255867155}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1446802432, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 50.435895266}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1462802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 50.475884322}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1494802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 49.734814396, '#receive_time': 50.555889803}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1566802432, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 50.735880581}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1582802432, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 50.775890044}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1614802432, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 50.855899118}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1686802432, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.035914932}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1702802432, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.075901025}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1734802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.155900303}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1806802432, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.335906543}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1822802432, 'value': 31702, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.37589984}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1854802432, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.455932043}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1926802432, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.635928525}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1942802432, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 50.719498599, '#receive_time': 51.675936228}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1974802432, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 51.755941691}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2046802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 51.935965469}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2062802432, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 51.975955339}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2094802432, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.055956284}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2166802432, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.235958746}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2182802432, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.275936783}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2214802432, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.35595782}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2286802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.535956839}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2302802432, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.575955413}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2334802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 51.704376395, '#receive_time': 52.655968691}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2406802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 52.835972265}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2422802432, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 52.875992339}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2454802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 52.955982931}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2526802432, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 53.13599895}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2542802432, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 53.175995283}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2574802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 53.255985709}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2646802432, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 53.436003709}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2662802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 53.476004024}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2694802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 52.688736931, '#receive_time': 53.55601469}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2766802432, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 53.736012338}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2782802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 53.776006634}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 32, 'next_clock': 2814802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 53.856029005}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2886802432, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.036055079}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2902802432, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.07604156}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2934802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.156034597}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3006802432, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.336028875}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3022802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.376047856}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3054802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.456052912}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3126802432, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 53.673068209, '#receive_time': 54.636070838}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3142802432, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 54.676049486}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3174802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 54.756084671}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3246802432, 'value': 6035, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 54.936071523}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3262802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 54.976077486}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3294802432, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 55.056076393}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3366802432, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 55.236095022}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3382802432, 'value': 31711, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 55.276085263}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3414802432, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 55.356079819}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3486802432, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 55.536099041}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3502802432, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 54.658207467, '#receive_time': 55.576101022}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3534802432, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 55.656091356}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3606802432, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 55.836121152}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3622802432, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 55.876117559}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3654802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 55.9561258}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3726802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 56.136120763}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3742802432, 'value': 31712, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 56.176120855}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3774802432, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 56.256119133}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3846802432, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 56.43613167}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3862802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 56.476133318}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3894802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 55.643644726, '#receive_time': 56.556136762}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3966802432, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 56.736193022}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3982802432, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 56.776160707}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4014802432, 'value': 6066, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 56.85615441}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4086802432, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 57.036196966}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4102802432, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 57.07618991}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4134802432, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 57.156185836}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4206802432, 'value': 6042, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 57.336217151}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4222802432, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 57.376233151}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4254802432, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 56.629034929, '#receive_time': 57.456221188}
+mcu 'mcu': got {'oid': 20, 'next_clock': 31835136, 'value': 6042, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 57.636226854}
+mcu 'mcu': got {'oid': 24, 'next_clock': 47835136, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 57.676230502}
+mcu 'mcu': got {'oid': 32, 'next_clock': 79835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 57.756232299}
+mcu 'mcu': got {'oid': 20, 'next_clock': 151835136, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 57.936234965}
+mcu 'mcu': got {'oid': 24, 'next_clock': 167835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 57.976235002}
+mcu 'mcu': got {'oid': 32, 'next_clock': 199835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 58.056237873}
+mcu 'mcu': got {'oid': 20, 'next_clock': 271835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 58.236253317}
+mcu 'mcu': got {'oid': 24, 'next_clock': 287835136, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 58.276226391}
+mcu 'mcu': got {'oid': 32, 'next_clock': 319835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 58.356239317}
+mcu 'mcu': got {'oid': 20, 'next_clock': 391835136, 'value': 6044, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 58.536269928}
+mcu 'mcu': got {'oid': 24, 'next_clock': 407835136, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 57.613659595, '#receive_time': 58.576283039}
+mcu 'mcu': got {'oid': 32, 'next_clock': 439835136, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 58.656260761}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 20, 'next_clock': 511835136, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 58.836274946}
+mcu 'mcu': got {'oid': 24, 'next_clock': 527835136, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 58.87625702}
+mcu 'mcu': got {'oid': 32, 'next_clock': 559835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 58.956270705}
+mcu 'mcu': got {'oid': 20, 'next_clock': 631835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 59.136304002}
+mcu 'mcu': got {'oid': 24, 'next_clock': 647835136, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 59.176305613}
+mcu 'mcu': got {'oid': 32, 'next_clock': 679835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 59.256298594}
+mcu 'mcu': got {'oid': 20, 'next_clock': 751835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 59.436673094}
+mcu 'mcu': got {'oid': 24, 'next_clock': 767835136, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 59.476288668}
+mcu 'mcu': got {'oid': 32, 'next_clock': 799835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 58.598681817, '#receive_time': 59.556286464}
+mcu 'mcu': got {'oid': 20, 'next_clock': 871835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 59.736320279}
+mcu 'mcu': got {'oid': 24, 'next_clock': 887835136, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 59.776319742}
+mcu 'mcu': got {'oid': 32, 'next_clock': 919835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 59.856307853}
+mcu 'mcu': got {'oid': 20, 'next_clock': 991835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 60.036350279}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1007835136, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 60.076345538}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1039835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 60.156341205}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1111835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 60.336326001}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1127835136, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 60.376329593}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1159835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 59.583774594, '#receive_time': 60.45633326}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1231835136, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 60.636375649}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1247835136, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 60.67636739}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1279835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 60.756366223}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1351835136, 'value': 6042, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 60.936382093}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1367835136, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 60.976382093}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1399835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 61.056379519}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1471835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 61.236396056}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1487835136, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 61.27638176}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1519835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 61.356404389}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1591835136, 'value': 6036, '#name': 'analog_in_state', '#sent_time': 60.569717093, '#receive_time': 61.536406574}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1607835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 61.576386741}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1639835136, 'value': 6060, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 61.656384167}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1711835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 61.83640687}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1727835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 61.876404074}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1759835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 61.956413241}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1831835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 62.136433074}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1847835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 62.176417352}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1879835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 62.256433074}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1951835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 62.436440648}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1967835136, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 61.553983352, '#receive_time': 62.476444666}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1999835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 62.556429629}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2071835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 62.736473574}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2087835136, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 62.776463129}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2119835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 62.856500148}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2191835136, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 63.036494796}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2207835136, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 63.076489999}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2239835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 63.156505499}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2311835136, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 63.336482647}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2327835136, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 63.376475758}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2359835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 62.538424055, '#receive_time': 63.456483388}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2431835136, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 63.636497795}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2447835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 63.67649161}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2479835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 63.756558962}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 20, 'next_clock': 2551835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 63.936502332}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2567835136, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 63.976512425}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2599835136, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 64.05653111}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2671835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 64.236540499}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2687835136, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 64.276513239}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2719835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 63.522884277, '#receive_time': 64.356525202}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2791835136, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 64.536544647}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2807835136, 'value': 31710, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 64.576546221}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2839835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 64.656533591}
+mcu 'mcu': got {'oid': 20, 'next_clock': 2911835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 64.836562702}
+mcu 'mcu': got {'oid': 24, 'next_clock': 2927835136, 'value': 31711, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 64.876539961}
+mcu 'mcu': got {'oid': 32, 'next_clock': 2959835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 64.956566943}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3031835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 65.136590998}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3047835136, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 65.176554387}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3079835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 65.256567091}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3151835136, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 65.436588498}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3167835136, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 64.507006128, '#receive_time': 65.476567757}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3199835136, 'value': 6059, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 65.556566609}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3271835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 65.736578961}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3287835136, 'value': 31709, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 65.776581553}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3319835136, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 65.856599331}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3391835136, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 66.036609405}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3407835136, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 66.076593294}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3439835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 66.156596609}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3511835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 66.336640257}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3527835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 66.376621608}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3559835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 65.49171535, '#receive_time': 66.456619757}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3631835136, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 66.636622886}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3647835136, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 66.676626442}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3679835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 66.756657719}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3751835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 66.936657812}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3767835136, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 66.976668608}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3799835136, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 67.056659552}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3871835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 67.236661552}
+mcu 'mcu': got {'oid': 24, 'next_clock': 3887835136, 'value': 31707, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 67.27666583}
+mcu 'mcu': got {'oid': 32, 'next_clock': 3919835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 66.475996497, '#receive_time': 67.356667515}
+mcu 'mcu': got {'oid': 20, 'next_clock': 3991835136, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 67.536671293}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4007835136, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 67.576680682}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4039835136, 'value': 6062, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 67.656701089}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4111835136, 'value': 6037, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 67.836719941}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4127835136, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 67.876706145}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4159835136, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 67.956696052}
+mcu 'mcu': got {'oid': 20, 'next_clock': 4231835136, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 68.136744367}
+mcu 'mcu': got {'oid': 24, 'next_clock': 4247835136, 'value': 31702, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 68.176709218}
+mcu 'mcu': got {'oid': 32, 'next_clock': 4279835136, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 68.256712978}
+mcu 'mcu': got {'oid': 20, 'next_clock': 56867840, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 67.460547608, '#receive_time': 68.436768996}
+mcu 'mcu': got {'oid': 24, 'next_clock': 72867840, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 68.476739015}
+mcu 'mcu': got {'oid': 32, 'next_clock': 104867840, 'value': 6061, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 68.556772052}
+mcu 'mcu': got {'oid': 20, 'next_clock': 176867840, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 68.736765033}
+mcu 'mcu': got {'oid': 24, 'next_clock': 192867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 68.776799996}
+mcu 'cartographer': Unable to open serial port: [Errno 2] could not open port /dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00: [Errno 2] No such file or directory: '/dev/serial/by-id/usb-Cartographer_614e_01002B001043303856303820-if00'
+mcu 'mcu': got {'oid': 32, 'next_clock': 224867840, 'value': 6060, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 68.856743051}
+mcu 'mcu': got {'oid': 20, 'next_clock': 296867840, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 69.036758607}
+mcu 'mcu': got {'oid': 24, 'next_clock': 312867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 69.076754829}
+mcu 'mcu': got {'oid': 32, 'next_clock': 344867840, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 69.156773625}
+mcu 'mcu': got {'oid': 20, 'next_clock': 416867840, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 69.33678231}
+mcu 'mcu': got {'oid': 24, 'next_clock': 432867840, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 68.445884218, '#receive_time': 69.376763162}
+mcu 'mcu': got {'oid': 32, 'next_clock': 464867840, 'value': 6065, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 69.456760162}
+mcu 'mcu': got {'oid': 20, 'next_clock': 536867840, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 69.63677431}
+mcu 'mcu': got {'oid': 24, 'next_clock': 552867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 69.676777292}
+mcu 'mcu': got {'oid': 32, 'next_clock': 584867840, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 69.756786995}
+mcu 'mcu': got {'oid': 20, 'next_clock': 656867840, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 69.936797384}
+mcu 'mcu': got {'oid': 24, 'next_clock': 672867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 69.97680444}
+mcu 'mcu': got {'oid': 32, 'next_clock': 704867840, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 70.056810754}
+mcu 'mcu': got {'oid': 20, 'next_clock': 776867840, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 70.236812273}
+mcu 'mcu': got {'oid': 24, 'next_clock': 792867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 70.276815476}
+mcu 'mcu': got {'oid': 32, 'next_clock': 824867840, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 69.43056381, '#receive_time': 70.35681681}
+mcu 'mcu': got {'oid': 20, 'next_clock': 896867840, 'value': 6041, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 70.536815439}
+mcu 'mcu': got {'oid': 24, 'next_clock': 912867840, 'value': 31703, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 70.576817791}
+mcu 'mcu': got {'oid': 32, 'next_clock': 944867840, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 70.656819198}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1016867840, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 70.836832828}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1032867840, 'value': 31704, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 70.876831235}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1064867840, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 70.956833106}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1136867840, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 71.136876772}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1152867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 71.17685468}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1184867840, 'value': 6063, '#name': 'analog_in_state', '#sent_time': 70.415814736, '#receive_time': 71.256876087}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1256867840, 'value': 6040, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 71.436862179}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1272867840, 'value': 31705, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 71.476863828}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1304867840, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 71.556865716}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1376867840, 'value': 6038, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 71.736871939}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1392867840, 'value': 31708, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 71.776874327}
+mcu 'mcu': got {'oid': 32, 'next_clock': 1424867840, 'value': 6064, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 71.856877346}
+mcu 'mcu': got {'oid': 20, 'next_clock': 1496867840, 'value': 6039, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 72.036911624}
+mcu 'mcu': got {'oid': 24, 'next_clock': 1512867840, 'value': 31706, '#name': 'analog_in_state', '#sent_time': 71.400860568, '#receive_time': 72.076892735}
