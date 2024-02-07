@@ -922,3 +922,195 @@ Content-Type: multipart/form-data; boundary=------------------------2286e1aa793f
 2024-02-07 16:35:29,888 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "3DBenchy_PLA_13m48s.gcode" --check-objects) successfully finished
 2024-02-07 16:35:29,894 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 260.02ms
 2024-02-07 16:35:30,044 [job_state.py:_status_update()] - Job Started: 3DBenchy_PLA_13m48s.gcode
+2024-02-07 17:36:17,058 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------15e07d4920b7484c
+2024-02-07 17:36:17,164 [application.py:post()] - Processing Uploaded File: 3DBenchy_PLA_13m48s.gcode
+2024-02-07 17:36:17,255 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-02-07 17:36:17,261 [shell_command.py:pipe_data_received()] - INFO:metadata:File '3DBenchy_PLA_13m48s.gcode' currently supports cancellation, processing aborted
+
+2024-02-07 17:36:17,325 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "3DBenchy_PLA_13m48s.gcode" --check-objects) successfully finished
+2024-02-07 17:36:17,331 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 272.93ms
+2024-02-07 17:36:17,429 [job_state.py:_status_update()] - Job Started: 3DBenchy_PLA_13m48s.gcode
+2024-02-07 17:43:33,930 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-02-07 17:43:33,930 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.57ms
+2024-02-07 17:43:33,930 [websockets.py:open()] - Websocket Opened: ID: 140735590474000, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-02-07 17:43:33,958 [websockets.py:_handle_identify()] - Websocket 140735590474000 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 17:45:54,746 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Failed to load toolhead. Could not unload toolhead before load
+2024-02-07 17:46:56,365 [klippy_connection.py:_process_status_update()] - Klippy has shutdown
+2024-02-07 17:46:56,367 [proc_stats.py:_handle_shutdown()] - 
+Moonraker System Usage Statistics:
+System Time: 1707327987.340552, Usage: 0.38%, Memory: 53344 kB
+System Time: 1707327988.340968, Usage: 0.37%, Memory: 53344 kB
+System Time: 1707327989.341550, Usage: 0.38%, Memory: 53344 kB
+System Time: 1707327990.341771, Usage: 0.66%, Memory: 53344 kB
+System Time: 1707327991.342815, Usage: 1.5%, Memory: 53344 kB
+System Time: 1707327992.343042, Usage: 0.43%, Memory: 53344 kB
+System Time: 1707327993.343359, Usage: 0.41%, Memory: 53344 kB
+System Time: 1707327994.344044, Usage: 0.45%, Memory: 53344 kB
+System Time: 1707327995.344389, Usage: 0.48%, Memory: 53344 kB
+System Time: 1707327996.345059, Usage: 0.44%, Memory: 53344 kB
+System Time: 1707327997.345199, Usage: 0.43%, Memory: 53344 kB
+System Time: 1707327998.345801, Usage: 0.43%, Memory: 53344 kB
+System Time: 1707327999.347316, Usage: 0.43%, Memory: 53344 kB
+System Time: 1707328000.348393, Usage: 0.44%, Memory: 53344 kB
+System Time: 1707328001.349222, Usage: 0.64%, Memory: 53344 kB
+System Time: 1707328002.350250, Usage: 0.44%, Memory: 53344 kB
+System Time: 1707328003.352247, Usage: 0.44%, Memory: 53344 kB
+System Time: 1707328004.352383, Usage: 0.47%, Memory: 53344 kB
+System Time: 1707328005.353443, Usage: 0.48%, Memory: 53344 kB
+System Time: 1707328006.353667, Usage: 0.72%, Memory: 53344 kB
+System Time: 1707328007.353864, Usage: 1.35%, Memory: 53344 kB
+System Time: 1707328008.355505, Usage: 0.41%, Memory: 53344 kB
+System Time: 1707328009.355766, Usage: 0.41%, Memory: 53344 kB
+System Time: 1707328010.356792, Usage: 0.41%, Memory: 53344 kB
+System Time: 1707328011.357859, Usage: 0.6%, Memory: 53344 kB
+System Time: 1707328012.358626, Usage: 0.41%, Memory: 53344 kB
+System Time: 1707328013.358614, Usage: 0.41%, Memory: 53344 kB
+System Time: 1707328014.359224, Usage: 0.43%, Memory: 53344 kB
+System Time: 1707328015.360509, Usage: 0.46%, Memory: 53344 kB
+System Time: 1707328016.362408, Usage: 0.56%, Memory: 53344 kB
+CPU Temperature: 46.3
+2024-02-07 17:46:56,369 [proc_stats.py:_handle_shutdown()] - Throttled Flags: 
+2024-02-07 17:46:56,500 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.print.cancel, Code: 400, Message: Shutdown due to webhooks request
+Once the underlying issue is corrected, use the
+"FIRMWARE_RESTART" command to reset the firmware, reload the
+config, and restart the host software.
+Printer is shutdown
+
+2024-02-07 17:46:57,418 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-02-07 17:46:58,673 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-02-07 17:47:01,198 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-02-07 17:47:01,199 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-02-07 17:47:01,449 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-02-07 17:47:01,703 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-02-07 17:47:02,456 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'temperature_sensor cartographer_coil', 'extruder']
+2024-02-07 17:49:29,258 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryiqVbcByKtEBCLITE
+2024-02-07 17:49:29,262 [application.py:post()] - Processing Uploaded File: trad_rack_btt_mmb.cfg
+2024-02-07 17:49:29,265 [application.py:log_request()] - 201 POST /server/files/upload (192.168.1.97) [_TRUSTED_USER_] 6.88ms
+2024-02-07 17:49:30,386 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-02-07 17:49:31,642 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-02-07 17:49:34,166 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-02-07 17:49:34,167 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-02-07 17:49:34,418 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-02-07 17:49:34,678 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-02-07 17:49:35,175 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'temperature_sensor cartographer_coil', 'extruder']
+2024-02-07 17:49:37,685 [base_deploy.py:log_info()] - Git Repo cartographer: No packages found in script: /home/pi/cartographer-klipper/install.sh
+2024-02-07 17:49:37,697 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper merge-base --is-ancestor 5f5b3fd37d4bd46de44c58b63df84b22b9d42081 origin/master) successfully finished
+2024-02-07 17:49:37,703 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper checkout -q -- .) successfully finished
+2024-02-07 17:49:37,712 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper checkout -q master) successfully finished
+2024-02-07 17:49:37,718 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper reset --hard 5f5b3fd37d4bd46de44c58b63df84b22b9d42081) successfully finished
+2024-02-07 17:49:37,723 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper status --porcelain -b) successfully finished
+2024-02-07 17:49:37,728 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper branch --list --no-color) successfully finished
+2024-02-07 17:49:37,733 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper remote get-url origin) successfully finished
+2024-02-07 17:49:38,382 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper fetch origin --prune --progress) successfully finished
+2024-02-07 17:49:38,385 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper merge-base --is-ancestor HEAD origin/master) successfully finished
+2024-02-07 17:49:38,387 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper rev-parse HEAD) successfully finished
+2024-02-07 17:49:38,390 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper describe --always --tags --long --dirty --abbrev=8) successfully finished
+2024-02-07 17:49:38,392 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper rev-parse origin/master) successfully finished
+2024-02-07 17:49:38,394 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper describe origin/master --always --tags --long --abbrev=8) successfully finished
+2024-02-07 17:49:38,396 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper rev-list HEAD..d00ecfe69b5d558836b9264d8817f1815e31c02c --count) successfully finished
+2024-02-07 17:49:38,399 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper log 5f5b3fd37d4bd46de44c58b63df84b22b9d42081..origin/master --format="sha:%H%x1Dauthor:%an%x1Ddate:%ct%x1Dsubject:%s%x1Dmessage:%b%x1E" --max-count=100) successfully finished
+2024-02-07 17:49:38,401 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper for-each-ref --count=100 --sort='-creatordate' --contains=HEAD --merged=origin/master --format='%(if)%(*objecttype)%(then)%(*objecttype) %(*objectname)%(else)%(objecttype) %(objectname)%(end) %(refname)' 'refs/tags') successfully finished
+2024-02-07 17:49:38,402 [git_deploy.py:log_repo_info()] - Git Repo cartographer Detected:
+Owner: Cartographer3D
+Repository Name: cartographer-klipper
+Path: /home/pi/cartographer-klipper
+Remote: origin
+Branch: master
+Remote URL: https://github.com/Cartographer3D/cartographer-klipper.git
+Recovery URL: https://github.com/Cartographer3D/cartographer-klipper.git
+Current Commit SHA: 5f5b3fd37d4bd46de44c58b63df84b22b9d42081
+Upstream Commit SHA: d00ecfe69b5d558836b9264d8817f1815e31c02c
+Current Version: v1.0.0-29-g5f5b3fd3
+Upstream Version: v1.0.0-30-gd00ecfe6
+Rollback Commit: 5f5b3fd37d4bd46de44c58b63df84b22b9d42081
+Rollback Branch: master
+Rollback Version: v1.0.0-29-g5f5b3fd3-dirty
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 1
+Diverged: False
+2024-02-07 17:49:38,402 [base_deploy.py:log_info()] - Git Repo cartographer: Channel: dev
+2024-02-07 17:49:38,402 [base_deploy.py:log_info()] - Git Repo cartographer: Validity check for git repo passed
+2024-02-07 17:49:38,403 [base_deploy.py:log_info()] - Git Repo cartographer: No packages found in script: /home/pi/cartographer-klipper/install.sh
+2024-02-07 17:49:38,471 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-02-07 17:49:38,723 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-02-07 17:49:41,643 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-02-07 17:49:41,643 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-02-07 17:49:41,894 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-02-07 17:49:42,148 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-02-07 17:49:42,652 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'temperature_sensor cartographer_coil', 'extruder']
+2024-02-07 17:49:54,444 [websockets.py:on_close()] - Websocket Closed: ID: 140735590474000 Close Code: None, Close Reason: None, Pong Time Elapsed: 0.51
+2024-02-07 17:49:59,932 [base_deploy.py:log_info()] - Git Repo cartographer: No packages found in script: /home/pi/cartographer-klipper/install.sh
+2024-02-07 17:50:00,415 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper fetch origin --prune --progress) successfully finished
+2024-02-07 17:50:00,418 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper merge-base --is-ancestor HEAD origin/master) successfully finished
+2024-02-07 17:50:00,890 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper pull --progress) successfully finished
+2024-02-07 17:50:00,891 [base_deploy.py:log_info()] - Git Repo cartographer: No packages found in script: /home/pi/cartographer-klipper/install.sh
+2024-02-07 17:50:00,895 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper status --porcelain -b) successfully finished
+2024-02-07 17:50:00,899 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper branch --list --no-color) successfully finished
+2024-02-07 17:50:00,902 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper remote get-url origin) successfully finished
+2024-02-07 17:50:00,904 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper merge-base --is-ancestor HEAD origin/master) successfully finished
+2024-02-07 17:50:00,906 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper rev-parse HEAD) successfully finished
+2024-02-07 17:50:00,910 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper describe --always --tags --long --dirty --abbrev=8) successfully finished
+2024-02-07 17:50:00,912 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper rev-parse origin/master) successfully finished
+2024-02-07 17:50:00,915 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper describe origin/master --always --tags --long --abbrev=8) successfully finished
+2024-02-07 17:50:00,917 [shell_command.py:_check_proc_success()] - Command (git -C /home/pi/cartographer-klipper rev-list HEAD..d00ecfe69b5d558836b9264d8817f1815e31c02c --count) successfully finished
+2024-02-07 17:50:00,917 [git_deploy.py:log_repo_info()] - Git Repo cartographer Detected:
+Owner: Cartographer3D
+Repository Name: cartographer-klipper
+Path: /home/pi/cartographer-klipper
+Remote: origin
+Branch: master
+Remote URL: https://github.com/Cartographer3D/cartographer-klipper.git
+Recovery URL: https://github.com/Cartographer3D/cartographer-klipper.git
+Current Commit SHA: d00ecfe69b5d558836b9264d8817f1815e31c02c
+Upstream Commit SHA: d00ecfe69b5d558836b9264d8817f1815e31c02c
+Current Version: v1.0.0-30-gd00ecfe6
+Upstream Version: v1.0.0-30-gd00ecfe6
+Rollback Commit: 5f5b3fd37d4bd46de44c58b63df84b22b9d42081
+Rollback Branch: master
+Rollback Version: v1.0.0-29-g5f5b3fd3
+Is Dirty: False
+Is Detached: False
+Is Shallow: False
+Commits Behind Count: 0
+Diverged: False
+2024-02-07 17:50:00,917 [base_deploy.py:log_info()] - Git Repo cartographer: Channel: dev
+2024-02-07 17:50:00,917 [base_deploy.py:log_info()] - Git Repo cartographer: Validity check for git repo passed
+2024-02-07 17:50:00,969 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-02-07 17:50:01,221 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-02-07 17:50:03,998 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-02-07 17:50:03,998 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-02-07 17:50:04,248 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-02-07 17:50:04,503 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-02-07 17:50:05,006 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'temperature_sensor cartographer_coil', 'extruder']
+2024-02-07 17:50:32,451 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------9fe2f5036c76d831
+2024-02-07 17:50:32,565 [application.py:post()] - Processing Uploaded File: 3DBenchy_PLA_13m48s.gcode
+2024-02-07 17:50:32,650 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-02-07 17:50:32,655 [shell_command.py:pipe_data_received()] - INFO:metadata:File '3DBenchy_PLA_13m48s.gcode' currently supports cancellation, processing aborted
+
+2024-02-07 17:50:32,710 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "3DBenchy_PLA_13m48s.gcode" --check-objects) successfully finished
+2024-02-07 17:50:32,716 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 264.61ms
+2024-02-07 17:50:32,824 [job_state.py:_status_update()] - Job Started: 3DBenchy_PLA_13m48s.gcode
+2024-02-07 18:04:49,232 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 0.75ms
+2024-02-07 18:04:49,233 [websockets.py:open()] - Websocket Opened: ID: 140735554710160, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-02-07 18:04:49,245 [websockets.py:_handle_identify()] - Websocket 140735554710160 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 18:05:22,994 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Failed to load filament into selector. No trigger on selector sensor after full movement
+2024-02-07 18:06:33,273 [common.py:build_error()] - JSON-RPC Request Error - Requested Method: printer.gcode.script, Code: 400, Message: Failed to load filament into selector. No trigger on selector sensor after full movement
+2024-02-07 18:08:16,822 [websockets.py:on_close()] - Websocket Closed: ID: 140735554710160 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 7.58
+2024-02-07 18:55:25,310 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-02-07 19:05:25,312 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.177
+2024-02-07 19:19:43,303 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.177
+2024-02-07 19:19:43,304 [application.py:log_request()] - 101 GET /websocket (192.168.1.177) [_TRUSTED_USER_] 1.02ms
+2024-02-07 19:19:43,304 [websockets.py:open()] - Websocket Opened: ID: 140735589260112, Proxied: True, User Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36, Host Name: 192.168.1.244
+2024-02-07 19:19:43,343 [websockets.py:_handle_identify()] - Websocket 140735589260112 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 19:20:53,564 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-02-07 19:20:53,564 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.85ms
+2024-02-07 19:20:53,564 [websockets.py:open()] - Websocket Opened: ID: 140735590282768, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-02-07 19:20:53,569 [websockets.py:_handle_identify()] - Websocket 140735590282768 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 19:28:37,035 [websockets.py:on_close()] - Websocket Closed: ID: 140735589260112 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.72
