@@ -856,3 +856,31 @@ Diverged: False
 2024-02-07 13:25:42,711 [base_deploy.py:log_info()] - Git Repo mainsail-config: Next refresh in: 3 Days, 22 Hours, 36 Minutes, 6 Seconds
 2024-02-07 13:25:42,711 [base_deploy.py:log_info()] - Web Client mainsail: Next refresh in: 3 Days, 22 Hours, 36 Minutes, 6 Seconds
 2024-02-07 13:25:42,711 [base_deploy.py:log_info()] - Git Repo cartographer: Next refresh in: 3 Days, 23 Hours, 41 Minutes, 48 Seconds
+2024-02-07 13:27:52,750 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-02-07 13:27:52,752 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 2.37ms
+2024-02-07 13:27:52,752 [websockets.py:open()] - Websocket Opened: ID: 140735588930704, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-02-07 13:27:52,754 [websockets.py:_handle_identify()] - Websocket 140735588930704 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 13:28:07,953 [klippy_connection.py:_on_connection_closed()] - Klippy Connection Removed
+2024-02-07 13:28:09,207 [klippy_connection.py:_do_connect()] - Klippy Connection Established
+2024-02-07 13:28:11,729 [klippy_connection.py:_request_initial_subscriptions()] - Webhooks Subscribed
+2024-02-07 13:28:11,729 [klippy_connection.py:_request_initial_subscriptions()] - GCode Output Subscribed
+2024-02-07 13:28:11,980 [job_state.py:_handle_started()] - Job state initialized: standby
+2024-02-07 13:28:12,240 [klippy_connection.py:_check_ready()] - Klippy ready
+2024-02-07 13:28:12,736 [data_store.py:_init_sensors()] - Configuring available sensors: ['temperature_sensor Kraken', 'heater_bed', 'temperature_sensor cartographer_coil', 'extruder']
+2024-02-07 13:28:25,506 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------7803ff05bf337c2a
+2024-02-07 13:28:25,842 [application.py:post()] - Processing Uploaded File: SHELFFFFF_PLA_1h23m.gcode
+2024-02-07 13:28:26,186 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-02-07 13:28:26,190 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'SHELFFFFF_PLA_1h23m.gcode' currently supports cancellation, processing aborted
+
+2024-02-07 13:28:26,264 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "SHELFFFFF_PLA_1h23m.gcode" --check-objects) successfully finished
+2024-02-07 13:28:26,270 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 764.10ms
+2024-02-07 13:28:26,521 [job_state.py:_status_update()] - Job Started: SHELFFFFF_PLA_1h23m.gcode
+2024-02-07 13:38:35,098 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-02-07 13:38:35,099 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 1.11ms
+2024-02-07 13:38:35,099 [websockets.py:open()] - Websocket Opened: ID: 140735589302800, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-02-07 13:38:35,142 [websockets.py:_handle_identify()] - Websocket 140735589302800 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 14:09:18,526 [websockets.py:on_close()] - Websocket Closed: ID: 140735589302800 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.40
+2024-02-07 14:30:25,269 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
+2024-02-07 14:40:25,271 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
