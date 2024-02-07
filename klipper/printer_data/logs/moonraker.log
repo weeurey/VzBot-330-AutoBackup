@@ -884,3 +884,27 @@ Content-Type: multipart/form-data; boundary=------------------------7803ff05bf33
 2024-02-07 14:09:18,526 [websockets.py:on_close()] - Websocket Closed: ID: 140735589302800 Close Code: None, Close Reason: None, Pong Time Elapsed: 3.40
 2024-02-07 14:30:25,269 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.97
 2024-02-07 14:40:25,271 [authorization.py:_prune_conn_handler()] - Trusted Connection Expired, IP: 192.168.1.73
+2024-02-07 15:07:52,998 [websockets.py:on_close()] - Websocket Closed: ID: 140735588930704 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 0.24
+2024-02-07 15:07:53,281 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.97
+2024-02-07 15:07:53,282 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 1.08ms
+2024-02-07 15:07:53,282 [websockets.py:open()] - Websocket Opened: ID: 140735590952528, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-02-07 15:07:53,297 [websockets.py:_handle_identify()] - Websocket 140735590952528 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 15:07:54,468 [websockets.py:on_close()] - Websocket Closed: ID: 140735590952528 Close Code: 1001, Close Reason: None, Pong Time Elapsed: 1.19
+2024-02-07 15:07:54,669 [application.py:log_request()] - 101 GET /websocket (192.168.1.97) [_TRUSTED_USER_] 0.56ms
+2024-02-07 15:07:54,669 [websockets.py:open()] - Websocket Opened: ID: 140735590853264, Proxied: True, User Agent: BBL-Slicer/v01.07.07.89 (dark) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52, Host Name: 192.168.1.244
+2024-02-07 15:07:54,680 [websockets.py:_handle_identify()] - Websocket 140735590853264 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 15:08:01,823 [application.py:prepare()] - Upload Request Received from 192.168.1.97
+Content-Type: multipart/form-data; boundary=------------------------c70aa58a36ad04ad
+2024-02-07 15:08:01,847 [application.py:post()] - Processing Uploaded File: flowrate_0_PLA_12m44s.gcode
+2024-02-07 15:08:01,934 [shell_command.py:pipe_data_received()] - INFO:metadata:Object Processing is enabled
+
+2024-02-07 15:08:01,936 [shell_command.py:pipe_data_received()] - INFO:metadata:File 'flowrate_0_PLA_12m44s.gcode' currently supports cancellation, processing aborted
+
+2024-02-07 15:08:01,981 [shell_command.py:_check_proc_success()] - Command (/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/components/file_manager/metadata.py -p /home/pi/printer_data/gcodes -f "flowrate_0_PLA_12m44s.gcode" --check-objects) successfully finished
+2024-02-07 15:08:01,987 [application.py:log_request()] - 201 POST /api/files/local (192.168.1.97) [_TRUSTED_USER_] 164.66ms
+2024-02-07 15:08:02,114 [job_state.py:_status_update()] - Job Started: flowrate_0_PLA_12m44s.gcode
+2024-02-07 15:30:56,663 [authorization.py:_check_trusted_connection()] - Trusted Connection Detected, IP: 192.168.1.73
+2024-02-07 15:30:56,664 [application.py:log_request()] - 101 GET /websocket (192.168.1.73) [_TRUSTED_USER_] 0.93ms
+2024-02-07 15:30:56,665 [websockets.py:open()] - Websocket Opened: ID: 140735554040080, Proxied: True, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36, Host Name: 192.168.1.244
+2024-02-07 15:30:56,673 [websockets.py:_handle_identify()] - Websocket 140735554040080 Client Identified - Name: mainsail, Version: 2.9.1, Type: web
+2024-02-07 15:33:21,886 [job_state.py:_status_update()] - Job Started: flowrate_0_PLA_12m44s.gcode
