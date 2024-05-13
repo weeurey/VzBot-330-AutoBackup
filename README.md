@@ -1,7 +1,7 @@
 # VZ-250 Klipper Backup 💾 
 This is the firmware backup repostory for a VzBot 330 with serial Vz-250
 
-#Specs
+# Specs
 Kinematics: CoreXY, AWD, Dual-Z
 Build Plate: 330x330 (small amount of Y loss due to AWD) AC powered with SSR + thermal fuse protection
 Motherboard: BigTreeTech KRAKEN 1.0 + BTT MMB(Trackrack)
