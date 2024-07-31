@@ -1,5 +1,3 @@
-[include mmu/base/*.cfg]
-[include mmu/optional/client_macros.cfg]
 #[include shell_command.cfg]
 [include mainsail.cfg]
 [include include/steppers.cfg]
