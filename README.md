@@ -8,8 +8,6 @@ Build Plate: 330x330 (small amount of Y loss due to AWD) AC powered with SSR + t
 
 Motherboard: BigTreeTech KRAKEN 1.0 W/ BigTreeTech EBB36v1.2 CAN Toolhead board + BigTreeTech MMB(USB)(Trackrack MCU)
 
-MMU: Tradrack (Currenty disabled Until Binky+ERFC Mod is installed.)
-
 Klipper Host: Raspbery Pi 5, Official active cooler case (4GB Ram, release version)
 
 Klipper Version: v0.12.0-274 
@@ -28,10 +26,23 @@ Extruder Motor: Moons 8T
 
 Motor Voltage: 48V
 
+#Multi Material Unit (MMU)
+TradRack by Annex Designs with 12 lanes.
 
+-Mods
+Happy Hare software
+Pregate Sensors on 6 of the 12 Lanes
+BinkyEncoder w/ Binky PCB 1.04
+Enraged Rabbit Filament Cutter
+Extruder Entry Sensor
+Toolhead Entry Sensor
+
+#Vanity Accessories
 Camera: ELP USB Camera(currently disabled due to crowsnewst x RPi5 issues)
 
 LEDs: 2x VzLights RGB (Vector 3D, Disabled due to poor QA, I dont reccomend purchasing these.)
+
+7" Elcrow touch screen for KlipperScreen (HappyHare Edition)
 
 
 
