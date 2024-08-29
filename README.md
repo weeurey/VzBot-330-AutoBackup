@@ -1,52 +1,39 @@
-# VZ-250 Klipper Backup 💾 
-This is the firmware backup repostory for a VzBot 330 with serial Vz-250.
+# VZ-250 Klipper Backup Repository 💾
 
-# Specs
-Kinematics: CoreXY, AWD, Dual-Z, CANBus Toolhead
+This repository contains the firmware backup for the VzBot 330, serial number Vz-250.
 
-Build Plate: 330x330 (small amount of Y loss due to AWD) AC powered with SSR + thermal fuse protection
+## Specifications
 
-Motherboard: BigTreeTech KRAKEN 1.0 W/ BigTreeTech EBB36v1.2 CAN Toolhead board + BigTreeTech MMB(USB)(Trackrack MCU)
+- **Kinematics:** CoreXY, AWD, Dual-Z, CANBus Toolhead
+- **Build Plate:** 330x330 mm (with slight Y-axis reduction due to AWD), AC powered with SSR and thermal fuse protection
+- **Motherboard:** BigTreeTech KRAKEN 1.0 with BigTreeTech EBB36v1.2 CAN Toolhead Board and BigTreeTech MMB (USB) (TrackRack MCU)
+- **Klipper Host:** Raspberry Pi 5 with official active cooler case (4GB RAM, release version)
+- **Klipper Version:** v0.12.0-274
+- **Hotend:** Goliath Air (full length) with 0.5 Bondtech CHT Nozzle
+- **Extruder:** VzHextrudor with Toolhead Entry and Hotend Entry filament sensors (configured for TradRack MMU)
+- **Cooling Fan:** Mellow CPAP with 24V hotend fan
+- **Automatic Bed Leveling (ABL):** Cartographer Probe in CAN mode with Carto Survey/Touch enabled
+- **Movement Motors:** LDO 2804 running on 48V via onboard 5160 drivers
+- **Extruder Motor:** Moons 8T
+- **Motor Voltage:** 48V
 
-Klipper Host: Raspbery Pi 5, Official active cooler case (4GB Ram, release version)
+## Multi-Material Unit (MMU)
 
-Klipper Version: v0.12.0-274 
+**TradRack by Annex Designs** with 12 lanes, featuring the following modifications:
 
-Hotend: Goliath Air (Full length) with .5 Bondtech CHT Nozzle
+- **Happy Hare Software**
+- Pregate sensors on 6 of the 12 lanes
+- BinkyEncoder with Binky PCB 1.04
+- Enraged Rabbit Filament Cutter
+- Extruder Entry Sensor
+- Toolhead Entry Sensor
 
-Extruder: VzHextrudor w/ Toolhead Entry and Hotend Entry filament sensors. (For TradRack MMU)
+## Vanity Accessories
 
-Cooling Fan: Mellow CPAP + 24v Hotend fan
+- **Camera:** ELP USB Camera (currently disabled due to compatibility issues with Crowsnest and Raspberry Pi 5)
+- **LEDs:** 2x VzLights RGB (Vector 3D) - Disabled due to quality issues (not recommended)
+- **Touch Screen:** 7" Elecrow Touch Screen for KlipperScreen (HappyHare Edition)
 
-ABL: Cartogrophger Probe in CAN mode with Carto Survey/Touch enabled.
+## Setup Guide
 
-Movement Motors: LDO 2804 running on 48v via onboard 5160 drivers
-
-Extruder Motor: Moons 8T
-
-Motor Voltage: 48V
-
-# Multi Material Unit (MMU)
-TradRack by Annex Designs with 12 lanes.
-
--Mods
-Happy Hare software
-Pregate Sensors on 6 of the 12 Lanes
-BinkyEncoder w/ Binky PCB 1.04
-Enraged Rabbit Filament Cutter
-Extruder Entry Sensor
-Toolhead Entry Sensor
-
-# Vanity Accessories
-Camera: ELP USB Camera(currently disabled due to crowsnewst x RPi5 issues)
-
-LEDs: 2x VzLights RGB (Vector 3D, Disabled due to poor QA, I dont reccomend purchasing these.)
-
-7" Elcrow touch screen for KlipperScreen (HappyHare Edition)
-
-
-
-
-
-
-To set up a similar autobackup system please see the fantastic [klipper-backup](https://github.com/Staubgeborener/klipper-backup) project.
+To set up a similar autobackup system, please refer to the [klipper-backup](https://github.com/Staubgeborener/klipper-backup) project, which provides an excellent guide.
