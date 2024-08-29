@@ -26,7 +26,7 @@ Extruder Motor: Moons 8T
 
 Motor Voltage: 48V
 
-#Multi Material Unit (MMU)
+# Multi Material Unit (MMU)
 TradRack by Annex Designs with 12 lanes.
 
 -Mods
@@ -37,7 +37,7 @@ Enraged Rabbit Filament Cutter
 Extruder Entry Sensor
 Toolhead Entry Sensor
 
-#Vanity Accessories
+# Vanity Accessories
 Camera: ELP USB Camera(currently disabled due to crowsnewst x RPi5 issues)
 
 LEDs: 2x VzLights RGB (Vector 3D, Disabled due to poor QA, I dont reccomend purchasing these.)
